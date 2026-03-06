@@ -32,10 +32,11 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'tr'],
+    locales: ['en', 'tr', 'ru'],
     localeConfigs: {
       en: { label: 'English' },
       tr: { label: 'Türkçe' },
+      ru: { label: 'Русский' },
     },
   },
 
@@ -95,6 +96,12 @@ const config: Config = {
         src: 'img/pp-logo.png',
       },
       items: [
+        {
+          type: 'docSidebar',
+          sidebarId: 'introductionSidebar',
+          position: 'left',
+          label: 'Introduction',
+        },
         {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',

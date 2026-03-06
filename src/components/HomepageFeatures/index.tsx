@@ -2,51 +2,64 @@ import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
+import Translate from '@docusaurus/Translate';
 
 type FeatureItem = {
-  title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  title: ReactNode;
+  image: string;
   description: ReactNode;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: (
+      <Translate id="homepage.features.global.title">
+        Global Money Transfers
+      </Translate>
+    ),
+    image: require('@site/static/img/global_transfers.png').default,
     description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
+      <Translate id="homepage.features.global.description">
+        Seamlessly integrate money transfers to physical names (cash pick up),
+        bank accounts, wallets, and cards worldwide using our RESTful endpoints.
+      </Translate>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: (
+      <Translate id="homepage.features.eft.title">
+        EFT & Direct Payments
+      </Translate>
+    ),
+    image: require('@site/static/img/direct_payments.png').default,
     description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
+      <Translate id="homepage.features.eft.description">
+        Utilize direct EFT capabilities to Turkish Banks and powerful dynamic 
+        payment firm integrations to handle high-volume transactions instantly.
+      </Translate>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: (
+      <Translate id="homepage.features.settlement.title">
+        Comprehensive Settlement
+      </Translate>
+    ),
+    image: require('@site/static/img/accounting_settlement.png').default,
     description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
-      </>
+      <Translate id="homepage.features.settlement.description">
+        Automate your accounting with detailed account information, real-time
+        transaction history, and end-of-day settlement APIs.
+      </Translate>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({title, image, description}: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <img src={image} className={styles.featureSvg} role="img" />
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>

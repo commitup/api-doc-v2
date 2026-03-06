@@ -1,0 +1,26 @@
+{
+  "title": {
+    "message": "Payporter API",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Payporter Logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Introduction": {
+    "message": "Giriş",
+    "description": "Navbar item with label Introduction"
+  },
+  "item.label.Tutorial": {
+    "message": "Eğitim",
+    "description": "Navbar item with label Tutorial"
+  },
+  "item.label.Blog": {
+    "message": "Blog",
+    "description": "Navbar item with label Blog"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}
