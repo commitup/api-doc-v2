@@ -39,8 +39,11 @@ const config: Config = {
       ru: { label: 'Русский' },
     },
   },
-
+  markdown: {
+    mermaid: true,
+  },
   themes: [
+    '@docusaurus/theme-mermaid',
     [
       '@easyops-cn/docusaurus-search-local',
       {
@@ -107,6 +110,12 @@ const config: Config = {
           sidebarId: 'tutorialSidebar',
           position: 'left',
           label: 'Tutorial',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'eftSidebar',
+          position: 'left',
+          label: 'EFT to Turkish Banks',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {

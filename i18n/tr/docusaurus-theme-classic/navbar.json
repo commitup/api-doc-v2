@@ -19,6 +19,10 @@
     "message": "Blog",
     "description": "Navbar item with label Blog"
   },
+  "item.label.EFT to Turkish Banks": {
+    "message": "Türk Bankalarına EFT",
+    "description": "Navbar item with label EFT to Turkish Banks"
+  },
   "item.label.GitHub": {
     "message": "GitHub",
     "description": "Navbar item with label GitHub"
