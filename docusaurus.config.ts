@@ -15,15 +15,16 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://commitup.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/api-doc-v2/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'payporter', // Usually your GitHub org/user name.
-  projectName: 'api-docs', // Usually your repo name.
+  organizationName: 'commitup', // Usually your GitHub org/user name.
+  projectName: 'api-doc-v2', // Usually your repo name.
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
 
