@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 10
 ---
 
 import Tabs from '@theme/Tabs';
@@ -8,7 +8,9 @@ import ApiEndpoint from '@site/src/components/ApiEndpoint';
 import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 # IBAN Validation
-
+:::info Premium Feature
+This is an extra paid feature. Please contact your account manager to enable this service.
+:::
 Verify recipient details before initiating a transfer to minimize returns and errors.
 
 <ApiEndpoint method="POST" url="/eft-api/V2/validate-iban" />
@@ -17,9 +19,7 @@ Verify recipient details before initiating a transfer to minimize returns and er
 
 IBAN Validation is a premium feature that checks if a provided IBAN, currency, and account owner name are valid and match the bank's records.
 
-:::info Premium Feature
-This is an extra paid feature. Account owner validation is only available for specific participating banks in Turkey. Please contact your account manager to enable this service.
-:::
+
 
 ---
 

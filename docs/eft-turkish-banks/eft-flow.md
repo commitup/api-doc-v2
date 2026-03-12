@@ -32,7 +32,7 @@ graph TD
     style REFUND fill:#ffebee,stroke:#c62828,stroke-width:2px
 ```
 
-:::info
+:::warning
 **Red Blocks** represent Final Statuses (Rejected, Cancelled, Refunded). Although **COMPLETED** is a successful state, a **REFUND** can still occur later if the beneficiary bank returns the funds.
 :::
 

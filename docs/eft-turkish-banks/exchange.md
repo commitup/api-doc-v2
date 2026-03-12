@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 9
 ---
 
 import Tabs from '@theme/Tabs';
@@ -16,8 +16,8 @@ Use this endpoint to perform currency conversion between foreign currencies and 
 ## Overview
 
 The exchange service allows you to:
-- Convert foreign currency to TRY.
-- Convert TRY to foreign currency.
+- Convert foreign currency (USD, EUR, GBP) to TRY.
+- Convert TRY to foreign currency (USD, EUR, GBP).
 - Obtain a valid `exchangeId` required for initiating a multi-currency EFT transfer.
 
 :::important Expiry Time

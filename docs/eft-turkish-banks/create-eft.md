@@ -13,6 +13,10 @@ Initiate a new EFT transfer to a Turkish bank account.
 
 <ApiEndpoint method="POST" url="/eft-api/V2/transfer/create" />
 
+:::tip Multi-currency Transfers
+If you are sending funds in a different currency than your operating account (e.g., sending TRY from a USD account), you must first obtain an `exchangeId` from the **[Exchange](./exchange)** endpoint.
+:::
+
 **Request Parameters**
 
 <Tabs>
@@ -32,7 +36,7 @@ Initiate a new EFT transfer to a Turkish bank account.
 | transferReason     | True      | string | Reason for the transfer. See [TransferReason](#transferreason). |
 | transferType       | True      | string | Transfer method (`TO_IBAN` or `TO_CREDIT_CARD`). |
 | comment            | False      | string | Optional remittance information. |
-| exchangeId         | False      | string | FX transaction reference ID if currency conversion is applied. |
+| exchangeId         | False      | string | FX transaction reference ID for multi-currency transfers. See [Exchange](./exchange). |
 
   </TabItem>
   <TabItem value="request_example" label="Example Request">
@@ -103,6 +107,27 @@ Used for both senderInfo and receiverInfo fields.
 | phoneNumber        | Optional             | number | The receiver's phone number. |
 | email              | Optional             | string | The receiver's email address. |
 | identityNumber     | Optional             | string | The receiver's identity number. |
+
+## EftTransferReason
+
+Commonly used payment reasons (required for regulatory compliance).
+
+| Value | Description |
+| :--- | :--- |
+| `HOME_RENT` | Home Rent |
+| `OFFICE_RENT` | Office Rent |
+| `OTHER_RENT` | Other Rent |
+| `DUES` | Dues |
+| `EDUCATION` | Education |
+| `CREDIT_CARD_DEBT` | Credit Card Debt |
+| `STAFF_PAYMENTS` | Staff Payments |
+| `E_COMMERCE_PAYMENTS` | E-Commerce Payments |
+| `OTHER_PAYMENTS` | Other Payments |
+| `COMMERCIAL_PAYMENTS` | Commercial Payments |
+| `INDIVIDUAL_PAYMENTS` | Individual Payments |
+| `INVESTMENT` | Investment |
+| `FINANCIAL` | Financial |
+
 
 **Response**
 
