@@ -1,19 +1,14 @@
-facebook:
-  label: Facebook
-  permalink: /facebook
-  description: Facebook tag description
+api:
+  label: API
+  permalink: /api
+  description: Updates and features related to the PayPorter API
 
-hello:
-  label: Hello
-  permalink: /hello
-  description: Hello tag description
+release:
+  label: Release Notes
+  permalink: /release
+  description: New platform releases and patch notes
 
-docusaurus:
-  label: Docusaurus
-  permalink: /docusaurus
-  description: Docusaurus tag description
-
-hola:
-  label: Hola
-  permalink: /hola
-  description: Hola tag description
+integration:
+  label: Integration
+  permalink: /integration
+  description: Guides and best practices for integrating the APIs

@@ -13,6 +13,22 @@ Webhooks allow you to receive real-time notifications about status changes in yo
 
 ## Workflow
 
+```mermaid
+sequenceDiagram
+    participant PP as PayPorter
+    participant YS as Your Server
+
+    PP->>YS: POST /your-webhook-endpoint<br/>Headers: request-sign, Content-Type
+    Note over YS: 1. Read raw request body
+    Note over YS: 2. Compute HMAC-SHA256<br/>with your Secret Key
+    Note over YS: 3. Compare computed hash<br/>with request-sign header
+    alt Signature Valid
+        YS-->>PP: 200 OK { "success": true }
+    else Signature Invalid
+        YS-->>PP: 401 Unauthorized
+    end
+```
+
 1.  **Endpoint**: You must provide a publicly accessible HTTPS endpoint (e.g., `https://your-domain.com/payporter/eft-api/notify-status`).
 2.  **Notification**: When a transfer status changes (e.g., from `PENDING` to `COMPLETED` or `REJECTED`), PayPorter sends a `POST` request to your endpoint.
 3.  **Verification**: You should verify the signature included in the request headers to ensure the notification is authentic.
@@ -39,6 +55,107 @@ To verify the request:
 1.  Concatenate the entire request body as a string.
 2.  Hash this string using the **HmacSHA256** algorithm with your provided **Secret Value**.
 3.  Compare the resulting hex string with the value provided in the `request-sign` header.
+
+### Verification Code Examples
+
+<Tabs>
+  <TabItem value="nodejs" label="Node.js" default>
+
+```javascript
+const crypto = require('crypto');
+const express = require('express');
+const app = express();
+
+// Use raw body for HMAC verification
+app.use('/webhook', express.raw({ type: 'application/json' }));
+
+app.post('/webhook', (req, res) => {
+  const SECRET_KEY = process.env.PAYPORTER_SECRET_KEY;
+  const receivedSign = req.headers['request-sign'];
+  const rawBody = req.body.toString('utf-8');
+
+  const computedSign = crypto
+    .createHmac('sha256', SECRET_KEY)
+    .update(rawBody)
+    .digest('hex');
+
+  if (computedSign !== receivedSign) {
+    return res.status(401).json({ success: false, errorCode: 'INVALID_SIGNATURE' });
+  }
+
+  const payload = JSON.parse(rawBody);
+  console.log('Verified webhook:', payload.senderExtFirmRefId, 'Status:', payload.status);
+
+  res.status(200).json({ success: true });
+});
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python">
+
+```python
+import hmac
+import hashlib
+import json
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+SECRET_KEY = "your_secret_key"
+
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    received_sign = request.headers.get("request-sign")
+    raw_body = request.get_data(as_text=True)
+
+    computed_sign = hmac.new(
+        SECRET_KEY.encode("utf-8"),
+        raw_body.encode("utf-8"),
+        hashlib.sha256
+    ).hexdigest()
+
+    if not hmac.compare_digest(computed_sign, received_sign):
+        return jsonify({"success": False, "errorCode": "INVALID_SIGNATURE"}), 401
+
+    payload = json.loads(raw_body)
+    print(f"Verified webhook: {payload['senderExtFirmRefId']} Status: {payload['status']}")
+
+    return jsonify({"success": True}), 200
+```
+
+  </TabItem>
+  <TabItem value="java" label="Java">
+
+```java
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+
+public class WebhookVerifier {
+
+    private static final String SECRET_KEY = "your_secret_key";
+
+    public static boolean verifySignature(String rawBody, String receivedSign) 
+            throws Exception {
+        Mac mac = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(
+            SECRET_KEY.getBytes(StandardCharsets.UTF_8), "HmacSHA256"
+        );
+        mac.init(secretKeySpec);
+
+        byte[] hash = mac.doFinal(rawBody.getBytes(StandardCharsets.UTF_8));
+
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            hexString.append(String.format("%02x", b));
+        }
+
+        return hexString.toString().equals(receivedSign);
+    }
+}
+```
+
+  </TabItem>
+</Tabs>
 
 ---
 

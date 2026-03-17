@@ -36,6 +36,16 @@ Retrieve a history of your EFT transfers within a specific date range.
 ```
 
   </TabItem>
+  <TabItem value="curl" label="cURL">
+
+```shell
+curl -X POST https://online-mig.payporter.com.tr:8586/online/eft-api/V2/transfer/get-transfer-list \
+    -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{ "startDate": "2026-03-01T00:00:00.000Z", "endDate": "2026-03-06T23:59:59.000Z", "statusCode": 20 }'
+```
+
+  </TabItem>
 </Tabs>
 
 **Response**

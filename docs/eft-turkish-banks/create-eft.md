@@ -47,7 +47,6 @@ If you are sending funds in a different currency than your operating account (e.
         "currency": "TRY",
         "receiverAccount": "TR330006100519786457841326",
         "senderExtFirmRefId": "b7e4c4c2-8a3f-4f42-b3c6-9e8f6f3d0a91",
-        "transferDate": "2026-03-06",
         "transferReason": "COMMERCIAL_PAYMENTS",
         "transferType": "TO_IBAN",
         "fromCountry": "DEU",
@@ -80,9 +79,16 @@ If you are sending funds in a different currency than your operating account (e.
           "email": "m.schneider@example.de",
           "identityNumber": "D123456789"
         }
-}
-```
-
+    }
+    ```
+  </TabItem>
+  <TabItem value="curl" label="cURL">
+    ```shell
+    curl -X POST https://online-mig.payporter.com.tr:8586/online/eft-api/V2/transfer/create \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{ "amount": 150.23, "currency": "TRY", "receiverAccount": "TR330006100519786457841326", "senderExtFirmRefId": "b7e4c4c2-8a3f-4f42-b3c6-9e8f6f3d0a91", "transferReason": "COMMERCIAL_PAYMENTS", "transferType": "TO_IBAN", "fromCountry": "DEU", ... }'
+    ```
   </TabItem>
 </Tabs>
 
@@ -95,18 +101,18 @@ Used for both senderInfo and receiverInfo fields.
 
 | Parameter          | Required For         | Type   | Description |
 |--------------------|----------------------|--------|-------------|
-| firstName          | Sender and Receiver  | string | The receiver's first name. |
-| lastName           | Sender and Receiver  | string | The receiver's last name. |
-| middleName         | Optional             | string | The receiver's middle name. |
-| birthDay           | Sender               | string | The receiver's date of birth in YYYY-MM-DD format. |
-| birthPlace         | Sender               | string | The receiver's place of birth. |
-| address            | Optional             | string | The receiver's address. |
-| addressCountryCode | Optional             | string | Three-letter ISO 3166-1 alpha-3 country code of the receiver. |
-| company            | Optional             | boolean | Whether the receiver is a company. Default is false. |
-| countryPhoneCode   | Optional             | number | The receiver's country phone code. |
-| phoneNumber        | Optional             | number | The receiver's phone number. |
-| email              | Optional             | string | The receiver's email address. |
-| identityNumber     | Optional             | string | The receiver's identity number. |
+| firstName          | Sender and Receiver  | string | The participant's first name. |
+| lastName           | Sender and Receiver  | string | The participant's last name. |
+| middleName         | Optional             | string | The participant's middle name. |
+| birthDay           | Sender               | string | Date of birth in YYYY-MM-DD format. |
+| birthPlace         | Sender               | string | Place of birth. |
+| address            | Optional             | string | The participant's address. |
+| addressCountryCode | Optional             | string | Three-letter ISO 3166-1 alpha-3 country code. |
+| company            | Optional             | boolean | Whether the participant is a company. Default is false. |
+| countryPhoneCode   | Optional             | number | Country phone code (e.g., 90 for Turkey). |
+| phoneNumber        | Optional             | number | Phone number without country code. |
+| email              | Optional             | string | Email address. |
+| identityNumber     | Optional             | string | Identity / passport number. |
 
 ## EftTransferReason
 

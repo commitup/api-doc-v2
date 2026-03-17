@@ -34,6 +34,16 @@ Retrieve a list of EFT transfers that have been refunded by the beneficiary bank
 ```
 
   </TabItem>
+  <TabItem value="curl" label="cURL">
+
+```shell
+curl -X POST https://online-mig.payporter.com.tr:8586/online/eft-api/V2/transfer/get-refund-transfer-list \
+    -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{ "startDate": "2026-03-06T00:00:00.000Z", "endDate": "2026-03-06T23:59:59.000Z" }'
+```
+
+  </TabItem>
 </Tabs>
 
 **Response**

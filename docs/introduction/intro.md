@@ -19,6 +19,18 @@ https://online-mig.payporter.com.tr:8586/online
 ### Access Token
 All endpoints require a Bearer token in the Authorization header. You can get the token by calling the `/login` endpoint with your credentials. You should keep this token until it expires. When the token expires, you will need to generate a new one. 
 
+```mermaid
+graph LR
+    A[POST /oauth-login] -->|Get Token| B[Use Token in Requests]
+    B -->|200 OK| B
+    B -->|401 or LOGOUT| C[Token Expired / Invalid]
+    C -->|Re-login| A
+    
+    style A fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style B fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style C fill:#ffebee,stroke:#c62828,stroke-width:2px
+```
+
 :::caution **Important**
 Please do not call login before each request. Otherwise, you will get an `HTTP 429 Too Many Requests` response.
 :::

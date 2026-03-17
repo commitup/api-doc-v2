@@ -108,12 +108,6 @@ const config: Config = {
         },
         {
           type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Tutorial',
-        },
-        {
-          type: 'docSidebar',
           sidebarId: 'eftSidebar',
           position: 'left',
           label: 'EFT to Turkish Banks',
@@ -124,7 +118,7 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/commitup/api-doc-v2',
           label: 'GitHub',
           position: 'right',
         },
@@ -134,41 +128,24 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Documentation',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Introduction',
+              to: '/docs/introduction/intro',
+            },
+            {
+              label: 'EFT to Turkish Banks',
+              to: '/docs/eft-turkish-banks/intro',
             },
           ],
         },
         {
-          title: 'Community',
+          title: 'Resources',
           items: [
-            {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/commitup/api-doc-v2',
             },
           ],
         },

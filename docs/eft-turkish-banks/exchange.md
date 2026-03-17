@@ -20,6 +20,20 @@ The exchange service allows you to:
 - Convert TRY to foreign currency (USD, EUR, GBP).
 - Obtain a valid `exchangeId` required for initiating a multi-currency EFT transfer.
 
+### Multi-Currency Transfer Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Your System
+    participant PP as PayPorter API
+
+    C->>PP: POST /eft-api/V2/exchange<br/>{amountForeign, currencyForeign}
+    PP-->>C: 200 OK<br/>{exchangeId, rate, convertedAmount}
+    Note over C: exchangeId is valid for 60 seconds
+    C->>PP: POST /eft-api/V2/transfer/create<br/>{amount, currency, exchangeId, ...}
+    PP-->>C: 200 OK<br/>{transferOrderRefId, status: NEW}
+```
+
 :::important Expiry Time
 The generated `exchangeId` is valid for **1 minute**. If you do not initiate the transfer within this timeframe, you must request a new `exchangeId`.
 :::
@@ -48,6 +62,16 @@ The generated `exchangeId` is valid for **1 minute**. If you do not initiate the
   "amountTRY": null,
   "commercial": false
 }
+```
+
+  </TabItem>
+  <TabItem value="curl" label="cURL">
+
+```shell
+curl -X POST https://online-mig.payporter.com.tr:8586/online/eft-api/V2/exchange \
+    -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{ "amountForeign": 100, "currencyForeign": "USD", "amountTRY": null, "commercial": false }'
 ```
 
   </TabItem>
