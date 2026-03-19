@@ -112,6 +112,12 @@ const config: Config = {
           position: 'left',
           label: 'EFT to Turkish Banks',
         },
+        {
+          type: 'docSidebar',
+          sidebarId: 'qrPaymentsSidebar',
+          position: 'left',
+          label: 'QR Payments',
+        },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
           type: 'localeDropdown',
@@ -137,6 +143,10 @@ const config: Config = {
             {
               label: 'EFT to Turkish Banks',
               to: '/docs/eft-turkish-banks/intro',
+            },
+            {
+              label: 'QR Payments',
+              to: '/docs/qr-payments/intro',
             },
           ],
         },

@@ -36,6 +36,17 @@ const sidebars: SidebarsConfig = {
     },
     'eft-turkish-banks/error-codes',
   ],
+  qrPaymentsSidebar: [
+    'qr-payments/intro',
+    'qr-payments/read-qr',
+    'qr-payments/confirm-payment',
+    'qr-payments/webhooks',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'qr-payments/mock-api',
+  ],
 
   // But you can create a sidebar manually
   /*
