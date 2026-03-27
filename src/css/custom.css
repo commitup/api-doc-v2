@@ -28,3 +28,8 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Sidebar: make sub-items smaller than main category items */
+.menu__list .menu__list .menu__link {
+  font-size: 0.85rem;
+}

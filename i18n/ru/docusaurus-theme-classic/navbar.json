@@ -23,6 +23,14 @@
     "message": "EFT в турецкие банки",
     "description": "Navbar item with label EFT to Turkish Banks"
   },
+  "item.label.QR Payments": {
+    "message": "QR-платежи",
+    "description": "Navbar item with label QR Payments"
+  },
+  "item.label.Money Transfers": {
+    "message": "Денежные переводы",
+    "description": "Navbar item with label Money Transfers"
+  },
   "item.label.GitHub": {
     "message": "GitHub",
     "description": "Navbar item with label GitHub"

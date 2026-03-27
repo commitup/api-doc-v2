@@ -47,6 +47,67 @@ const sidebars: SidebarsConfig = {
     },
     'qr-payments/mock-api',
   ],
+  moneyTransfersSidebar: [
+    'money-transfers/intro',
+    {
+      type: 'category',
+      label: 'To Name (Cash Pick Up)',
+      link: {
+        type: 'generated-index',
+        description: 'Send money that can be collected in cash from PayPorter offices or partner locations.',
+      },
+      items: [
+        'money-transfers/to-name/overview',
+        'money-transfers/to-name/find-firm',
+        'money-transfers/to-name/find-city',
+        'money-transfers/to-name/find-office',
+        'money-transfers/to-name/validate',
+        'money-transfers/to-name/confirm',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'To Bank Account',
+      link: {
+        type: 'generated-index',
+        description: 'Direct transfer to a bank account or IBAN.',
+      },
+      items: [
+        'money-transfers/to-account/validate',
+        'money-transfers/to-account/confirm',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'To Wallet',
+      link: {
+        type: 'generated-index',
+        description: 'Send funds to a recipient\'s electronic wallet.',
+      },
+      items: [
+        'money-transfers/to-wallet/validate',
+        'money-transfers/to-wallet/confirm',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'To Card',
+      link: {
+        type: 'generated-index',
+        description: 'Transfer directly to a debit or credit card.',
+      },
+      items: [
+        'money-transfers/to-card/validate',
+        'money-transfers/to-card/confirm',
+      ],
+    },
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'money-transfers/transfer-details',
+    'money-transfers/fields-api',
+  ],
 
   // But you can create a sidebar manually
   /*

@@ -118,6 +118,12 @@ const config: Config = {
           position: 'left',
           label: 'QR Payments',
         },
+        {
+          type: 'docSidebar',
+          sidebarId: 'moneyTransfersSidebar',
+          position: 'left',
+          label: 'Money Transfers',
+        },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
           type: 'localeDropdown',
@@ -147,6 +153,10 @@ const config: Config = {
             {
               label: 'QR Payments',
               to: '/docs/qr-payments/intro',
+            },
+            {
+              label: 'Money Transfers',
+              to: '/docs/money-transfers/intro',
             },
           ],
         },
