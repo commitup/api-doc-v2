@@ -22,7 +22,7 @@ After validating a transfer (To Name, To Account, etc.), you must call this endp
 | Header | Required | Value |
 | :--- | :--- | :--- |
 | operation-id | Yes | The ID received from the validation step. |
-| externalfirm-user-code | Yes | Your unique firm user code. |
+| externalfirm-user-code | Yes | Your unique firm user code. This will be provided to you during onboarding. If you don't have one, contact your account manager. |
 
 ```shell title="Example Request"
 curl -X POST https://apilist.payporter.com.tr:81/online/mt-api/V2/moneysend/confirm \

@@ -15,6 +15,10 @@ Retrieve the list of external (remittance) firms available for a specific destin
 
 Before initiating a "To Name" transfer, you must identify which remittance firms operate in the destination country. This endpoint provides the firm codes and informs you whether city or office selection is mandatory for that specific firm.
 
+:::tip Static Data Option
+This data can also be provided to you statically. If you prefer not to call this endpoint, you can store the firm codes, currencies, and city/office requirements on your side. Contact your account manager to receive the static firm list.
+:::
+
 ---
 
 ## Path Parameters
@@ -27,7 +31,7 @@ Before initiating a "To Name" transfer, you must identify which remittance firms
 
 | Header | Required | Value |
 | :--- | :--- | :--- |
-| externalfirm-user-code | Yes | Your unique firm user code. |
+| externalfirm-user-code | Yes | Your unique firm user code. This will be provided to you during onboarding. If you don't have one, contact your account manager. |
 
 ---
 

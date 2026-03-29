@@ -1,15 +1,21 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Confirm - to Account
 
-Confirm the bank account transfer using the `operation-id` from the validation step.
+Confirm and finalize a previously validated "To Account" transfer. 
 
-<ApiEndpoint method="POST" url="/mt-api/V2/moneysend/confirm" />
+<ApiEndpoint method="GET" url="/mt-api/V2/moneysend/confirm" />
+
+## Overview
+
+After successfully validating the transfer details, you receive an `operation-id` in the API response headers. Pass this `operation-id` to the `/confirm` endpoint to officially initiate the transfer.
 
 ---
 
@@ -17,26 +23,42 @@ Confirm the bank account transfer using the `operation-id` from the validation s
 
 | Header | Required | Value |
 | :--- | :--- | :--- |
-| operation-id | Yes | The ID received from the `to-account/validate` response header. |
+| operation-id | Yes | The ID received from the validation step. |
+| externalfirm-user-code | Yes | Your unique firm user code. This will be provided to you during onboarding. If you don't have one, contact your account manager. |
 
 ## Response
 
-<ApiResponseSelector>
+Once confirmed, the transfer status moves to **NEW**. Store the `processReferenceNo` to track the transaction later using the [Transfer Details](../transfer-details) API.
+
+<Tabs>
+  <TabItem value="fields" label="Response Fields" default>
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| apiAgentTxnRefNo | string | Your original transaction reference. |
+| processReferenceNo | number | The unique PayPorter process reference number for tracking. |
+| externalFirmReferenceNo | string | External firm reference number. |
+| externalFirmReferenceNo2 | string | Secondary external firm reference number (if any). |
+
+  </TabItem>
+  <TabItem value="example" label="Example Response">
 
 ```json status="200" title="Success"
 {
   "header": {
     "success": true,
-    "message": "OPERATION_DONE_SUCCESSFUL"
+    "code": "1",
+    "message": "OPERATION_DONE_SUCCESSFUL",
+    "messageCode": "OPERATION_DONE_SUCCESSFUL"
   },
   "responseObject": {
-    "processReferenceNo": 4700012345
+    "apiAgentTxnRefNo": "REF-ACC-99",
+    "processReferenceNo": 4700012345,
+    "externalFirmReferenceNo": "EXT98765",
+    "externalFirmReferenceNo2": ""
   }
 }
 ```
 
-</ApiResponseSelector>
-
-:::tip More Info
-For detailed header requirements and common error codes, see the main **[Confirm Transfer](../to-name/confirm)** documentation.
-:::
+  </TabItem>
+</Tabs>

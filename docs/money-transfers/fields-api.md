@@ -19,60 +19,140 @@ Regulatory requirements and payout partner rules vary significantly by country a
 
 ## Get Mandatory Fields
 
+The endpoint you call differs based on the transfer destination. Each endpoint requires its own unique payload to calculate the rules.
+
 <Tabs>
-  <TabItem value="name" label="To-Name Fields" default>
+  <TabItem value="name" label="To Name" default>
     <ApiEndpoint method="POST" url="/mt-api/V2/moneysend/to-name/fields" />
+    
+    ### Request Input
+    | Parameter | Required | Description |
+    | :--- | :--- | :--- |
+    | `amount` | Yes | Amount to be sent. |
+    | `currency` | Yes | Sending currency in ISO-4217 format. |
+    | `toCountryCode` | Yes | Destination country code (ISO 3166-1 alpha-3). |
+    | `fromCountryCode` | Yes | Sending country code. |
+    | `toExternalFirmCode` | Yes | Office or payout firm code where money will be collected. |
+    
   </TabItem>
-  <TabItem value="account" label="To-Account Fields">
+  <TabItem value="account" label="To Account">
     <ApiEndpoint method="POST" url="/mt-api/V2/moneysend/to-account/fields" />
+
+    ### Request Input
+    | Parameter | Required | Description |
+    | :--- | :--- | :--- |
+    | `amount` | Yes | Amount to be sent. |
+    | `currency` | Yes | Sending currency in ISO-4217 format. |
+    | `toCountryCode` | Yes | Destination country code (ISO 3166-1 alpha-3). |
+    | `toBankId` | Yes | Bank ID where money will be sent. |
+
   </TabItem>
-  <TabItem value="wallet" label="To-Wallet Fields">
+  <TabItem value="wallet" label="To Wallet">
     <ApiEndpoint method="POST" url="/mt-api/V2/moneysend/to-wallet/fields" />
+
+    ### Request Input
+    | Parameter | Required | Description |
+    | :--- | :--- | :--- |
+    | `amount` | Yes | Amount to be sent. |
+    | `currency` | Yes | Sending currency in ISO-4217 format. |
+    | `toWalletId` | Yes | Unique Wallet Identifier that money is mapped to. |
+
   </TabItem>
-  <TabItem value="card" label="To-Card Fields">
+  <TabItem value="card" label="To Card">
     <ApiEndpoint method="POST" url="/mt-api/V2/moneysend/to-card/fields" />
+
+    ### Request Input
+    | Parameter | Required | Description |
+    | :--- | :--- | :--- |
+    | `amount` | Yes | Amount to be sent. |
+    | `currency` | Yes | Sending currency in ISO-4217 format. |
+    | `toCountryCode` | Yes | Destination country code (ISO 3166-1 alpha-3). |
+    | `cardType` | Yes | **Deprecated.** Supply placeholder data. |
+
   </TabItem>
 </Tabs>
 
-### Request Example (To-Name)
-
-```json
-{
-  "amount": 100,
-  "currency": "USD",
-  "toCountryCode": "PHL",
-  "fromCountryCode": "TUR",
-  "toExternalFirmCode": 1
-}
-```
+---
 
 ## Response Structure
 
-The API returns a list of fields with their validation rules, visibility, and data types.
+The Fields response schema is logically identical for **all** transfer types. 
+
+Rather than sending an array of objects, the `responseObject` acts as a boolean configuration map organized into `sender`, `receiver`, and `transferCommonInputs` clusters. 
+
+:::info Parsing the Map
+If a property (e.g. `"mobileNo": true`) is flagged `true` in this response, you **must** provide that exact field dynamically when constructing the user's `POST /validate` payload. If the field is `false`, it is optional.
+:::
 
 <ApiResponseSelector>
 
 ```json status="200" title="Success"
 {
-    "body": [
-        {
-            "fieldName": "receiver.firstName",
-            "displayName": "Receiver First Name",
-            "isMandatory": true,
-            "dataType": "STRING",
-            "maxLength": 50
+  "header": {
+    "success": true,
+    "code": "1",
+    "message": "SUCCESS",
+    "messageCode": "SUCCESS"
+  },
+  "responseObject": {
+        "sender": {
+            "firstName": true,
+            "lastName": true,
+            "nationalCountryCode": true,
+            "mobileNo": true,
+            "middleName": false,
+            "fatherName": false,
+            "birthDate": false,
+            "birthCountryCode": false,
+            "identityTypeId": false,
+            "identityIssueDate": false,
+            "identityValidThruDate": false,
+            "identityNumber": false,
+            "identityIssueCountryCode": false,
+            "addressCountryCode": false,
+            "provinceName": false,
+            "districtName": false,
+            "address": false,
+            "ssnId": false,
+            "jobCode": false,
+            "zipCode": false,
+            "email": false
         },
-        {
-            "fieldName": "receiver.mobileNo",
-            "displayName": "Receiver Mobile Number",
-            "isMandatory": true,
-            "dataType": "NUMBER",
-            "regex": "^[0-9]{10}$"
+        "receiver": {
+            "firstName": true,
+            "lastName": true,
+            "nationalCountryCode": true,
+            "mobileNo": true,
+            "middleName": false,
+            "fatherName": false,
+            "birthDate": false,
+            "birthCountryCode": false,
+            "identityTypeId": false,
+            "identityIssueDate": false,
+            "identityValidThruDate": false,
+            "identityNumber": false,
+            "identityIssueCountryCode": false,
+            "addressCountryCode": false,
+            "provinceName": false,
+            "districtName": false,
+            "address": false,
+            "ssnId": false,
+            "jobCode": false,
+            "zipCode": false,
+            "email": false
+        },
+        "transferCommonInputs": {
+            "purposeCodeDefinitionId": true,
+            "sourceOfIncomeDefinitionId": true,
+            "relationshipWithSender": false,
+            "toCityId": false,
+            "toOfficeId": false,
+            "fromCountryCode": false,
+            "toBankId": false,
+            "toAccountNumber": false,
+            "accountIndicator": false,
+            "toWalletId": false
         }
-    ],
-    "restHeader": {
-        "success": true,
-        "message": "SUCCESS"
     }
 }
 ```

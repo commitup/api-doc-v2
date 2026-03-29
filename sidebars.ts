@@ -63,6 +63,8 @@ const sidebars: SidebarsConfig = {
         'money-transfers/to-name/find-office',
         'money-transfers/to-name/validate',
         'money-transfers/to-name/confirm',
+        'money-transfers/to-name/update',
+        'money-transfers/to-name/cancel',
       ],
     },
     {
@@ -73,6 +75,8 @@ const sidebars: SidebarsConfig = {
         description: 'Direct transfer to a bank account or IBAN.',
       },
       items: [
+        'money-transfers/to-account/overview',
+        'money-transfers/to-account/find-bank',
         'money-transfers/to-account/validate',
         'money-transfers/to-account/confirm',
       ],
@@ -85,6 +89,9 @@ const sidebars: SidebarsConfig = {
         description: 'Send funds to a recipient\'s electronic wallet.',
       },
       items: [
+        'money-transfers/to-wallet/overview',
+        'money-transfers/to-wallet/wallet-list',
+        'money-transfers/to-wallet/get-holder',
         'money-transfers/to-wallet/validate',
         'money-transfers/to-wallet/confirm',
       ],
@@ -97,6 +104,7 @@ const sidebars: SidebarsConfig = {
         description: 'Transfer directly to a debit or credit card.',
       },
       items: [
+        'money-transfers/to-card/overview',
         'money-transfers/to-card/validate',
         'money-transfers/to-card/confirm',
       ],
@@ -106,6 +114,23 @@ const sidebars: SidebarsConfig = {
       value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
     },
     'money-transfers/transfer-details',
+    'money-transfers/transfer-errors',
+    {
+      type: 'category',
+      label: 'Commons',
+      link: {
+        type: 'generated-index',
+        description: 'Shared resources and reference data used across all transfer types.',
+      },
+      items: [
+        'money-transfers/person-object',
+        'money-transfers/commons/identity-type-list',
+        'money-transfers/commons/job-list',
+        'money-transfers/commons/purpose-list',
+        'money-transfers/commons/source-of-income-list',
+        'money-transfers/commons/relationship-with-sender',
+      ],
+    },
     'money-transfers/fields-api',
   ],
 

@@ -19,6 +19,14 @@ Use this endpoint to validate the transfer details before final confirmation. Th
 
 ---
 
+## Request Headers
+
+| Header | Required | Value |
+| :--- | :--- | :--- |
+| externalfirm-user-code | Yes | Your unique firm user code. This will be provided to you during onboarding. If you don't have one, contact your account manager. |
+
+---
+
 ## Request Parameters
 
 <Tabs>
@@ -26,8 +34,8 @@ Use this endpoint to validate the transfer details before final confirmation. Th
 
 | Parameter | Required | Type | Description |
 | :--- | :--- | :--- | :--- |
-| sender | Yes | object | Identifies the sender. See [Person Object](#person-object). |
-| receiver | Yes | object | Identifies the recipient. See [Person Object](#person-object). |
+| sender | Yes | object | Identifies the sender. See [Person Object](../person-object). |
+| receiver | Yes | object | Identifies the recipient. See [Person Object](../person-object). |
 | amount | Yes | number | The amount to be sent. |
 | currency | Yes | string | Three-letter ISO 4217 currency code (e.g., USD). |
 | payoutCurrency | Yes | string | Currency the recipient will receive (e.g., TRY). |
@@ -38,9 +46,9 @@ Use this endpoint to validate the transfer details before final confirmation. Th
 | toCityId | No* | number | City ID for the pickup. Required if `cityMandatory` is `true` for the firm. |
 | toOfficeId | No* | number | Office ID for the pickup. Required if `officeMandatory` is `true` for the firm. |
 | comment | No | string | Optional comment for the transaction. |
-| purposeCodeDefinitionId | Yes | number | Reason for transfer. See [Commons](../intro). |
-| sourceOfIncomeDefinitionId | Yes | number | Origin of funds. |
-| relationshipWithSenderId | Yes | number | Relationship to recipient. |
+| purposeCodeDefinitionId | Yes | number | Reason for transfer. See [Purpose List](../commons/purpose-list). |
+| sourceOfIncomeDefinitionId | Yes | number | Origin of funds. See [Source of Income List](../commons/source-of-income-list). |
+| relationshipWithSenderId | Yes | number | Relationship to recipient. See [Relationship List](../commons/relationship-with-sender). |
 
   </TabItem>
   <TabItem value="request_example" label="Example Request">
@@ -81,49 +89,67 @@ Use this endpoint to validate the transfer details before final confirmation. Th
 
 If successful, the API returns a `200 OK`. **Crucially, the `operation-id` required for confirmation is sent in the response header.**
 
-<ApiResponseSelector>
+<Tabs>
+  <TabItem value="fields" label="Response Fields" default>
 
-```json status="200" title="Success"
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| apiAgentTxnRefNo | string | Your original transaction reference. |
+| fromCountry | string | Sender's country code. |
+| toCountry | string | Receiver's country code. |
+| amount | number | Transfer amount. |
+| currency | string | Sending currency. |
+| toExternalFirmCode | number | Selected remittance firm code. |
+| toExternalFirmName | string | Selected remittance firm name. |
+| amountLocal | number | Amount converted to local currency. |
+| amountLocalExchangeRate | number | Exchange rate used for local conversion. |
+| feeAmount | number | Fee charged for the transfer. |
+| feeDirection | string | Who pays the fee (e.g., `BY_YOU`). |
+| feeAmountCurrency | string | Currency of the fee. |
+| receiverPayOutAmount | number | Amount the receiver will get. |
+| receiverPayoutAmountCurrency | string | Currency the receiver will get. |
+| receiverPayOutAmountExchangeRate | number | Exchange rate for the payout currency. |
+| recommendedCustomerFee | number | Suggested fee to charge the customer. |
+| recommendedCustomerFeeCurrency | string | Currency of the recommended fee. |
+
+  </TabItem>
+  <TabItem value="example" label="Example Response">
+
+```json
 {
-  "body": {
-    "responseObject": {
-      "amount": 100,
-      "amountLocal": 3200,
-      "amountLocalExchangeRate": 32.0,
-      "apiAgentTxnRefNo": "REF-123456",
-      "currency": "USD",
-      "feeAmount": 5,
-      "feeAmountCurrency": "USD",
-      "fromCountry": "TUR",
-      "receiverPayOutAmount": 92.5,
-      "receiverPayOutAmountExchangeRate": 0.925,
-      "receiverPayoutAmountCurrency": "EUR",
-      "toCountry": "DEU"
-    },
-    "restHeader": {
-      "success": true,
-      "message": "OPERATION_DONE_SUCCESSFUL"
-    }
+  "header": {
+    "success": true,
+    "code": "1",
+    "message": "OPERATION_DONE_SUCCESSFUL",
+    "messageCode": "OPERATION_DONE_SUCCESSFUL"
   },
-  "statusCode": "100 CONTINUE",
-  "statusCodeValue": 0
+  "responseObject": {
+    "apiAgentTxnRefNo": "eb0b8a51-4b07-4546-b070-6c238baace22",
+    "fromCountry": "TUR",
+    "toCountry": "RUS",
+    "amount": 100,
+    "currency": "USD",
+    "toExternalFirmCode": 2,
+    "toExternalFirmName": "ZOLATAYA KORONA",
+    "amountLocal": 4237.08,
+    "amountLocalExchangeRate": 42.3708,
+    "feeAmount": 0.8,
+    "feeDirection": "BY_YOU",
+    "feeAmountCurrency": "USD",
+    "receiverPayOutAmount": 4984,
+    "receiverPayoutAmountCurrency": "RUB",
+    "receiverPayOutAmountExchangeRate": 49.84,
+    "recommendedCustomerFee": 6,
+    "recommendedCustomerFeeCurrency": "USD"
+  }
 }
 ```
 
-</ApiResponseSelector>
+  </TabItem>
+</Tabs>
 
 ---
 
-## Person Object
-
-| Parameter | Required | Type | Description |
-| :--- | :--- | :--- | :--- |
-| firstName | Yes | string | First name. |
-| lastName | Yes | string | Last name. |
-| mobileNo | Yes | string | Phone number without country code. |
-| address | Yes | string | Full address. |
-| addressCountryCode | Yes | string | ISO country code. |
-
-:::tip Fields API
-Use the **[Fields API](../fields-api)** to get the exact mandatory fields for the destination country and payout method, as requirements change by region.
+:::tip Person Object & Fields
+The `sender` and `receiver` fields use the shared **[Person Object](../person-object)**. Use the **[Fields API](../fields-api)** to get the exact mandatory fields for the destination country and payout method.
 :::

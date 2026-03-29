@@ -57,10 +57,10 @@ graph TD
 
 ## Transfer Statuses
 
-| Status | Description |
-| :--- | :--- |
-| **NEW** | Transfer request successfully received and validated. |
-| **SENT** | Transfer has been sent to the paying partner or system. |
-| **PAID** | Funds have been successfully collected/received by the recipient. |
-| **CANCELLED** | Transfer was cancelled before it was processed. |
-| **REFUNDED** | Transfer was returned, and funds were credited back to the sender. |
+| ID | Status | Description |
+| :--- | :--- | :--- |
+| 0 | **NEW** | Transfer request successfully received and validated. |
+| 1 | **SENT** | Transfer has been sent to the paying partner or system. |
+| 2 | **PAID** | Funds have been successfully collected/received by the recipient. |
+| 3 | **CANCELLED** | Transfer was cancelled before it was processed. |
+| 4 | **REFUNDED** | Transfer was returned, and funds were credited back to the sender. |
