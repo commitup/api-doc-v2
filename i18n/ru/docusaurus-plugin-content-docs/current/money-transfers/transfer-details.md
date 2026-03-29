@@ -1,6 +1,8 @@
 ---
 sidebar_position: 5
 ---
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+
 
 # Детали перевода
 

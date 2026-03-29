@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 ---
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+
 
 # Проверить - На карту
 

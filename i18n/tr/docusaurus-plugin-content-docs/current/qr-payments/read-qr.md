@@ -1,3 +1,5 @@
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+
 # QR Kodu Oku
 
 Bir satıcının QR kodunu tarayın ve işlem detaylarını (satıcı adı, tutar vb.) alın.

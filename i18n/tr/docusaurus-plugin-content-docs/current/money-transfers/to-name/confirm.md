@@ -1,6 +1,8 @@
 ---
 sidebar_position: 2
 ---
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+
 
 # Onayla - İsme
 

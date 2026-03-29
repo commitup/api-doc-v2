@@ -1,3 +1,5 @@
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+
 # Считать QR-код
 
 Отсканируйте QR-код продавца и получите детали транзакции (имя продавца, сумма и т.д.).
