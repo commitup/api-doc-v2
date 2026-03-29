@@ -8,27 +8,26 @@ The "To Account" money transfer flow allows you to send funds directly to a reci
 
 This integration requires checking the available banks in the destination country prior to validating the transfer.
 
-## Integration Flow
+## Flow Diagram
+
+<div style={{transform: 'scale(1)', transformOrigin: 'top left', marginBottom: '30px'}}>
 
 ```mermaid
-graph LR
-    Start((Initiate Transfer)) --> FindBank[1. Find Bank]
-    FindBank --> Validate[2. Validate]
-    Validate --> Confirm[3. Confirm]
-    Confirm --> CheckStatus[4. Check Status]
-    
-    %% Colors
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px
-    classDef highlight fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    classDef terminal fill:#fff4dd,stroke:#d4a017,stroke-width:2px
-    
-    %% Styling
-    style FindBank fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Validate fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Confirm fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style CheckStatus fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Start fill:#f9f9f9,stroke:#333,stroke-width:1px
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '16px', 'fontFamily': 'arial'}}}%%
+flowchart LR
+    A["Find Bank"] --> G["Validate"]
+    G -->|operation-id| H["Confirm"]
+    H --> I["Check Status"]
+
+    style A fill:#4a9eff,stroke:#2171cc,color:#fff
+    style G fill:#7b68ee,stroke:#5a4bc7,color:#fff
+    style H fill:#50c878,stroke:#3da35d,color:#fff
+    style I fill:#f5a623,stroke:#d4891a,color:#fff
 ```
+
+</div>
+
+> The main flow goes **Find Bank → Validate → Confirm → Check Status**. The `operation-id` is returned in the validate response header and must be passed to confirm.
 
 ### Core Steps
 

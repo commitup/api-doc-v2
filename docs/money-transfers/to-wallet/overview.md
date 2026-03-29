@@ -14,28 +14,33 @@ Before initiating any "To Wallet" transfer, you **must** fetch the comprehensive
 
 ---
 
-## Integration Flow
+## Flow Diagram
+
+<div style={{transform: 'scale(1)', transformOrigin: 'top left', marginBottom: '30px'}}>
 
 ```mermaid
-graph LR
-    Start((Initiate Transfer)) --> GetHolder["1. Get Wallet Holder<br/><i>(Optional)</i>"]
-    GetHolder --> Validate[2. Validate]
-    Start --> Validate
-    Validate --> Confirm[3. Confirm]
-    Confirm --> CheckStatus[4. Check Status]
-    
-    %% Colors
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px
-    classDef optional fill:#f0f4c3,stroke:#827717,stroke-width:2px,stroke-dasharray: 5 5
-    classDef highlight fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    
-    %% Styling
-    style GetHolder fill:#f0f4c3,stroke:#827717,stroke-width:2px,stroke-dasharray: 5 5
-    style Validate fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Confirm fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style CheckStatus fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Start fill:#f9f9f9,stroke:#333,stroke-width:1px
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '16px', 'fontFamily': 'arial'}}}%%
+flowchart LR
+    G["Validate"] -->|operation-id| H["Confirm"]
+    H --> I["Check Status"]
+
+    subgraph optional ["Optional"]
+        direction TB
+        OPT["Get Wallet Holder"]
+    end
+
+    OPT -..->|"masked name"| G
+
+    style G fill:#7b68ee,stroke:#5a4bc7,color:#fff
+    style H fill:#50c878,stroke:#3da35d,color:#fff
+    style I fill:#f5a623,stroke:#d4891a,color:#fff
+    style OPT fill:#6c757d,stroke:#495057,color:#fff
+    style optional fill:transparent,stroke:#6c757d,stroke-dasharray: 5 5
 ```
+
+</div>
+
+> The main flow is **Validate → Confirm → Check Status**. Fetching the wallet holder name is optional and provides a masked recipient name for display before sending.
 
 ### Core Steps
 

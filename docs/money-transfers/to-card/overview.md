@@ -8,24 +8,24 @@ The "To Card" money transfer flow empowers integrations to securely send funds d
 
 Unlike other transfers, sending money to a card does not require fetching dynamic lookup data (such as querying lists of banks, branches, or locations). You simply need the receiver's raw card credentials.
 
-## Integration Flow
+## Integration Flow Diagram
+
+<div style={{transform: 'scale(1)', transformOrigin: 'top left', marginBottom: '30px'}}>
 
 ```mermaid
-graph LR
-    Start((Initiate Transfer)) --> Validate[1. Validate]
-    Validate --> Confirm[2. Confirm]
-    Confirm --> CheckStatus[3. Check Status]
-    
-    %% Colors
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px
-    classDef highlight fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    
-    %% Styling
-    style Validate fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Confirm fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style CheckStatus fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Start fill:#f9f9f9,stroke:#333,stroke-width:1px
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '16px', 'fontFamily': 'arial'}}}%%
+flowchart LR
+    G["Validate"] -->|operation-id| H["Confirm"]
+    H --> I["Check Status"]
+
+    style G fill:#7b68ee,stroke:#5a4bc7,color:#fff
+    style H fill:#50c878,stroke:#3da35d,color:#fff
+    style I fill:#f5a623,stroke:#d4891a,color:#fff
 ```
+
+</div>
+
+> The main flow is **Validate → Confirm → Check Status**. Simply supply the 16-digit `cardNumber` in validate — no dynamic card type lookup is needed. The `operation-id` is returned in the validate response header.
 
 ### Core Steps
 
