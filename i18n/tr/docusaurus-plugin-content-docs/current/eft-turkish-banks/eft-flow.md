@@ -64,7 +64,7 @@ Bir transferin durumunu kontrol etmek için iki ana yöntem vardır:
 Her bir transferin durumunu ayrı ayrı sorgulamayı seçerseniz, dakikada **60 sorguyu** aşmamak için bir hız sınırlayıcı olduğunu lütfen unutmayın.
 :::
 
-### En İyi Uygulamalar
+### En İyi Uygulamalar {#best-practices}
 
 *   **Webook Kullanın (Önerilen)**: En verimli ve anlık güncellemeler için [Webhook sistemimizi](./webhooks) kullanmanızı şiddetle tavsiye ederiz. Sorgulama (polling) ihtiyacını ortadan kaldırır ve bir durum değişikliği olduğu anda bilgilendirilmenizi sağlar.
 *   **Sorgulamayı Durdur**: Bir transfer nihai duruma ulaştığında, durumunu sorgulamayı bırakın (liste tabanlı yöntemler kullanmıyorsanız).

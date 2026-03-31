@@ -84,7 +84,7 @@ Yanıt formatı her iki uç nokta için de aynıdır.
 </Tabs>
 
 :::info Nihai Durum
-Bir transfer **Nihai Duruma** (TAMAMLANDI, REDDEDİLDİ, İADE veya İPTAL) ulaştığında, bu uç noktayı sorgulamayı bırakmanız önerilir. Sorgulama yapmadan gerçek zamanlı güncellemeler için [Webhook sistemimizi](./eft-flow#en-iyi-uygulamalar) uygulamayı düşünün.
+Bir transfer **Nihai Duruma** (TAMAMLANDI, REDDEDİLDİ, İADE veya İPTAL) ulaştığında, bu uç noktayı sorgulamayı bırakmanız önerilir. Sorgulama yapmadan gerçek zamanlı güncellemeler için [Webhook sistemimizi](./eft-flow#best-practices) uygulamayı düşünün.
 :::
 
 :::warning Hız Sınırlayıcı

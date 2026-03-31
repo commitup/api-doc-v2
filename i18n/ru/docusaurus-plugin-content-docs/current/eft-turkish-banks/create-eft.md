@@ -33,7 +33,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 | receiverInfo       | Да          | object | Информация о получателе. См. [EftPersonInfo](#eftpersoninfo). |
 | senderExtFirmRefId | Да          | string | Уникальный справочный ID, созданный клиентской системой. |
 | senderInfo         | Да          | object | Информация об отправителе. См. [EftPersonInfo](#eftpersoninfo). |
-| transferReason     | Да          | string | Причина перевода. См. [TransferReason](#transferreason). |
+| transferReason     | Да          | string | Причина перевода. См. [EftTransferReason](#efttransferreason). |
 | transferType       | Да          | string | Метод перевода (`TO_IBAN` или `TO_CREDIT_CARD`). |
 | comment            | Нет         | string | Необязательная информация о переводе. |
 | exchangeId         | Нет         | string | Справочный ID валютной операции, если применяется конвертация. См. [Exchange (Обмен)](./exchange). |

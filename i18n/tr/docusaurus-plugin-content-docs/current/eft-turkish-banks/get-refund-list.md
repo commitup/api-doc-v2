@@ -86,5 +86,5 @@ Alıcı banka tarafından iade edilen EFT transferlerinin listesini alın.
 </Tabs>
 
 :::tip Günlük Takip
-İadeleri hızlı bir şekilde yönetmek için bu uç noktayı `SYSDATE` (bugün) parametresiyle günde birkaç kez izlemeniz şiddetle tavsiye edilir. Otomatik güncellemeler için [Webhook'larınızın](./eft-flow#en-iyi-uygulamalar) yapılandırıldığından emin olun.
+İadeleri hızlı bir şekilde yönetmek için bu uç noktayı `SYSDATE` (bugün) parametresiyle günde birkaç kez izlemeniz şiddetle tavsiye edilir. Otomatik güncellemeler için [Webhook'larınızın](./eft-flow#best-practices) yapılandırıldığından emin olun.
 :::

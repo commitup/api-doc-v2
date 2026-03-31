@@ -33,7 +33,7 @@ Bir Türk banka hesabına yeni bir EFT transferi başlatın.
 | receiverInfo       | Evet      | object | Alıcı bilgileri. Bkz. [EftPersonInfo](#eftpersoninfo). |
 | senderExtFirmRefId | Evet      | string | İstemci sistemi tarafından oluşturulan benzersiz referans kimliği. |
 | senderInfo         | Evet      | object | Gönderici bilgileri. Bkz. [EftPersonInfo](#eftpersoninfo). |
-| transferReason     | Evet      | string | Transfer nedeni. Bkz. [TransferReason](#transferreason). |
+| transferReason     | Evet      | string | Transfer nedeni. Bkz. [EftTransferReason](#efttransferreason). |
 | transferType       | Evet      | string | Transfer yöntemi (`TO_IBAN` veya `TO_CREDIT_CARD`). |
 | comment            | Hayır      | string | İsteğe bağlı havale açıklaması. |
 | exchangeId         | Hayır      | string | Para birimi dönüşümü uygulanırsa döviz işlemi referans kimliği. Bkz. [Exchange (Döviz)](./exchange). |
