@@ -2,6 +2,11 @@
 sidebar_position: 6
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Детали платежа
 
 Запросите детали завершенного платежа, используя `processReferenceNo`.
@@ -23,6 +28,7 @@ sidebar_position: 6
 ## Ответ
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Поля ответа" default>
 
@@ -41,8 +47,8 @@ sidebar_position: 6
 | payoutCountryName | string | Страна выплаты. |
 | payoutExternalFirmName | string | Фирма выплаты. |
 | processReferenceNo | number | Контрольный номер PayPorter. |
-| receiver | object | Детали получателя. См. [Person Object](../money-transfers/person-object). |
-| sender | object | Детали отправителя. См. [Person Object](../money-transfers/person-object). |
+| receiver | object | Детали получателя. См. [Person Object](../resources/person-object). |
+| sender | object | Детали отправителя. См. [Person Object](../resources/person-object). |
 
   </TabItem>
   <TabItem value="example" label="Пример ответа">
@@ -79,5 +85,7 @@ sidebar_position: 6
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

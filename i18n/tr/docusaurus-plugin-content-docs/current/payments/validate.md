@@ -2,6 +2,11 @@
 sidebar_position: 4
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Ödeme Doğrula
 
 Bu uç nokta, ödeme isteğini alıcı bilgileriyle doğrular.
@@ -26,7 +31,7 @@ Bu uç nokta, ödeme isteğini alıcı bilgileriyle doğrular.
 
 | Parametre | Gerekli | Tip | Açıklama |
 | :--- | :--- | :--- | :--- |
-| receiver | Evet | object | Alıcı detayları. Bakınız [Person Object](../money-transfers/person-object). |
+| receiver | Evet | object | Alıcı detayları. Bakınız [Person Object](../resources/person-object). |
 | apiAgentTxnRefNo | Evet | string | Benzersiz işlem referans numaranız. |
 | searchUUID | Evet | string | **Ödeme Ara** yanıtından alınan UUID. |
 | transactionAmount | Evet | number | Ödenecek tam tutar. |
@@ -46,11 +51,13 @@ Bu uç nokta, ödeme isteğini alıcı bilgileriyle doğrular.
 ```
 
   </TabItem>
+
 </Tabs>
 
 ## Yanıt
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Yanıt Alanları" default>
 
@@ -107,5 +114,7 @@ Bu uç nokta, ödeme isteğini alıcı bilgileriyle doğrular.
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

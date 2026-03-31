@@ -111,7 +111,7 @@ Query the status and full details of a money transfer transaction.
 }
 ```
 
-```json status="406" title="Payment not found"
+```json status="406" title="Transfer not found"
 {
     "header": {
         "success": false,

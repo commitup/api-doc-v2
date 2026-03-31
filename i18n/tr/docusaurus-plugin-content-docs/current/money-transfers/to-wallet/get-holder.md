@@ -4,8 +4,8 @@ sidebar_position: 2
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
-import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
 
 # Get Wallet Holder Name
 
@@ -49,6 +49,7 @@ To discover the name assigned to the wallet account, supply the recipient's mobi
 ```
 
   </TabItem>
+
 </Tabs>
 
 ## Response
@@ -84,4 +85,5 @@ The API successfully resolves the provided phone parameters and correlates it wi
 </ApiResponseSelector>
 
   </TabItem>
+
 </Tabs>

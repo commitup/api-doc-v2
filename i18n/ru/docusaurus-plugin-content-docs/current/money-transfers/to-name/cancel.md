@@ -4,8 +4,8 @@ sidebar_position: 7
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
-import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
 
 # Cancel Transfer
 
@@ -60,6 +60,7 @@ This endpoint validates the cancellation request before it is processed. You mus
 ```
 
   </TabItem>
+
 </Tabs>
 
 ### Response

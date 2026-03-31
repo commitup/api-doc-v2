@@ -4,8 +4,8 @@ sidebar_position: 1
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
-import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
 
 # Find Bank
 
@@ -57,6 +57,7 @@ The response contains an array of the banks operating in the destination country
 </ApiResponseSelector>
 
   </TabItem>
+
 </Tabs>
 
 ---

@@ -2,6 +2,11 @@
 sidebar_position: 5
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Ödeme Onayla
 
 Bu uç nokta, ödeme isteğini kesinleştirir. **Ödeme Doğrula** yanıt başlığından (header) alınan `operation-id`'yi sağlamanız gerekir.
@@ -19,6 +24,7 @@ Bu uç nokta, ödeme isteğini kesinleştirir. **Ödeme Doğrula** yanıt başl�
 ## Yanıt
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Yanıt Alanları" default>
 
@@ -48,5 +54,7 @@ Bu uç nokta, ödeme isteğini kesinleştirir. **Ödeme Doğrula** yanıt başl�
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

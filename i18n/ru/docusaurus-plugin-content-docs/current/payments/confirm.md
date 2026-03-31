@@ -2,6 +2,11 @@
 sidebar_position: 5
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Подтверждение платежа
 
 Эта конечная точка завершает запрос на платеж. Вы должны предоставить `operation-id`, полученный из заголовка ответа **Проверка платежа**.
@@ -19,6 +24,7 @@ sidebar_position: 5
 ## Ответ
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Поля ответа" default>
 
@@ -48,5 +54,7 @@ sidebar_position: 5
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

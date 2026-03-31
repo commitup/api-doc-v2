@@ -2,10 +2,10 @@
 sidebar_position: 10
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
 
 # Fields API
 
@@ -70,6 +70,7 @@ The endpoint you call differs based on the transfer destination. Each endpoint r
     | `cardType` | Yes | **Deprecated.** Supply placeholder data. |
 
   </TabItem>
+
 </Tabs>
 
 ---

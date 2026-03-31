@@ -2,6 +2,10 @@
 sidebar_position: 1
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Обзор платежей
 
 Платеж — это процесс выплаты входящего перевода получателю с использованием контрольного номера. Обычно это используется для переводов с выплатой наличными (Cash Pick Up).

@@ -2,6 +2,11 @@
 sidebar_position: 4
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Проверка платежа
 
 Эта конечная точка проверяет запрос на платеж с информацией о получателе.
@@ -26,7 +31,7 @@ sidebar_position: 4
 
 | Параметр | Обязательно | Тип | Описание |
 | :--- | :--- | :--- | :--- |
-| receiver | Да | object | Детали получателя. См. [Person Object](../money-transfers/person-object). |
+| receiver | Да | object | Детали получателя. См. [Person Object](../resources/person-object). |
 | apiAgentTxnRefNo | Да | string | Ваш уникальный контрольный номер транзакции. |
 | searchUUID | Да | string | UUID, полученный из ответа **Поиск платежа**. |
 | transactionAmount | Да | number | Точная сумма к выплате. |
@@ -46,11 +51,13 @@ sidebar_position: 4
 ```
 
   </TabItem>
+
 </Tabs>
 
 ## Ответ
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Поля ответа" default>
 
@@ -107,5 +114,7 @@ sidebar_position: 4
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

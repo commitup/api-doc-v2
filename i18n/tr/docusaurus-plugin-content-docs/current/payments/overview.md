@@ -2,6 +2,10 @@
 sidebar_position: 1
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Ödemeler Genel Bakış
 
 Ödeme, bir referans numarası kullanarak alıcıya gelen bir transferin ödenmesi işlemidir. Bu genellikle nakit çekme (Cash Pick Up) transferleri için kullanılır.

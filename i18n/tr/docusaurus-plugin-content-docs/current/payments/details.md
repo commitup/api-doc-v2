@@ -2,6 +2,11 @@
 sidebar_position: 6
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Ödeme Detayları
 
 `processReferenceNo` kullanarak tamamlanmış bir ödemenin ayrıntılarını sorgulayın.
@@ -23,6 +28,7 @@ sidebar_position: 6
 ## Yanıt
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Yanıt Alanları" default>
 
@@ -41,8 +47,8 @@ sidebar_position: 6
 | payoutCountryName | string | Ödeme yapılan ülke. |
 | payoutExternalFirmName | string | Ödeme yapan firma. |
 | processReferenceNo | number | PayPorter referans numarası. |
-| receiver | object | Alıcı detayları. Bakınız [Person Object](../money-transfers/person-object). |
-| sender | object | Gönderen detayları. Bakınız [Person Object](../money-transfers/person-object). |
+| receiver | object | Alıcı detayları. Bakınız [Person Object](../resources/person-object). |
+| sender | object | Gönderen detayları. Bakınız [Person Object](../resources/person-object). |
 
   </TabItem>
   <TabItem value="example" label="Örnek Yanıt">
@@ -79,5 +85,7 @@ sidebar_position: 6
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

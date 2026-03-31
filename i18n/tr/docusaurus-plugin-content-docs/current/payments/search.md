@@ -2,6 +2,11 @@
 sidebar_position: 3
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Ödeme Ara
 
 Bu uç nokta, bir referans numarası kullanarak bir ödeme hakkında bilgi alır. Yanıtta döndürülen `searchUUID`, doğrulama adımı için gereklidir.
@@ -38,11 +43,13 @@ Bu uç nokta, bir referans numarası kullanarak bir ödeme hakkında bilgi alır
 ```
 
   </TabItem>
+
 </Tabs>
 
 ## Yanıt
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Yanıt Alanları" default>
 
@@ -54,10 +61,10 @@ Bu uç nokta, bir referans numarası kullanarak bir ödeme hakkında bilgi alır
 | externalFirmCode | number | Firma kodu. |
 | externalFirmName | string | Firma adı. |
 | externalFirmReferenceNo | string | Orijinal referans numarası. |
-| receiver | object | Alıcı detayları. Bakınız [Person Object](../money-transfers/person-object). |
+| receiver | object | Alıcı detayları. Bakınız [Person Object](../resources/person-object). |
 | searchUUID | string | Doğrulama için gereken benzersiz arama kimliği. |
 | sendDate | string | Transferin gönderildiği tarih. |
-| sender | object | Gönderen detayları. Bakınız [Person Object](../money-transfers/person-object). |
+| sender | object | Gönderen detayları. Bakınız [Person Object](../resources/person-object). |
 | senderCountryCode | string | Gönderenin ISO ülke kodu. |
 | senderCountryName | string | Gönderenin ülke adı. |
 
@@ -93,5 +100,7 @@ Bu uç nokta, bir referans numarası kullanarak bir ödeme hakkında bilgi alır
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

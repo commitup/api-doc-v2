@@ -2,10 +2,10 @@
 sidebar_position: 1
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
 
 # Doğrula - İsme
 
@@ -34,6 +34,7 @@ Nihai onaydan önce transfer detaylarını doğrulamak için bu uç noktayı kul
 | toCountryCode | Evet | string | Hedef ülke (ISO 3166-1 alpha-3). |
 
   </TabItem>
+
 </Tabs>
 
 ## Yanıt

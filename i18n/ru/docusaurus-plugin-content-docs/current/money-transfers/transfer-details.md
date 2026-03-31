@@ -1,8 +1,11 @@
 ---
 sidebar_position: 5
 ---
-import ApiEndpoint from '@site/src/components/ApiEndpoint';
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
 
 # Детали перевода
 

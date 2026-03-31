@@ -378,31 +378,24 @@
     "description": "The title of the homepage layout"
   },
   "homepage.layoutDescription": {
-    "message": "Payporter API Platformu - Kapsamlı dokümantasyon ve entegrasyon kılavuzları.",
-    "description": "The description of the homepage layout"
+    "message": "Payporter API Platformu - Kapsamlı dokümantasyon ve entegrasyon kılavuzları."
   },
   "homepage.features.global.title": {
-    "message": "Küresel Para Transferleri",
-    "description": "Global money transfers feature title"
+    "message": "Küresel Para Transferleri"
   },
   "homepage.features.global.description": {
-    "message": "RESTful uç noktalarımızı kullanarak dünya çapında fiziksel isimlere (nakit çekme), banka hesaplarına, cüzdanlara ve kartlara para transferlerini sorunsuz bir şekilde entegre edin.",
-    "description": "Global money transfers feature description"
+    "message": "RESTful uç noktalarımızı kullanarak dünya çapında fiziksel isimlere (nakit çekme), banka hesaplarına, cüzdanlara ve kartlara para transferlerini sorunsuz bir şekilde entegre edin."
   },
   "homepage.features.eft.title": {
-    "message": "EFT ve Doğrudan Ödemeler",
-    "description": "EFT feature title"
+    "message": "EFT ve Doğrudan Ödemeler"
   },
   "homepage.features.eft.description": {
-    "message": "Yüksek hacimli işlemleri anında yönetmek için Türk Bankalarına doğrudan EFT yeteneklerinden ve güçlü dinamik ödeme firması entegrasyonlarından yararlanın.",
-    "description": "EFT feature description"
+    "message": "Yüksek hacimli işlemleri anında yönetmek için Türk Bankalarına doğrudan EFT yeteneklerinden ve güçlü dinamik ödeme firması entegrasyonlarından yararlanın."
   },
   "homepage.features.settlement.title": {
-    "message": "Kapsamlı Mutabakat",
-    "description": "Settlement feature title"
+    "message": "Kapsamlı Mutabakat"
   },
   "homepage.features.settlement.description": {
-    "message": "Ayrıntılı hesap bilgileri, gerçek zamanlı işlem geçmişi ve gün sonu mutabakat API'leri ile muhasebenizi otomatikleştirin.",
-    "description": "Settlement feature description"
+    "message": "Ayrıntılı hesap bilgileri, gerçek zamanlı işlem geçmişi ve gün sonu mutabakat API'leri ile muhasebenizi otomatikleştirin."
   }
 }

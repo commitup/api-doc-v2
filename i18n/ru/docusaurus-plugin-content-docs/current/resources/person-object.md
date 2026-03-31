@@ -75,5 +75,5 @@ The Person object represents a sender or receiver in all money transfer types (T
 </Tabs>
 
 :::tip Fields API
-Not all fields are required for every transfer. Use the **[Fields API](./fields-api)** to get the exact mandatory fields for the destination country and payout method, as requirements change by region.
+Not all fields are required for every transfer. Use the **[Fields API](../money-transfers/fields-api.md)** to get the exact mandatory fields for the destination country and payout method, as requirements change by region.
 :::

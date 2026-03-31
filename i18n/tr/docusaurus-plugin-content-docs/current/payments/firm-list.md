@@ -2,6 +2,11 @@
 sidebar_position: 2
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Ödeme Firma Listesi
 
 Bu uç nokta, ödeme tahsilatı için mevcut olan harici/havale firmalarının bir listesini döndürür.
@@ -17,6 +22,7 @@ Bu uç nokta, ödeme tahsilatı için mevcut olan harici/havale firmalarının b
 ### Yanıt Örnekleri
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Yanıt Alanları" default>
 
@@ -45,5 +51,7 @@ Bu uç nokta, ödeme tahsilatı için mevcut olan harici/havale firmalarının b
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

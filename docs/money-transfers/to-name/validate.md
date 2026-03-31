@@ -46,9 +46,9 @@ Use this endpoint to validate the transfer details before final confirmation. Th
 | toCityId | No* | number | City ID for the pickup. Required if `cityMandatory` is `true` for the firm. |
 | toOfficeId | No* | number | Office ID for the pickup. Required if `officeMandatory` is `true` for the firm. |
 | comment | No | string | Optional comment for the transaction. |
-| purposeCodeDefinitionId | Yes | number | Reason for transfer. See [Purpose List](../commons/purpose-list). |
-| sourceOfIncomeDefinitionId | Yes | number | Origin of funds. See [Source of Income List](../commons/source-of-income-list). |
-| relationshipWithSenderId | Yes | number | Relationship to recipient. See [Relationship List](../commons/relationship-with-sender). |
+| purposeCodeDefinitionId | Yes | number | Reason for transfer. See [Purpose List](../../resources/commons/purpose-list). |
+| sourceOfIncomeDefinitionId | Yes | number | Origin of funds. See [Source of Income List](../../resources/commons/source-of-income-list). |
+| relationshipWithSenderId | Yes | number | Relationship to recipient. See [Relationship List](../../resources/commons/relationship-with-sender). |
 
   </TabItem>
   <TabItem value="request_example" label="Example Request">

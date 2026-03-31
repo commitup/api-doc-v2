@@ -2,6 +2,11 @@
 sidebar_position: 2
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Список платежных фирм
 
 Эта конечная точка возвращает список внешних/денежных фирм, доступных для получения платежей.
@@ -17,6 +22,7 @@ sidebar_position: 2
 ### Примеры ответов
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Поля ответа" default>
 
@@ -45,5 +51,7 @@ sidebar_position: 2
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

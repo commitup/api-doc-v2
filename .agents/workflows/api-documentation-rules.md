@@ -56,8 +56,8 @@ Use the `<Tabs>` component to separate the parameter table and the JSON example.
 
 | Parameter | Required | Type | Description |
 | :--- | :--- | :--- | :--- |
-| sender | Yes | object | Identifies the sender. See [Person Object](../person-object). |
-| purposeCodeDefinitionId | Yes | number | Reason for transfer. See [Purpose List](../commons/purpose-list). |
+| sender | Yes | object | Identifies the sender. See [Person Object](../../resources/commons/person-object). |
+| purposeCodeDefinitionId | Yes | number | Reason for transfer. See [Purpose List](../../resources/commons/purpose-list). |
 
   </TabItem>
   <TabItem value="example" label="Example Request">
@@ -105,7 +105,7 @@ The response must always use the `<ApiResponseSelector>` wrapper for styling, bu
 
 ## 5. Linking Common Objects (The "Commons" Rule)
 Never inline the definition of massive, reusable objects or static lists inside individual request/response parameter tables.
-- **Person Object**: If a payload expects `sender` or `receiver` person sub-fields, omit them and link to `[Person Object](../person-object)`.
+- **Person Object**: If a payload expects `sender` or `receiver` person sub-fields, omit them and link to `[Person Object](../../resources/commons/person-object)`.
 - **Static Lists**: For `identityTypeId`, `jobCode`, `purposeCodeDefinitionId`, `sourceOfIncomeDefinitionId`, and `relationshipWithSenderId`, link to their respective pages in `../commons/`.
 - In JSON examples, collapse overly verbose fields (e.g., `"sender": { /* Person Object Fields */ }`) to preserve vertical space unless the specific fields are vital to that specific context.
 

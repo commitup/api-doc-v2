@@ -1,8 +1,9 @@
 ---
 sidebar_position: 2
 ---
-import ApiEndpoint from '@site/src/components/ApiEndpoint';
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 # Подтвердить - По имени
 

@@ -2,6 +2,11 @@
 sidebar_position: 3
 ---
 
+import ApiEndpoint from '@site/src/components/ApiEndpoint';
+import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+
 # Поиск платежа
 
 Эта конечная точка получает информацию о платеже с использованием контрольного номера. `searchUUID`, возвращаемый в ответе, необходим для этапа проверки.
@@ -38,11 +43,13 @@ sidebar_position: 3
 ```
 
   </TabItem>
+
 </Tabs>
 
 ## Ответ
 
 <ApiResponseSelector>
+
 <Tabs>
   <TabItem value="fields" label="Поля ответа" default>
 
@@ -54,10 +61,10 @@ sidebar_position: 3
 | externalFirmCode | number | Код фирмы. |
 | externalFirmName | string | Название фирмы. |
 | externalFirmReferenceNo | string | Оригинальный контрольный номер. |
-| receiver | object | Детали получателя. См. [Person Object](../money-transfers/person-object). |
+| receiver | object | Детали получателя. См. [Person Object](../resources/person-object). |
 | searchUUID | string | Уникальный ID поиска, необходимый для проверки. |
 | sendDate | string | Дата отправки перевода. |
-| sender | object | Детали отправителя. См. [Person Object](../money-transfers/person-object). |
+| sender | object | Детали отправителя. См. [Person Object](../resources/person-object). |
 | senderCountryCode | string | Код страны отправителя ISO. |
 | senderCountryName | string | Название страны отправителя. |
 
@@ -93,5 +100,7 @@ sidebar_position: 3
 ```
 
   </TabItem>
+
 </Tabs>
+
 </ApiResponseSelector>

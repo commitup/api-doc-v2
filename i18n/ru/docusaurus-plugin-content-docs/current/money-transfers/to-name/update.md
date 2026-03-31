@@ -4,8 +4,8 @@ sidebar_position: 6
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
-import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
 
 # Update Transfer (Amendment)
 
@@ -35,7 +35,7 @@ This endpoint validates the required changes before they are actually applied. Y
 | Parameter | Required | Type | Description |
 | :--- | :--- | :--- | :--- |
 | processReferenceNo | Yes | number | The unique PayPorter process reference number of the transfer to be updated. |
-| receiver | Yes | object | Identifies the updated recipient. See [Person Object](../person-object). |
+| receiver | Yes | object | Identifies the updated recipient. See [Person Object](../../resources/person-object). |
 
   </TabItem>
   <TabItem value="example" label="Example Request">
@@ -54,6 +54,7 @@ This endpoint validates the required changes before they are actually applied. Y
 ```
 
   </TabItem>
+
 </Tabs>
 
 ### Response

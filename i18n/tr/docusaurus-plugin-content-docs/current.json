@@ -5,14 +5,62 @@
   },
   "sidebar.whitelabelWalletSidebar.category.Money Transfers": {
     "message": "Para Transferleri",
-    "description": "Whitelabel Wallet sidebar category"
+    "description": "The label for category 'Money Transfers' in sidebar 'whitelabelWalletSidebar'"
   },
   "sidebar.whitelabelWalletSidebar.category.Deposits & Withdrawals": {
     "message": "Para Yatırma ve Çekme",
-    "description": "Whitelabel Wallet sidebar category"
+    "description": "The label for category 'Deposits & Withdrawals' in sidebar 'whitelabelWalletSidebar'"
   },
   "sidebar.whitelabelWalletSidebar.category.KYC Verification": {
     "message": "KYC Doğrulama",
-    "description": "Whitelabel Wallet sidebar category"
+    "description": "The label for category 'KYC Verification' in sidebar 'whitelabelWalletSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.To Name (Cash Pick Up)": {
+    "message": "To Name (Cash Pick Up)",
+    "description": "The label for category 'To Name (Cash Pick Up)' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.To Name (Cash Pick Up).link.generated-index.description": {
+    "message": "Send money that can be collected in cash from PayPorter offices or partner locations.",
+    "description": "The generated-index page description for category 'To Name (Cash Pick Up)' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.To Bank Account": {
+    "message": "To Bank Account",
+    "description": "The label for category 'To Bank Account' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.To Bank Account.link.generated-index.description": {
+    "message": "Direct transfer to a bank account or IBAN.",
+    "description": "The generated-index page description for category 'To Bank Account' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.To Wallet": {
+    "message": "To Wallet",
+    "description": "The label for category 'To Wallet' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.To Wallet.link.generated-index.description": {
+    "message": "Send funds to a recipient's electronic wallet.",
+    "description": "The generated-index page description for category 'To Wallet' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.To Card": {
+    "message": "To Card",
+    "description": "The label for category 'To Card' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.To Card.link.generated-index.description": {
+    "message": "Transfer directly to a debit or credit card.",
+    "description": "The generated-index page description for category 'To Card' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.Payment (Incoming Transfers)": {
+    "message": "Payment (Incoming Transfers)",
+    "description": "The label for category 'Payment (Incoming Transfers)' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.Payment (Incoming Transfers).link.generated-index.description": {
+    "message": "Process incoming transfers using a reference number for payout.",
+    "description": "The generated-index page description for category 'Payment (Incoming Transfers)' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.Resources": {
+    "message": "Resources",
+    "description": "The label for category 'Resources' in sidebar 'moneyTransfersSidebar'"
+  },
+  "sidebar.moneyTransfersSidebar.category.Resources.link.generated-index.description": {
+    "message": "Shared resources and reference data used across all transfer and payment types.",
+    "description": "The generated-index page description for category 'Resources' in sidebar 'moneyTransfersSidebar'"
   }
 }
