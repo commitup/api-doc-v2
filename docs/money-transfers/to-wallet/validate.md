@@ -32,8 +32,8 @@ Use this endpoint to validate the transfer payload and ensure the recipient's el
 
 | Parameter | Required | Type | Description |
 | :--- | :--- | :--- | :--- |
-| sender | Yes | object | Identifies the sender. See [Person Object](../person-object). |
-| receiver | Yes | object | Identifies the recipient. See [Person Object](../person-object). |
+| sender | Yes | object | Identifies the sender. See [Person Object](../../resources/person-object). |
+| receiver | Yes | object | Identifies the recipient. See [Person Object](../../resources/person-object). |
 | amount | Yes | number | The exact amount to be sent. |
 | currency | Yes | string | Three-letter ISO 4217 currency code (e.g., `USD`). |
 | toCountryCode | Yes | string | Destination country (ISO 3166-1 alpha-3). |
@@ -132,5 +132,5 @@ If successful, the API returns a `200 OK`. **Crucially, the `operation-id` requi
 ---
 
 :::tip Person Object & Fields
-The `sender` and `receiver` fields use the shared **[Person Object](../person-object)**. Use the **[Fields API](../fields-api)** to get the exact mandatory fields for the destination country and payout method.
+The `sender` and `receiver` fields use the shared **[Person Object](../../resources/person-object)**. Use the **[Fields API](../fields-api)** to get the exact mandatory fields for the destination country and payout method.
 :::

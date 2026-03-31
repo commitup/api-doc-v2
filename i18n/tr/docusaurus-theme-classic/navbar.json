@@ -31,6 +31,10 @@
     "message": "Para Transferleri",
     "description": "Navbar item with label Money Transfers"
   },
+  "item.label.Whitelabel Wallet": {
+    "message": "Whitelabel Cüzdan",
+    "description": "Navbar item with label Whitelabel Wallet"
+  },
   "item.label.GitHub": {
     "message": "GitHub",
     "description": "Navbar item with label GitHub"

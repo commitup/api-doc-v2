@@ -61,5 +61,9 @@ In this API, the response structure strongly adheres to this format:
 }
 ```
 
+:::danger **Important**
+`code` is a legacy field and not unique. Please use `messageCode` instead.
+:::
+
 ### Rate Limiter
 This API has a rate limiter. If you exceed limits, you will get an `HTTP 429 Too Many Requests` response.

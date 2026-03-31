@@ -2,5 +2,17 @@
   "version.label": {
     "message": "Next",
     "description": "The label for version current"
+  },
+  "sidebar.whitelabelWalletSidebar.category.Money Transfers": {
+    "message": "Para Transferleri",
+    "description": "Whitelabel Wallet sidebar category"
+  },
+  "sidebar.whitelabelWalletSidebar.category.Deposits & Withdrawals": {
+    "message": "Para Yatırma ve Çekme",
+    "description": "Whitelabel Wallet sidebar category"
+  },
+  "sidebar.whitelabelWalletSidebar.category.KYC Verification": {
+    "message": "KYC Doğrulama",
+    "description": "Whitelabel Wallet sidebar category"
   }
 }

@@ -109,29 +109,86 @@ const sidebars: SidebarsConfig = {
         'money-transfers/to-card/confirm',
       ],
     },
+    'money-transfers/transfer-details',
+    'money-transfers/transfer-errors',
     {
       type: 'html',
       value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
     },
-    'money-transfers/transfer-details',
-    'money-transfers/transfer-errors',
     {
       type: 'category',
-      label: 'Commons',
+      label: 'Payment (Incoming Transfers)',
       link: {
         type: 'generated-index',
-        description: 'Shared resources and reference data used across all transfer types.',
+        description: 'Process incoming transfers using a reference number for payout.',
       },
       items: [
-        'money-transfers/person-object',
-        'money-transfers/commons/identity-type-list',
-        'money-transfers/commons/job-list',
-        'money-transfers/commons/purpose-list',
-        'money-transfers/commons/source-of-income-list',
-        'money-transfers/commons/relationship-with-sender',
+        'payments/overview',
+        'payments/firm-list',
+        'payments/search',
+        'payments/validate',
+        'payments/confirm',
+        'payments/details',
       ],
     },
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    {
+      type: 'category',
+      label: 'Resources',
+      link: {
+        type: 'generated-index',
+        description: 'Shared resources and reference data used across all transfer and payment types.',
+      },
+      items: [
+        'resources/person-object',
+        'resources/commons/identity-type-list',
+        'resources/commons/job-list',
+        'resources/commons/purpose-list',
+        'resources/commons/source-of-income-list',
+        'resources/commons/relationship-with-sender',
+      ],
+    },
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
     'money-transfers/fields-api',
+  ],
+  whitelabelWalletSidebar: [
+    'whitelabel-wallet/intro',
+    'whitelabel-wallet/authentication',
+    'whitelabel-wallet/registration',
+    'whitelabel-wallet/wallet-info',
+    'whitelabel-wallet/transactions',
+    {
+      type: 'category',
+      label: 'Money Transfers',
+      items: [
+        'whitelabel-wallet/transfers',
+        'whitelabel-wallet/eft',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Deposits & Withdrawals',
+      items: [
+        'whitelabel-wallet/deposits-withdrawals',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'KYC Verification',
+      items: [
+        'whitelabel-wallet/kyc-overview',
+        'whitelabel-wallet/kyc-manual',
+        'whitelabel-wallet/kyc-digital',
+      ],
+    },
+    'whitelabel-wallet/card-operations',
+    'whitelabel-wallet/webhooks',
   ],
 
   // But you can create a sidebar manually

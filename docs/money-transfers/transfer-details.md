@@ -61,13 +61,15 @@ Query the status and full details of a money transfer transaction.
 | agentCommisionCurrency | string | Currency of the agent commission. |
 | sendDate | string | Timestamp when the transfer was sent. |
 | comment | string | Optional comment attached to the transfer. |
-| sender | object | Details of the sender. See [Person Object](./person-object). |
-| receiver | object | Details of the receiver. See [Person Object](./person-object). |
+| sender | object | Details of the sender. See [Person Object](../resources/person-object). |
+| receiver | object | Details of the receiver. See [Person Object](../resources/person-object). |
 
   </TabItem>
   <TabItem value="example" label="Example Response">
 
-```json
+<ApiResponseSelector>
+
+```json status="200" title="Success"
 {
   "header": {
     "success": true,
@@ -108,6 +110,20 @@ Query the status and full details of a money transfer transaction.
   }
 }
 ```
+
+```json status="406" title="Payment not found"
+{
+    "header": {
+        "success": false,
+        "code": "470",
+        "message": "MT_PAYMENT_TRANSFER_NOT_FOUND",
+        "messageCode": "MT_PAYMENT_TRANSFER_NOT_FOUND"
+    },
+    "responseObject": null
+}
+```
+
+</ApiResponseSelector>
 
   </TabItem>
 </Tabs>

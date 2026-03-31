@@ -35,7 +35,7 @@ This endpoint validates the required changes before they are actually applied. Y
 | Parameter | Required | Type | Description |
 | :--- | :--- | :--- | :--- |
 | processReferenceNo | Yes | number | The unique PayPorter process reference number of the transfer to be updated. |
-| receiver | Yes | object | Identifies the updated recipient. See [Person Object](../person-object). |
+| receiver | Yes | object | Identifies the updated recipient. See [Person Object](../../resources/person-object). |
 
   </TabItem>
   <TabItem value="example" label="Example Request">

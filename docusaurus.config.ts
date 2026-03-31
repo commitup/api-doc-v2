@@ -124,6 +124,12 @@ const config: Config = {
           position: 'left',
           label: 'Money Transfers',
         },
+        {
+          type: 'docSidebar',
+          sidebarId: 'whitelabelWalletSidebar',
+          position: 'left',
+          label: 'Whitelabel Wallet',
+        },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
           type: 'localeDropdown',
@@ -157,6 +163,14 @@ const config: Config = {
             {
               label: 'Money Transfers',
               to: '/docs/money-transfers/intro',
+            },
+            {
+              label: 'Whitelabel Wallet',
+              to: '/docs/whitelabel-wallet/intro',
+            },
+            {
+              label: 'Payments',
+              to: '/docs/payments/overview',
             },
           ],
         },
