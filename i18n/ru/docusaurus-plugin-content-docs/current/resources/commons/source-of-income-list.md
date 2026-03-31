@@ -4,22 +4,22 @@ sidebar_position: 3
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 
-# Source of Income List
+# Список источников дохода
 
-List of income sources used in the `sourceOfIncomeDefinitionId` field of the validate request.
+Список источников дохода, используемых в поле `sourceOfIncomeDefinitionId` запроса на проверку.
 
 <ApiEndpoint method="GET" url="/mt-api/V2/moneytransfercommon/source-of-income-info-list" />
 
-:::info Static List
-This is a static list that rarely changes. You do not need to call the endpoint for every transaction — you can safely hardcode these values. If any changes are made, they will be communicated in advance.
+:::info Статический список
+Это статический список, который редко меняется. Вам не нужно вызывать конечную точку для каждой транзакции — вы можете смело прописывать эти значения в коде. О любых изменениях будет сообщено заранее.
 :::
 
-| ID | Name |
+| ID | Название |
 | :--- | :--- |
-| 8847659 | Salary |
-| 8847661 | Business Income |
-| 8847663 | Savings |
-| 8847667 | Gift |
-| 8847671 | Bank Loan |
-| 8847681 | Other |
-| 8847685 | Sale of Property |
+| 8847659 | Зарплата |
+| 8847661 | Бизнес-доход |
+| 8847663 | Сбережения |
+| 8847667 | Подарок |
+| 8847671 | Банковский кредит |
+| 8847681 | Другое |
+| 8847685 | Продажа недвижимости |

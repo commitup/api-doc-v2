@@ -7,35 +7,35 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Wallet Info & Balance
+# Cüzdan Bilgisi ve Bakiye
 
-Retrieve the current balance, status, and KYC level of the wallet.
+Cüzdanın mevcut bakiyesini, durumunu ve KYC seviyesini sorgulayın.
 
 <ApiEndpoint method="GET" url="/wallet" />
 
-### Response
+### Yanıt
 
 <Tabs>
-  <TabItem value="fields" label="Response Fields" default>
+  <TabItem value="fields" label="Yanıt Alanları" default>
 
-| Field | Type | Description |
+| Alan | Tip | Açıklama |
 |-------|------|-------------|
-| tenantUserId | String | User's ID in the tenant system. |
-| walletId | number | Unique wallet identifier. |
-| totalBalance | number | Sum of cash and other balances. |
-| cashBalance | number | Available cash balance. |
-| currencyCode | String | ISO currency code (e.g., `TRY`). |
-| walletStatus | String | Current status of the wallet. See below. |
-| walletLevel | String | Verification level. See below. |
-| kycStatus | String | KYC progression status. See below. |
-| kycFailureCode | String | Reason for KYC failure, if applicable. |
+| tenantUserId | String | Kullanıcının tenant sistemindeki kimliği. |
+| walletId | number | Benzersiz cüzdan tanımlayıcısı. |
+| totalBalance | number | Nakit ve diğer bakiyelerin toplamı. |
+| cashBalance | number | Kullanılabilir nakit bakiyesi. |
+| currencyCode | String | ISO para birimi kodu (örn. `TRY`). |
+| walletStatus | String | Cüzdanın mevcut durumu. Aşağıya bakın. |
+| walletLevel | String | Doğrulama seviyesi. Aşağıya bakın. |
+| kycStatus | String | KYC ilerleme durumu. Aşağıya bakın. |
+| kycFailureCode | String | Varsa, KYC başarısızlık nedeni. |
 
   </TabItem>
-  <TabItem value="example" label="Example Response">
+  <TabItem value="example" label="Örnek Yanıt">
 
 <ApiResponseSelector>
 
-```json status="200" title="Success"
+```json status="200" title="Başarılı"
 {
   "tenantUserId": "TESTTENANT0014",
   "walletId": 18341595,
@@ -57,35 +57,35 @@ Retrieve the current balance, status, and KYC level of the wallet.
 
 ---
 
-## Reference Lists
+## Referans Listeleri
 
-### Wallet Status
-| Code     | Description   |
+### Cüzdan Durumu
+| Kod     | Açıklama   |
 |----------|---------------|
-| ACTIVE   | Active        |
-| PASSIVE  | Passive       |
-| BLOCKED  | Blocked       |
+| ACTIVE   | Aktif        |
+| PASSIVE  | Pasif       |
+| BLOCKED  | Bloke       |
 
-### Wallet Level
-| Code         | Description  |
+### Cüzdan Seviyesi
+| Kod         | Açıklama  |
 |--------------|--------------|
-| UN_CONFIRMED | Kyc not done |
-| CONFIRMED    | Kyc approved |
+| UN_CONFIRMED | Kyc yapılmadı |
+| CONFIRMED    | Kyc onaylandı |
 
-### KYC Status
-| Code                         | Description                               |
+### KYC Durumu
+| Kod                         | Açıklama                               |
 |-----------------------------|-------------------------------------------|
-| ANONYMOUS                   | No KYC - Anonymous                        |
-| WAITING_TO_PHYSICAL_LOCATION| Waiting for Agreement Delivery Physically |
-| WAITING_APPROVAL            | Waiting for Approval                      |
-| APPROVED                    | KYC Approved                              |
-| REJECTED                    | KYC Rejected                              |
-| EXPIRED                     | KYC Expired                               |
+| ANONYMOUS                   | KYC Yok - Anonim                        |
+| WAITING_TO_PHYSICAL_LOCATION| Sözleşmenin Fiziksel Olarak Teslimi Bekleniyor |
+| WAITING_APPROVAL            | Onay Bekleniyor                      |
+| APPROVED                    | KYC Onaylandı                              |
+| REJECTED                    | KYC Reddedildi                              |
+| EXPIRED                     | KYC Süresi Doldu                               |
 
-### KYC Failure Code 
-| Code              | Description                                      |
+### KYC Başarısızlık Kodu 
+| Kod              | Açıklama                                      |
 |-------------------|--------------------------------------------------|
-| KPS_ERROR         | Idendity info does'nt match for Turkish citizens |
-| AML_REJECTED      | Rejected due to AML reasons                      |
-| APPROVAL_REJECTED | Rejected due to requirements not met             |
-| APPROVAL_EXPIRED  | Requirements not met in time                     |
+| KPS_ERROR         | Türk vatandaşları için kimlik bilgileri eşleşmiyor |
+| AML_REJECTED      | AML nedenleriyle reddedildi                      |
+| APPROVAL_REJECTED | Gereksinimler karşılanmadığı için reddedildi             |
+| APPROVAL_EXPIRED  | Gereksinimler zamanında karşılanmadı                     |

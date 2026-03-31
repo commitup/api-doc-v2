@@ -2,21 +2,21 @@
 sidebar_position: 1
 ---
 
-# Whitelabel Wallet Overview
+# Whitelabel Cüzdan Genel Bakış
 
-Complete API reference for integrating wallet functionality into your application.
+Cüzdan işlevselliğini uygulamanıza entegre etmek için eksiksiz API referansı.
 
-## Abbreviations and Definitions
+## Kısaltmalar ve Tanımlar
 
-| Term                  | Description                                                                                       |
+| Terim                  | Açıklama                                                                                       |
 |-----------------------|---------------------------------------------------------------------------------------------------|
-| **Tenant**            | Brand owner company using the whitelabel wallet system                                            |
-| **Individual Wallet** | A wallet owned by an end-user, registered by the tenant application                               |
-| **Corporate Wallet**  | A wallet provided by PayPorter for the company's business operations (balance view, debit/credit) |
-| **Access Key**        | RSA public key used to encrypt wallet authentication data                                         |
-| **KYC**               | Know Your Customer - Identity verification process required for regulatory compliance             |
-| **EFT**               | Electronic Funds Transfer - Bank transfer to an IBAN account                                      |
-| **IBAN**              | International Bank Account Number                                                                 |
-| **NFC**               | Near Field Communication - Contactless technology used to read ID chips                           |
-| **MRZ**               | Machine Readable Zone - Text area on ID documents containing encoded data                         |
-| **AML**               | Anti-Money Laundering - Regulations to prevent financial crime                                    |
+| **Tenant**            | Whitelabel cüzdan sistemini kullanan marka sahibi şirket                                            |
+| **Bireysel Cüzdan** | Tenant uygulaması tarafından kaydedilen, bir son kullanıcıya ait cüzdan                               |
+| **Kurumsal Cüzdan**  | Şirketin ticari operasyonları için PayPorter tarafından sağlanan cüzdan (bakiye görüntüleme, borç/alacak) |
+| **Erişim Anahtarı**        | Cüzdan kimlik doğrulama verilerini şifrelemek için kullanılan RSA ortak anahtarı                                         |
+| **KYC**               | Müşterini Tanı (Know Your Customer) - Düzenleyici uyum için gerekli kimlik doğrulama süreci             |
+| **EFT**               | Elektronik Fon Transferi - Bir IBAN hesabına banka transferi                                      |
+| **IBAN**              | Uluslararası Banka Hesap Numarası                                                                 |
+| **NFC**               | Yakın Alan İletişimi (Near Field Communication) - Kimlik çiplerini okumak için kullanılan temassız teknoloji                           |
+| **MRZ**               | Makine Tarafından Okunabilir Alan (Machine Readable Zone) - Kodlanmış verileri içeren kimlik belgelerindeki metin alanı                         |
+| **AML**               | Kara Para Aklamayı Önleme (Anti-Money Laundering) - Finansal suçları önlemeye yönelik düzenlemeler                                    |

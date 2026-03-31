@@ -7,18 +7,18 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Manual KYC
+# Manuel KYC
 
-Traditional verification method involving identity document submission and manual review.
+Kimlik belgesi gönderimi ve manuel incelemeyi içeren geleneksel doğrulama yöntemi.
 
 <ApiEndpoint method="POST" url="/wallet/kyc" />
 
-### Request Parameters
+### İstek Parametreleri
 
 <Tabs>
-  <TabItem value="turkish" label="Turkish Citizens" default>
+  <TabItem value="turkish" label="Türk Vatandaşları" default>
 
-Turkish citizens should use the **Address Services** (`/cities`, `/districts`, `/neighborhoods`) to populate address IDs.
+Türk vatandaşları, adres kimliklerini doldurmak için **Adres Servislerini** (`/cities`, `/districts`, `/neighborhoods`) kullanmalıdır.
 
 ```json
 {
@@ -41,13 +41,13 @@ Turkish citizens should use the **Address Services** (`/cities`, `/districts`, `
     "district": "779",
     "neighborhood": "32344",
     "addressMedia": "base64EncodedImageOrPdfString"
-    // ... street, doorNumber, buildingNumber
+    // ... sokak, kapıNumarası, binaNumarası
   }
 }
 ```
 
   </TabItem>
-  <TabItem value="non-turkish" label="Non-Turkish Citizens">
+  <TabItem value="non-turkish" label="Türk Olmayan Vatandaşlar">
 
 ```json
 {
@@ -70,11 +70,11 @@ Turkish citizens should use the **Address Services** (`/cities`, `/districts`, `
 
 </Tabs>
 
-### Reference Tables
+### Referans Tabloları
 
-| Category | Description |
+| Kategori | Açıklama |
 |----------|-------------|
-| **Account Purpose** | `MONEY_TRANSFER`, `DONATION`, `BILL`, `COMMERCIAL` |
-| **Income Source** | `SALARY`, `RENT`, `SELF_EMPLOYMENT`, `COMMERCIAL`, `DONATION` |
-| **Monetary Limits** | `0-5000`, `5001-10000`, `10001-20000`, `20001-50000`, `50000+` |
-| **Transaction Count** | `1-10`, `11-30`, `31-50`, `51-100`, `100+` |
+| **Hesap Amacı** | `MONEY_TRANSFER` (PARA_TRANSFERI), `DONATION` (BAGIS), `BILL` (FATURA), `COMMERCIAL` (TICARI) |
+| **Gelir Kaynağı** | `SALARY` (MAAS), `RENT` (KIRA), `SELF_EMPLOYMENT` (SERBEST_MESLEK), `COMMERCIAL` (TICARI), `DONATION` (BAGIS) |
+| **Parasal Limitler** | `0-5000`, `5001-10000`, `10001-20000`, `20001-50000`, `50000+` |
+| **İşlem Sayısı** | `1-10`, `11-30`, `31-50`, `51-100`, `100+` |

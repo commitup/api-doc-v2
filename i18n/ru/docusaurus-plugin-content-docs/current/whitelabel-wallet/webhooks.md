@@ -6,14 +6,14 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Webhooks
+# Вебхуки
 
-Real-time notifications for transaction events, KYC status changes, and card authorizations.
+Уведомления в реальном времени о событиях транзакций, изменениях статуса KYC и авторизациях карт.
 
-## Transaction Notification
-PayPorter sends a `POST` request to your configured webhook URL for every financial event.
+## Уведомление о транзакции
+PayPorter отправляет `POST`-запрос на настроенный вами URL вебхука для каждого финансового события.
 
-**Payload Example:**
+**Пример данных (Payload):**
 ```json
 {
   "walletId": 13920918,
@@ -27,14 +27,14 @@ PayPorter sends a `POST` request to your configured webhook URL for every financ
 
 ---
 
-## Card Authorization
-Real-time authorization request for card transactions.
+## Авторизация карты
+Запрос авторизации в реальном времени для операций по карте.
 
 :::important
-Respond within **300ms** with `200 OK`. If no response is received, the transaction is **approved by default**.
+Ответьте в течение **300 мс** со статусом `200 OK`. Если ответ не получен, транзакция **одобряется по умолчанию**.
 :::
 
-**Payload Example:**
+**Пример данных (Payload):**
 ```json
 {
   "ref_number": "47004583620",
@@ -45,13 +45,13 @@ Respond within **300ms** with `200 OK`. If no response is received, the transact
 
 ---
 
-## KYC Status Change
-Notification when a wallet's KYC status is updated.
+## Изменение статуса KYC
+Уведомление об обновлении статуса KYC кошелька.
 
-**Approved Example:**
+**Пример одобрения:**
 <ApiResponseSelector>
 
-```json title="KYC Approved"
+```json title="KYC одобрен"
 {
   "walletLevel": "CONFIRMED",
   "kycStatus": "APPROVED"
@@ -60,10 +60,10 @@ Notification when a wallet's KYC status is updated.
 
 </ApiResponseSelector>
 
-**Rejected Example:**
+**Пример отклонения:**
 <ApiResponseSelector>
 
-```json title="KYC Rejected"
+```json title="KYC отклонен"
 {
   "walletLevel": "UN_CONFIRMED",
   "kycStatus": "REJECTED",

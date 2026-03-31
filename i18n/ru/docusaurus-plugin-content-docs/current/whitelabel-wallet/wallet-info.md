@@ -7,35 +7,35 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Wallet Info & Balance
+# Информация о кошельке и баланс
 
-Retrieve the current balance, status, and KYC level of the wallet.
+Получение текущего баланса, статуса и уровня KYC кошелька.
 
 <ApiEndpoint method="GET" url="/wallet" />
 
-### Response
+### Ответ
 
 <Tabs>
-  <TabItem value="fields" label="Response Fields" default>
+  <TabItem value="fields" label="Поля ответа" default>
 
-| Field | Type | Description |
+| Поле | Тип | Описание |
 |-------|------|-------------|
-| tenantUserId | String | User's ID in the tenant system. |
-| walletId | number | Unique wallet identifier. |
-| totalBalance | number | Sum of cash and other balances. |
-| cashBalance | number | Available cash balance. |
-| currencyCode | String | ISO currency code (e.g., `TRY`). |
-| walletStatus | String | Current status of the wallet. See below. |
-| walletLevel | String | Verification level. See below. |
-| kycStatus | String | KYC progression status. See below. |
-| kycFailureCode | String | Reason for KYC failure, if applicable. |
+| tenantUserId | String | ID пользователя в системе арендатора (tenant). |
+| walletId | number | Уникальный идентификатор кошелька. |
+| totalBalance | number | Сумма наличных и других балансов. |
+| cashBalance | number | Доступный баланс наличных. |
+| currencyCode | String | Код валюты ISO (например, `TRY`). |
+| walletStatus | String | Текущий статус кошелька. См. ниже. |
+| walletLevel | String | Уровень верификации. См. ниже. |
+| kycStatus | String | Статус прохождения KYC. См. ниже. |
+| kycFailureCode | String | Причина сбоя KYC, если применимо. |
 
   </TabItem>
-  <TabItem value="example" label="Example Response">
+  <TabItem value="example" label="Пример ответа">
 
 <ApiResponseSelector>
 
-```json status="200" title="Success"
+```json status="200" title="Успешно"
 {
   "tenantUserId": "TESTTENANT0014",
   "walletId": 18341595,
@@ -57,35 +57,35 @@ Retrieve the current balance, status, and KYC level of the wallet.
 
 ---
 
-## Reference Lists
+## Справочные списки
 
-### Wallet Status
-| Code     | Description   |
+### Статус кошелька
+| Код     | Описание   |
 |----------|---------------|
-| ACTIVE   | Active        |
-| PASSIVE  | Passive       |
-| BLOCKED  | Blocked       |
+| ACTIVE   | Активен       |
+| PASSIVE  | Пассивен      |
+| BLOCKED  | Заблокирован  |
 
-### Wallet Level
-| Code         | Description  |
+### Уровень кошелька
+| Код         | Описание  |
 |--------------|--------------|
-| UN_CONFIRMED | Kyc not done |
-| CONFIRMED    | Kyc approved |
+| UN_CONFIRMED | KYC не пройден |
+| CONFIRMED    | KYC подтвержден |
 
-### KYC Status
-| Code                         | Description                               |
+### Статус KYC
+| Код                         | Описание                               |
 |-----------------------------|-------------------------------------------|
-| ANONYMOUS                   | No KYC - Anonymous                        |
-| WAITING_TO_PHYSICAL_LOCATION| Waiting for Agreement Delivery Physically |
-| WAITING_APPROVAL            | Waiting for Approval                      |
-| APPROVED                    | KYC Approved                              |
-| REJECTED                    | KYC Rejected                              |
-| EXPIRED                     | KYC Expired                               |
+| ANONYMOUS                   | Нет KYC - Анонимный                        |
+| WAITING_TO_PHYSICAL_LOCATION| Ожидание физической доставки договора |
+| WAITING_APPROVAL            | Ожидание одобрения                      |
+| APPROVED                    | KYC одобрен                              |
+| REJECTED                    | KYC отклонен                              |
+| EXPIRED                     | Срок действия KYC истек                               |
 
-### KYC Failure Code 
-| Code              | Description                                      |
+### Код ошибки KYC 
+| Код              | Описание                                      |
 |-------------------|--------------------------------------------------|
-| KPS_ERROR         | Idendity info does'nt match for Turkish citizens |
-| AML_REJECTED      | Rejected due to AML reasons                      |
-| APPROVAL_REJECTED | Rejected due to requirements not met             |
-| APPROVAL_EXPIRED  | Requirements not met in time                     |
+| KPS_ERROR         | Данные удостоверения личности не совпадают (для граждан Турции) |
+| AML_REJECTED      | Отклонено по причинам AML                      |
+| APPROVAL_REJECTED | Отклонено из-за несоблюдения требований             |
+| APPROVAL_EXPIRED  | Требования не были выполнены вовремя                     |

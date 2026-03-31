@@ -5,44 +5,44 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Person Object
+# Kişi Nesnesi (Person Object)
 
-The Person object represents a sender or receiver in all money transfer types (To Name, To Account, To Wallet, To Card).
+Kişi nesnesi, tüm para transferi türlerinde (İsme, Hesaba, Cüzdana, Karta) gönderen veya alıcıyı temsil eder.
 
 ---
 
-## Fields
+## Alanlar
 
 <Tabs>
-  <TabItem value="table" label="Fields" default>
+  <TabItem value="table" label="Alanlar" default>
 
-| Parameter | Type | Description |
+| Parametre | Tip | Açıklama |
 | :--- | :--- | :--- |
-| firstName | string | First name. |
-| lastName | string | Last name. |
-| middleName | string | Middle name. |
-| fatherName | string | Father's name. |
-| mobileNo | string | Phone number without country code. |
-| mobileCountryCode | string | Mobile country code (ISO 3166-1 alpha-3, e.g., `TUR`). |
-| mobileOperatorNo | string | Mobile operator number. |
-| address | string | Full address. |
-| addressCountryCode | string | Address country code (ISO 3166-1 alpha-3). |
-| districtName | string | District name. |
-| provinceName | string | Province name. |
-| zipCode | string | Postal / ZIP code. |
-| nationalCountryCode | string | Nationality country code (ISO 3166-1 alpha-3). |
-| birthCountryCode | string | Birth country code (ISO 3166-1 alpha-3). |
-| birthDateStr | string | Date of birth (`dd.MM.yyyy`). |
-| identityNumber | string | Identity document number. |
-| identityTypeId | number | Identity type. See [Identity Type List](./commons/identity-type-list). |
-| identityIssueCountryCode | string | Country that issued the identity (ISO 3166-1 alpha-3). |
-| identityIssueDateStr | string | Identity issue date (`dd.MM.yyyy`). |
-| identityValidThruDateStr | string | Identity expiry date (`dd.MM.yyyy`). |
-| jobCode | number | Job code. See [Job List](./commons/job-list). |
-| ssnId | string | Social security number. |
+| firstName | string | Ad. |
+| lastName | string | Soyad. |
+| middleName | string | İkinci ad. |
+| fatherName | string | Baba adı. |
+| mobileNo | string | Ülke kodu olmadan telefon numarası. |
+| mobileCountryCode | string | Mobil ülke kodu (ISO 3166-1 alpha-3, örn. `TUR`). |
+| mobileOperatorNo | string | Mobil operatör numarası. |
+| address | string | Tam adres. |
+| addressCountryCode | string | Adres ülke kodu (ISO 3166-1 alpha-3). |
+| districtName | string | İlçe adı. |
+| provinceName | string | İl adı. |
+| zipCode | string | Posta kodu. |
+| nationalCountryCode | string | Uyruk ülke kodu (ISO 3166-1 alpha-3). |
+| birthCountryCode | string | Doğum yeri ülke kodu (ISO 3166-1 alpha-3). |
+| birthDateStr | string | Doğum tarihi (`gg.AA.yyyy`). |
+| identityNumber | string | Kimlik belgesi numarası. |
+| identityTypeId | number | Kimlik türü. Bkz. [Kimlik Türü Listesi](./commons/identity-type-list). |
+| identityIssueCountryCode | string | Kimliği düzenleyen ülke (ISO 3166-1 alpha-3). |
+| identityIssueDateStr | string | Kimlik düzenlenme tarihi (`gg.AA.yyyy`). |
+| identityValidThruDateStr | string | Kimlik son geçerlilik tarihi (`gg.AA.yyyy`). |
+| jobCode | number | Meslek kodu. Bkz. [Meslek Listesi](./commons/job-list). |
+| ssnId | string | Sosyal güvenlik numarası. |
 
   </TabItem>
-  <TabItem value="json" label="JSON Example">
+  <TabItem value="json" label="JSON Örneği">
 
 ```json
 {
@@ -74,6 +74,6 @@ The Person object represents a sender or receiver in all money transfer types (T
   </TabItem>
 </Tabs>
 
-:::tip Fields API
-Not all fields are required for every transfer. Use the **[Fields API](../money-transfers/fields-api.md)** to get the exact mandatory fields for the destination country and payout method, as requirements change by region.
+:::tip Alanlar API'si
+Her transfer türü için tüm alanlar gerekli değildir. Gereksinimler bölgeye göre değiştiğinden, hedef ülke ve ödeme yöntemi için tam zorunlu alanları almak üzere **[Alanlar API'sini](../money-transfers/fields-api.md)** kullanın.
 :::

@@ -7,19 +7,19 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Digital KYC (SDK-Based)
+# Цифровой KYC (на базе SDK)
 
-Automated verification using mobile SDK integration for real-time ID capture, NFC reading, and liveness detection.
+Автоматизированная верификация с использованием интеграции мобильного SDK для захвата удостоверения личности в реальном времени, чтения NFC и определения "живости" (liveness detection).
 
 :::important
-The client must check `status` and `currentVerificationType` fields in each response to determine the next step. Continue submitting verifications until `status` is no longer `IN_PROGRESS`.
+Клиент должен проверять поля `status` и `currentVerificationType` в каждом ответе, чтобы определить следующий шаг. Продолжайте отправку данных верификации до тех пор, пока `status` не перестанет быть `IN_PROGRESS`.
 :::
 
-## Digital KYC Flow
+## Процесс цифрового KYC
 
 ```mermaid
 graph TD
-    A[Start Session /start] --> B{Check currentVerificationType}
+    A[Начать сессию /start] --> B{Проверить currentVerificationType}
     B -- ID_FRONT --> C[POST /id-front]
     C --> B
     B -- ID_BACK --> D[POST /id-back]
@@ -29,16 +29,16 @@ graph TD
     B -- LIVENESS --> F[POST /liveliness]
     F --> B
     B -- ADDRESS_DOCUMENT --> G[POST /address-and-survey]
-    G --> H[Final Status Check]
+    G --> H[Финальная проверка статуса]
 ```
 
 ---
 
-## SDK Configuration
+## Конфигурация SDK
 
 ### iOS
-- **SPM**: `https://github.com/Techsign/TechsignKYC` (version `2.9.0-wrapper`)
-- Components: `RKYC_iOS` (liveness), `passport_reader` (NFC), `id_card_detection_ios_wrapper` (ID capture)
+- **SPM**: `https://github.com/Techsign/TechsignKYC` (версия `2.9.0-wrapper`)
+- Компоненты: `RKYC_iOS` (liveness), `passport_reader` (NFC), `id_card_detection_ios_wrapper` (захват ID)
 
 ### Android
 ```gradle
@@ -49,46 +49,46 @@ implementation 'com.techsign:passport-reader-cnn:1.1.5'
 
 ---
 
-## Endpoints
+## Конечные точки (Endpoints)
 
-### Start Session
+### Начать сессию
 <ApiEndpoint method="POST" url="/wallet/kyc/start" />
 
-### Submit Media
-- **Front Side**: `POST /wallet/kyc/{kycId}/id-front`
-- **Back Side**: `POST /wallet/kyc/{kycId}/id-back`
-- **Hologram Video**: `POST /wallet/kyc/{kycId}/holo`
-- **NFC Data**: `POST /wallet/kyc/{kycId}/nfc`
-- **Liveness Video**: `POST /wallet/kyc/{kycId}/liveliness`
-- **Final Survey**: `POST /wallet/kyc/{kycId}/address-and-survey`
+### Отправка медиаданных
+- **Лицевая сторона**: `POST /wallet/kyc/{kycId}/id-front`
+- **Оборотная сторона**: `POST /wallet/kyc/{kycId}/id-back`
+- **Видео с голограммой**: `POST /wallet/kyc/{kycId}/holo`
+- **Данные NFC**: `POST /wallet/kyc/{kycId}/nfc`
+- **Видео Liveness**: `POST /wallet/kyc/{kycId}/liveliness`
+- **Финальный опрос**: `POST /wallet/kyc/{kycId}/address-and-survey`
 
-### NFC Error Handling
+### Обработка ошибок NFC
 <ApiEndpoint method="POST" url="/wallet/kyc/{kycId}/nfc/error" />
 
 ---
 
-## Response Reference
+## Справочник ответов
 
 <Tabs>
-  <TabItem value="status" label="Digital KYC Status" default>
+  <TabItem value="status" label="Статус цифрового KYC" default>
 
-| Code | Description |
+| Код | Описание |
 |------|-------------|
-| `IN_PROGRESS` | Verification steps ongoing |
-| `FAILED` | Process failed (requires restart) |
-| `WAITING_FOR_BANK_TRANSFER` | Requires bank transfer verification |
-| `WAITING_APPROVAL` | Under manual compliance review |
-| `APPROVED` | Verification successful |
+| `IN_PROGRESS` | Шаги верификации продолжаются |
+| `FAILED` | Процесс завершился сбоем (требуется перезапуск) |
+| `WAITING_FOR_BANK_TRANSFER` | Требуется подтверждение через банковский перевод |
+| `WAITING_APPROVAL` | На рассмотрении отдела комплаенса |
+| `APPROVED` | Верификация прошла успешно |
 
   </TabItem>
-  <TabItem value="errors" label="Failure Codes">
+  <TabItem value="errors" label="Коды ошибок">
 
-| Code | Reason |
+| Код | Причина |
 |------|--------|
-| `THRESHOLDS_NOT_MET` | Image quality/match too low |
-| `ID_EXPIRED` | Document is not valid |
-| `NFC_NO_CONNECTION` | Chip could not be read |
-| `RETRY_COUNT_EXCEEDED` | Too many failed attempts |
+| `THRESHOLDS_NOT_MET` | Качество изображения/совпадение слишком низкое |
+| `ID_EXPIRED` | Документ недействителен |
+| `NFC_NO_CONNECTION` | Не удалось прочитать чип |
+| `RETRY_COUNT_EXCEEDED` | Превышено количество попыток |
 
   </TabItem>
 

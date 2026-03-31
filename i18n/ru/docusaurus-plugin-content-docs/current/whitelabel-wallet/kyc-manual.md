@@ -7,18 +7,18 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Manual KYC
+# Ручной KYC (Manual KYC)
 
-Traditional verification method involving identity document submission and manual review.
+Традиционный метод верификации, включающий подачу документов, удостоверяющих личность, и ручную проверку.
 
 <ApiEndpoint method="POST" url="/wallet/kyc" />
 
-### Request Parameters
+### Параметры запроса
 
 <Tabs>
-  <TabItem value="turkish" label="Turkish Citizens" default>
+  <TabItem value="turkish" label="Граждане Турции" default>
 
-Turkish citizens should use the **Address Services** (`/cities`, `/districts`, `/neighborhoods`) to populate address IDs.
+Граждане Турции должны использовать **Адресные службы** (`/cities`, `/districts`, `/neighborhoods`) для заполнения идентификаторов адресов.
 
 ```json
 {
@@ -47,7 +47,7 @@ Turkish citizens should use the **Address Services** (`/cities`, `/districts`, `
 ```
 
   </TabItem>
-  <TabItem value="non-turkish" label="Non-Turkish Citizens">
+  <TabItem value="non-turkish" label="Иностранные граждане">
 
 ```json
 {
@@ -70,11 +70,11 @@ Turkish citizens should use the **Address Services** (`/cities`, `/districts`, `
 
 </Tabs>
 
-### Reference Tables
+### Справочные таблицы
 
-| Category | Description |
+| Категория | Описание |
 |----------|-------------|
-| **Account Purpose** | `MONEY_TRANSFER`, `DONATION`, `BILL`, `COMMERCIAL` |
-| **Income Source** | `SALARY`, `RENT`, `SELF_EMPLOYMENT`, `COMMERCIAL`, `DONATION` |
-| **Monetary Limits** | `0-5000`, `5001-10000`, `10001-20000`, `20001-50000`, `50000+` |
-| **Transaction Count** | `1-10`, `11-30`, `31-50`, `51-100`, `100+` |
+| **Цель открытия счета** | `MONEY_TRANSFER`, `DONATION`, `BILL`, `COMMERCIAL` |
+| **Источник дохода** | `SALARY`, `RENT`, `SELF_EMPLOYMENT`, `COMMERCIAL`, `DONATION` |
+| **Денежные лимиты** | `0-5000`, `5001-10000`, `10001-20000`, `20001-50000`, `50000+` |
+| **Количество транзакций** | `1-10`, `11-30`, `31-50`, `51-100`, `100+` |

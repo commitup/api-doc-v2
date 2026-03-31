@@ -5,44 +5,44 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Person Object
+# Объект "Лицо" (Person)
 
-The Person object represents a sender or receiver in all money transfer types (To Name, To Account, To Wallet, To Card).
+Объект "Лицо" представляет собой отправителя или получателя во всех типах денежных переводов (По имени, На счет, На кошелек, На карту).
 
 ---
 
-## Fields
+## Поля
 
 <Tabs>
-  <TabItem value="table" label="Fields" default>
+  <TabItem value="table" label="Поля" default>
 
-| Parameter | Type | Description |
+| Параметр | Тип | Описание |
 | :--- | :--- | :--- |
-| firstName | string | First name. |
-| lastName | string | Last name. |
-| middleName | string | Middle name. |
-| fatherName | string | Father's name. |
-| mobileNo | string | Phone number without country code. |
-| mobileCountryCode | string | Mobile country code (ISO 3166-1 alpha-3, e.g., `TUR`). |
-| mobileOperatorNo | string | Mobile operator number. |
-| address | string | Full address. |
-| addressCountryCode | string | Address country code (ISO 3166-1 alpha-3). |
-| districtName | string | District name. |
-| provinceName | string | Province name. |
-| zipCode | string | Postal / ZIP code. |
-| nationalCountryCode | string | Nationality country code (ISO 3166-1 alpha-3). |
-| birthCountryCode | string | Birth country code (ISO 3166-1 alpha-3). |
-| birthDateStr | string | Date of birth (`dd.MM.yyyy`). |
-| identityNumber | string | Identity document number. |
-| identityTypeId | number | Identity type. See [Identity Type List](./commons/identity-type-list). |
-| identityIssueCountryCode | string | Country that issued the identity (ISO 3166-1 alpha-3). |
-| identityIssueDateStr | string | Identity issue date (`dd.MM.yyyy`). |
-| identityValidThruDateStr | string | Identity expiry date (`dd.MM.yyyy`). |
-| jobCode | number | Job code. See [Job List](./commons/job-list). |
-| ssnId | string | Social security number. |
+| firstName | string | Имя. |
+| lastName | string | Фамилия. |
+| middleName | string | Отчество. |
+| fatherName | string | Имя отца. |
+| mobileNo | string | Номер телефона без кода страны. |
+| mobileCountryCode | string | Код страны мобильного телефона (ISO 3166-1 alpha-3, например, `TUR`). |
+| mobileOperatorNo | string | Номер мобильного оператора. |
+| address | string | Полный адрес. |
+| addressCountryCode | string | Код страны адреса (ISO 3166-1 alpha-3). |
+| districtName | string | Название района. |
+| provinceName | string | Название провинции. |
+| zipCode | string | Почтовый индекс. |
+| nationalCountryCode | string | Код страны гражданства (ISO 3166-1 alpha-3). |
+| birthCountryCode | string | Код страны рождения (ISO 3166-1 alpha-3). |
+| birthDateStr | string | Дата рождения (`dd.MM.yyyy`). |
+| identityNumber | string | Номер документа, удостоверяющего личность. |
+| identityTypeId | number | Тип документа. См. [Список типов идентификации](./commons/identity-type-list). |
+| identityIssueCountryCode | string | Страна, выдавшая документ (ISO 3166-1 alpha-3). |
+| identityIssueDateStr | string | Дата выдачи документа (`dd.MM.yyyy`). |
+| identityValidThruDateStr | string | Дата окончания срока действия документа (`dd.MM.yyyy`). |
+| jobCode | number | Код профессии. См. [Список профессий](./commons/job-list). |
+| ssnId | string | Номер социального страхования. |
 
   </TabItem>
-  <TabItem value="json" label="JSON Example">
+  <TabItem value="json" label="Пример JSON">
 
 ```json
 {
@@ -75,5 +75,5 @@ The Person object represents a sender or receiver in all money transfer types (T
 </Tabs>
 
 :::tip Fields API
-Not all fields are required for every transfer. Use the **[Fields API](../money-transfers/fields-api.md)** to get the exact mandatory fields for the destination country and payout method, as requirements change by region.
+Не все поля обязательны для каждого перевода. Используйте **[Fields API](../money-transfers/fields-api.md)**, чтобы получить точный список обязательных полей для страны назначения и способа выплаты, так как требования меняются в зависимости от региона.
 :::

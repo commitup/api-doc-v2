@@ -7,34 +7,34 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Wallet Registration
+# Регистрация кошелька
 
-### Register and Get Access Key
+### Регистрация и получение ключа доступа
 
-Creates a new wallet and returns the access key for secure data generation.
+Создает новый кошелек и возвращает ключ доступа для генерации защищенных данных.
 
 <ApiEndpoint method="POST" url="/wallet/register" />
 
-:::info Authentication
-Requires **API Key** headers. Use corporate wallet credentials in the `X-Wallet-Id` and `X-Security-Key` headers to register individual wallets.
+:::info Аутентификация
+Требуются заголовки **API-ключа**. Используйте учетные данные корпоративного кошелька в заголовках `X-Wallet-Id` и `X-Security-Key` для регистрации индивидуальных кошельков.
 :::
 
-**Request Parameters:**
+**Параметры запроса:**
 
 <Tabs>
-  <TabItem value="fields" label="Request Fields" default>
+  <TabItem value="fields" label="Поля запроса" default>
 
-| Field | Type | Required | Description |
+| Поле | Тип | Обязательно | Описание |
 |-------|------|----------|-------------|
-| tenantUserId | String | Yes | Unique identifier for the user in your system. |
-| firstName | String | Yes | User's first name. |
-| lastName | String | Yes | User's last name. |
-| mail | String | Yes | User's email address. |
-| phoneCountryCode | String | Yes | ISO country code (e.g., `TUR`). |
-| phoneNumber | String | Yes | User's mobile phone number. |
+| tenantUserId | String | Да | Уникальный идентификатор пользователя в вашей системе. |
+| firstName | String | Да | Имя пользователя. |
+| lastName | String | Да | Фамилия пользователя. |
+| mail | String | Да | Адрес электронной почты пользователя. |
+| phoneCountryCode | String | Да | Код страны ISO (например, `TUR`). |
+| phoneNumber | String | Да | Номер мобильного телефона пользователя. |
 
   </TabItem>
-  <TabItem value="example" label="Example Request">
+  <TabItem value="example" label="Пример запроса">
 
 ```json
 {
@@ -51,11 +51,11 @@ Requires **API Key** headers. Use corporate wallet credentials in the `X-Wallet-
 
 </Tabs>
 
-### Response
+### Ответ
 
 <ApiResponseSelector>
 
-```json status="200" title="Success"
+```json status="200" title="Успешно"
 {
   "tenantUserId": "ABC123XYZ",
   "walletId": "1234567890",
@@ -65,6 +65,6 @@ Requires **API Key** headers. Use corporate wallet credentials in the `X-Wallet-
 
 </ApiResponseSelector>
 
-:::warning Important
-Store the `accessKey` securely. It is required to encrypt payloads for subsequent wallet-bound requests (as the `X-Security-Key` header).
+:::warning Важно
+Храните `accessKey` в безопасности. Он необходим для шифрования полезной нагрузки последующих запросов, привязанных к кошельку (в качестве заголовка `X-Security-Key`).
 :::

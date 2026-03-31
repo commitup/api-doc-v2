@@ -2,21 +2,21 @@
 sidebar_position: 1
 ---
 
-# Whitelabel Wallet Overview
+# Обзор Whitelabel Кошелька
 
-Complete API reference for integrating wallet functionality into your application.
+Полный справочник по API для интеграции функций кошелька в ваше приложение.
 
-## Abbreviations and Definitions
+## Сокращения и Определения
 
-| Term                  | Description                                                                                       |
+| Термин                  | Описание                                                                                       |
 |-----------------------|---------------------------------------------------------------------------------------------------|
-| **Tenant**            | Brand owner company using the whitelabel wallet system                                            |
-| **Individual Wallet** | A wallet owned by an end-user, registered by the tenant application                               |
-| **Corporate Wallet**  | A wallet provided by PayPorter for the company's business operations (balance view, debit/credit) |
-| **Access Key**        | RSA public key used to encrypt wallet authentication data                                         |
-| **KYC**               | Know Your Customer - Identity verification process required for regulatory compliance             |
-| **EFT**               | Electronic Funds Transfer - Bank transfer to an IBAN account                                      |
-| **IBAN**              | International Bank Account Number                                                                 |
-| **NFC**               | Near Field Communication - Contactless technology used to read ID chips                           |
-| **MRZ**               | Machine Readable Zone - Text area on ID documents containing encoded data                         |
-| **AML**               | Anti-Money Laundering - Regulations to prevent financial crime                                    |
+| **Tenant**            | Компания-владелец бренда, использующая систему whitelabel кошелька                               |
+| **Индивидуальный Кошелек** | Кошелек, принадлежащий конечному пользователю, зарегистрированный приложением арендатора (tenant) |
+| **Корпоративный Кошелек** | Кошелек, предоставляемый PayPorter для бизнес-операций компании (просмотр баланса, дебет/кредит) |
+| **Ключ Доступа**      | Публичный ключ RSA, используемый для шифрования данных аутентификации кошелька                   |
+| **KYC**               | Знай Своего Клиента (Know Your Customer) - Процесс проверки личности для соблюдения нормативных требований |
+| **EFT**               | Электронный перевод средств - Банковский перевод на счет IBAN                                   |
+| **IBAN**              | Международный номер банковского счета                                                            |
+| **NFC**               | Ближняя бесконтактная связь (Near Field Communication) - Технология для чтения чипов удостоверений личности |
+| **MRZ**               | Машиносчитываемая зона (Machine Readable Zone) - Область текста в документах, удостоверяющих личность, содержащая закодированные данные |
+| **AML**               | Противодействие отмыванию денег (Anti-Money Laundering) - Нормы для предотвращения финансовых преступлений |

@@ -7,13 +7,13 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Transaction History
+# История транзакций
 
-Retrieve a list of transactions for the authenticated wallet.
+Получение списка транзакций для аутентифицированного кошелька.
 
 <ApiEndpoint method="POST" url="/wallet/transactions" />
 
-### Request Parameters
+### Параметры запроса
 
 ```json
 {
@@ -22,11 +22,11 @@ Retrieve a list of transactions for the authenticated wallet.
 }
 ```
 
-### Response
+### Ответ
 
 <ApiResponseSelector>
 
-```json status="200" title="Success"
+```json status="200" title="Успешно"
 [
   {
     "transactionId": "f66ef144-85cf-43a6-a3cd-bc4e1f858fd1",
@@ -34,7 +34,7 @@ Retrieve a list of transactions for the authenticated wallet.
     "feeAmount": 5,
     "currencyType": "TRY",
     "transactionDate": "2025-07-08T16:00:13.738+0300",
-    "transactionName": "Internal Transfer",
+    "transactionName": "Внутренний перевод",
     "debtCredit": "D"
   }
 ]
@@ -42,7 +42,7 @@ Retrieve a list of transactions for the authenticated wallet.
 
 </ApiResponseSelector>
 
-| Field | Description |
+| Поле | Описание |
 |-------|-------------|
-| `debtCredit` | `D` for Debit (Outgoing), `C` for Credit (Incoming). |
-| `transactionName` | Human-readable name of the transaction type. |
+| `debtCredit` | `D` для дебета (исходящий), `C` для кредита (входящий). |
+| `transactionName` | Читаемое название типа транзакции. |

@@ -4,218 +4,218 @@ sidebar_position: 2
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 
-# Job List
+# Список профессий
 
-List of job/occupation codes used in the `jobCode` field of the [Person Object](../person-object).
+Список кодов профессий, используемых в поле `jobCode` объекта [Person Object](../person-object).
 
 <ApiEndpoint method="GET" url="/mt-api/V2/moneytransfercommon/job-list" />
 
-:::info Static List
-This is a static list that rarely changes. You do not need to call the endpoint for every transaction — you can safely hardcode these values. If any changes are made, they will be communicated in advance.
+:::info Статический список
+Это статический список, который редко меняется. Вам не нужно вызывать конечную точку для каждой транзакции — вы можете смело прописывать эти значения в коде. О любых изменениях будет сообщено заранее.
 :::
 
-| Code | Job (EN) |
+| Код | Профессия |
 | :--- | :--- |
-| 1 | Soldier (Except Mandatory Military Duty) |
-| 2 | Chef |
-| 3 | Lawyer |
-| 4 | Ambassador |
-| 5 | Grocery |
-| 6 | Banker |
-| 7 | Franchise Owner |
-| 8 | Barber |
-| 9 | Biologist |
-| 10 | Stock Market Expert |
-| 11 | Painter |
-| 12 | Farmer |
-| 14 | Baby-Sitting / Elderly Care |
-| 15 | Advisor |
-| 17 | Religious Official |
-| 18 | Distributor |
-| 19 | Dentist |
-| 20 | Doctor (Government Sector) |
-| 21 | Pharmacist |
-| 22 | Expert |
-| 23 | Real Estate Agency |
-| 24 | Housewife |
-| 25 | Housemaid |
-| 26 | Journalist |
-| 27 | Customs Broker |
-| 28 | Judge |
-| 29 | Nurse (Government Sector) |
-| 30 | Stewardess |
-| 31 | Bellboy |
-| 32 | Jeweler / Goldsmith |
-| 33 | Commission Agent |
-| 34 | Consul |
-| 35 | Coach |
-| 36 | Architect |
-| 37 | Furniture Shop |
-| 38 | Accountant |
-| 39 | Engineer |
-| 40 | Contractor |
-| 41 | Notary |
-| 42 | Automotive / Car Dealer |
-| 43 | Student (University) |
-| 44 | Teacher |
-| 45 | Security Staff |
-| 46 | Stallholder |
-| 47 | Marketeer |
-| 48 | Staff Transport Service |
-| 49 | Pilot |
-| 50 | Police |
-| 51 | Politician |
-| 52 | Guide |
-| 53 | Advertiser |
-| 54 | Vocal Artist |
-| 55 | Secretary / Manager Assistant |
-| 56 | Insurer |
-| 57 | Politician |
-| 58 | Athlete |
-| 59 | Driver (Truck / TIR / Bus) |
-| 60 | Collection Employee |
-| 61 | Designer |
-| 62 | Technician |
-| 63 | Tailor |
-| 64 | Merchant / Trader |
-| 65 | Senior Government Officer |
-| 66 | Veterinary |
-| 67 | Software Developer / Analyst / Programmer |
-| 69 | Military Officials (Generals) |
-| 70 | Government Senior Manager (GM, VGM) |
-| 71 | Academician |
-| 72 | Waiter |
-| 73 | Market Owner |
-| 74 | Butcher |
-| 75 | Greengrocery |
-| 76 | Hairdresser |
-| 77 | Laboratorian |
-| 78 | Radiologist |
-| 79 | Financialist |
-| 80 | Economist |
-| 81 | Installation (Water / Electricity) |
-| 82 | Repairman (Car / Engine) |
-| 83 | Carpenter |
-| 84 | Stockbreeding |
-| 85 | Fisherman |
-| 86 | Forester |
-| 87 | State Attorney |
-| 88 | Health Officer (Government Sector) |
-| 89 | Maid |
-| 90 | Servant |
-| 91 | Producer |
-| 92 | Director |
-| 93 | Organizer |
-| 94 | Interior Architect |
-| 95 | Public Accountant / Certified Public Accountant |
-| 97 | Captain |
-| 98 | Minister |
-| 99 | Congressman |
-| 100 | Party Leader |
-| 101 | Mayor |
-| 102 | Tour Operator |
-| 103 | Coach |
-| 104 | Referee |
-| 105 | Graphic Designer / Web Designer |
-| 106 | General Manager (Private Sector) |
-| 107 | Vice General Manager (Private Sector) |
-| 108 | General Manager (Government Sector) |
-| 109 | Vice General Manager (Government Sector) |
-| 110 | Head of Department |
-| 111 | Vice Chairman of the Department |
-| 112 | Undersecretary |
-| 114 | Exporter |
-| 115 | Importer |
-| 116 | Manager (Private Sector) |
-| 117 | Assistant Manager (Private Sector) |
-| 118 | Manager (Government Sector) |
-| 119 | Assistant Manager (Government Sector) |
-| 120 | Government Employee |
-| 121 | Salesclerk |
-| 122 | Sales Representative |
-| 123 | Employee |
-| 124 | Performer (Actor / Actress) |
-| 125 | Model |
-| 126 | Mail Carrier |
-| 127 | Outroper |
-| 128 | Health Technician (Government Sector) |
-| 130 | Actuary |
-| 131 | Store-Keeper / Warehouse Attendant |
-| 132 | Store-Keeper (Automotive) |
-| 133 | Store-Keeper (Textile) |
-| 134 | Research Assistant (University) |
-| 135 | Shipowner |
-| 136 | Astrologist |
-| 137 | Shoe Manufacturer |
-| 138 | Shoe Manufacturer Employee |
-| 139 | Dancer |
-| 140 | Hawker |
-| 141 | Bar Staff |
-| 142 | Nightclub Employee |
-| 143 | Prime Minister |
-| 144 | President |
-| 145 | Watchman |
-| 146 | Glassmaker |
-| 147 | Lifeguard |
-| 148 | Make-Up Artist |
-| 149 | Skin Care and Beauty Specialist |
-| 150 | Labour Economist |
-| 151 | Contact Center Employee |
-| 152 | Contact Center Manager |
-| 153 | Translator / Interpreter |
-| 155 | Florist |
-| 156 | Shepherd |
-| 157 | Detective |
-| 158 | Auditor (Private Sector) |
-| 159 | Auditor (Government Sector) |
-| 160 | Assistant Auditor (Private Sector) |
-| 161 | Assistant Auditor (Government Sector) |
-| 162 | Inspector (Private Sector) |
-| 163 | Inspector (Government Sector) |
-| 164 | Assistant Inspector (Private Sector) |
-| 165 | Assistant Inspector (Government Sector) |
-| 166 | Leather Shop Owner |
-| 167 | Leather Shop Employee |
-| 168 | Foreign Trade Specialist |
-| 169 | Diplomat (Foreign Affairs Employee) |
-| 171 | Baker |
-| 172 | Insurance Agent Owner |
-| 173 | Insurance Agent Employee |
-| 174 | Pharmaceutical Representative |
-| 175 | Fortune Teller |
-| 176 | Construction Worker |
-| 177 | Textile Worker |
-| 178 | Financial Analyst |
-| 180 | Shipmen |
-| 181 | General Secretary (Government Sector) |
-| 182 | Editor-in-Chief |
-| 183 | Chief Editor |
-| 184 | Optician |
-| 185 | Horse-Jockey |
-| 186 | Bureau de Change Employee |
-| 187 | Doorman |
-| 188 | Retired |
-| 189 | Unemployed |
-| 190 | Franchise Employee |
-| 191 | Storehouse Supervisor |
-| 192 | Doctor (Private Sector) |
-| 193 | Nurse (Private Sector) |
-| 194 | Sculptor |
-| 195 | Fire Fighter |
-| 196 | Gendarme |
-| 197 | Cabin Attendant |
-| 198 | Cargo Company Employee |
-| 199 | Cargo Company Owner |
-| 200 | Courier |
-| 201 | Mukhtar |
-| 202 | Musician |
-| 203 | Student (Post Graduate / Doctor's Degree) |
-| 204 | Artist |
-| 205 | Health Officer (Private Sector) |
-| 206 | Health Technician (Private Sector) |
-| 207 | Sports Trainer |
-| 208 | Taxi Driver |
-| 209 | Textile Store Employee |
-| 210 | Textile Store Owner |
-| 211 | Youtuber |
-| 212 | Hotel Staff |
+| 1 | Военнослужащий (кроме срочной службы) |
+| 2 | Шеф-повар / Повар |
+| 3 | Юрист / Адвокат |
+| 4 | Посол |
+| 5 | Владелец продуктового магазина / Бакалейщик |
+| 6 | Банкир |
+| 7 | Владелец франшизы |
+| 8 | Парикмахер / Барбер |
+| 9 | Биолог |
+| 10 | Биржевой эксперт |
+| 11 | Художник |
+| 12 | Фермер |
+| 14 | Няня / Уход за пожилыми людьми |
+| 15 | Консультант / Советник |
+| 17 | Религиозный деятель |
+| 18 | Дистрибьютор |
+| 19 | Стоматолог |
+| 20 | Врач (государственный сектор) |
+| 21 | Фармацевт |
+| 22 | Эксперт / Специалист |
+| 23 | Агент по недвижимости |
+| 24 | Домохозяйка |
+| 25 | Домработница |
+| 26 | Журналист |
+| 27 | Таможенный брокер |
+| 28 | Судья |
+| 29 | Медсестра (государственный сектор) |
+| 30 | Стюардесса / Бортпроводник |
+| 31 | Посыльный / Коридорный |
+| 32 | Ювелир |
+| 33 | Комиссионер / Агент |
+| 34 | Консул |
+| 35 | Тренер |
+| 36 | Архитектор |
+| 37 | Мебельщик |
+| 38 | Бухгалтер |
+| 39 | Инженер |
+| 40 | Подрядчик |
+| 41 | Нотариус |
+| 42 | Автодилер |
+| 43 | Студент (университет) |
+| 44 | Учитель |
+| 45 | Сотрудник службы безопасности |
+| 46 | Продавец за прилавком |
+| 47 | Маркетолог |
+| 48 | Водитель служебного транспорта |
+| 49 | Пилот |
+| 50 | Полицейский |
+| 51 | Политик |
+| 52 | Гид / Экскурсовод |
+| 53 | Рекламщик |
+| 54 | Вокалист / Артист |
+| 55 | Секретарь / Ассистент менеджера |
+| 56 | Страховщик |
+| 57 | Политический деятель |
+| 58 | Спортсмен |
+| 59 | Водитель (Грузовик / TIR / Автобус) |
+| 60 | Сотрудник службы сбора платежей |
+| 61 | Дизайнер |
+| 62 | Техник |
+| 63 | Портной |
+| 64 | Купец / Торговец |
+| 65 | Высокопоставленный государственный служащий |
+| 66 | Ветеринар |
+| 67 | Разработчик ПО / Аналитик / Программист |
+| 69 | Военное должностное лицо (генералы) |
+| 70 | Высший руководящий состав (ГД, ЗамГД) |
+| 71 | Академик / Преподаватель ВУЗа |
+| 72 | Официант |
+| 73 | Владелец магазина |
+| 74 | Мясник |
+| 75 | Продавец овощей и фруктов |
+| 76 | Парикмахер (универсал) |
+| 77 | Лаборант |
+| 78 | Радиолог |
+| 79 | Финансист |
+| 80 | Экономист |
+| 81 | Установщик (вода / электричество) |
+| 82 | Механик / Ремонтник (авто / двигатели) |
+| 83 | Плотник |
+| 84 | Животновод |
+| 85 | Рыбак |
+| 86 | Лесник |
+| 87 | Государственный обвинитель / Прокурор |
+| 88 | Медицинский работник (государственный сектор) |
+| 89 | Горничная |
+| 90 | Служащий |
+| 91 | Продюсер |
+| 92 | Режиссер |
+| 93 | Организатор |
+| 94 | Дизайнер интерьера |
+| 95 | Присяжный бухгалтер |
+| 97 | Капитан |
+| 98 | Министр |
+| 99 | Депутат |
+| 100 | Лидер партии |
+| 101 | Мэр |
+| 102 | Туроператор |
+| 103 | Коуч / Тренер |
+| 104 | Рефери / Судья (спорт) |
+| 105 | Графический дизайнер / Веб-дизайнер |
+| 106 | Генеральный директор (частный сектор) |
+| 107 | Заместитель генерального директора (частный сектор) |
+| 108 | Генеральный директор (государственный сектор) |
+| 109 | Заместитель генерального директора (государственный сектор) |
+| 110 | Начальник отдела |
+| 111 | Заместитель начальника отдела |
+| 112 | Заместитель министра / Статс-секретарь |
+| 114 | Экспортер |
+| 115 | Импортер |
+| 116 | Менеджер (частный сектор) |
+| 117 | Помощник менеджера (частный сектор) |
+| 118 | Менеджер (государственный сектор) |
+| 119 | Помощник менеджера (государственный сектор) |
+| 120 | Государственный служащий |
+| 121 | Продавец-консультант |
+| 122 | Торговый представитель |
+| 123 | Сотрудник / Персонал |
+| 124 | Актер / Актриса |
+| 125 | Модель |
+| 126 | Почтальон |
+| 127 | Специалист по внешним операциям |
+| 128 | Медицинский техник (государственный сектор) |
+| 130 | Актуарий |
+| 131 | Кладовщик |
+| 132 | Кладовщик (автомобильный) |
+| 133 | Кладовщик (текстильный) |
+| 134 | Научный сотрудник (университет) |
+| 135 | Судовладелец |
+| 136 | Астролог |
+| 137 | Производитель обуви |
+| 138 | Работник обувного производства |
+| 139 | Танцор |
+| 140 | Уличный торговец |
+| 141 | Бармен |
+| 142 | Сотрудник ночного клуба |
+| 143 | Премьер-министр |
+| 144 | Президент |
+| 145 | Сторож / Охранник |
+| 146 | Стекольщик |
+| 147 | Спасатель |
+| 148 | Визажист |
+| 149 | Косметолог / Специалист по красоте |
+| 150 | Экономист по труду |
+| 151 | Сотрудник контакт-центра |
+| 152 | Менеджер контакт-центра |
+| 153 | Переводчик |
+| 155 | Флорист |
+| 156 | Пастух |
+| 157 | Детектив |
+| 158 | Аудитор (частный сектор) |
+| 159 | Аудитор (государственный сектор) |
+| 160 | Помощник аудитора (частный сектор) |
+| 161 | Помощник аудитора (государственный сектор) |
+| 162 | Инспектор (частный сектор) |
+| 163 | Инспектор (государственный сектор) |
+| 164 | Помощник инспектора (частный сектор) |
+| 165 | Помощник инспектора (государственный сектор) |
+| 166 | Владелец магазина кожаных изделий |
+| 167 | Сотрудник магазина кожаных изделий |
+| 168 | Специалист по внешнеэкономической деятельности |
+| 169 | Дипломат (сотрудник министерства иностранных дел) |
+| 171 | Пекарь |
+| 172 | Владелец страхового агентства |
+| 173 | Сотрудник страхового агентства |
+| 174 | Медицинский представитель |
+| 175 | Гадалка |
+| 176 | Строитель |
+| 177 | Работник текстильной промышленности |
+| 178 | Финансовый аналитик |
+| 180 | Моряк |
+| 181 | Генеральный секретарь (государственный сектор) |
+| 182 | Главный редактор |
+| 183 | Шеф-редактор |
+| 184 | Оптик |
+| 185 | Жокей |
+| 186 | Сотрудник пункта обмена валюты |
+| 187 | Швейцар / Вахтер |
+| 188 | Пенсионер |
+| 189 | Безработный |
+| 190 | Сотрудник франчайзи |
+| 191 | Заведующий складом |
+| 192 | Врач (частный сектор) |
+| 193 | Медсестра (частный сектор) |
+| 194 | Скульптор |
+| 195 | Пожарный |
+| 196 | Жандарм |
+| 197 | Бортпроводник |
+| 198 | Сотрудник грузовой компании |
+| 199 | Владелец грузовой компании |
+| 200 | Курьер |
+| 201 | Мухтар (староста) |
+| 202 | Музыкант |
+| 203 | Аспирант / Докторант |
+| 204 | Художник / Артист |
+| 205 | Медицинский работник (частный сектор) |
+| 206 | Медицинский техник (частный сектор) |
+| 207 | Спортивный инструктор |
+| 208 | Таксист |
+| 209 | Сотрудник магазина текстиля |
+| 210 | Владелец магазина текстиля |
+| 211 | Ютубер |
+| 212 | Сотрудник отеля |

@@ -4,23 +4,23 @@ sidebar_position: 4
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 
-# Purpose List
+# Transfer Nedenleri Listesi
 
-List of transfer purposes used in the `purposeCodeDefinitionId` field of the validate request.
+Doğrulama (validate) isteğinin `purposeCodeDefinitionId` alanında kullanılan transfer nedenlerinin listesi.
 
 <ApiEndpoint method="GET" url="/mt-api/V2/moneytransfercommon/purpose-info-list" />
 
-:::info Static List
-This is a static list that rarely changes. You do not need to call the endpoint for every transaction — you can safely hardcode these values. If any changes are made, they will be communicated in advance.
+:::info Statik Liste
+Bu, nadiren değişen statik bir listedir. Her işlem için uç noktayı çağırmanıza gerek yoktur — bu değerleri güvenle sabit kodlayabilirsiniz. Herhangi bir değişiklik olduğunda önceden haber verilecektir.
 :::
 
-| ID | Name |
+| ID | Adı |
 | :--- | :--- |
-| 2 | Family |
-| 3 | Commerce Payments |
-| 6 | Rentals |
-| 10 | Other |
-| 11 | Dept/Loan |
-| 12 | Sale/Buy |
-| 14 | Saving/Investment |
-| 16 | Education |
+| 2 | Aile |
+| 3 | Ticari Ödemeler |
+| 6 | Kiralar |
+| 10 | Diğer |
+| 11 | Borç / Kredi |
+| 12 | Satış / Alış |
+| 14 | Tasarruf / Yatırım |
+| 16 | Eğitim |

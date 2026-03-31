@@ -5,58 +5,58 @@ sidebar_position: 2
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Authentication
+# Kimlik Doğrulama
 
-All API requests require authentication via API key headers.
+Tüm API istekleri, API anahtarı başlıkları aracılığıyla kimlik doğrulaması gerektirir.
 
-### API Key Authentication (Server-to-Server)
+### API Anahtarı Kimlik Doğrulaması (Sunucudan Sunucuya)
 
-Include these headers in every request:
+Her isteğe şu başlıkları ekleyin:
 
 ```http
-X-Api-Key: <your_api_key>
-X-Api-Secret: <your_api_secret>
+X-Api-Key: <api_anahtarınız>
+X-Api-Secret: <api_sırrınız>
 ```
 
 ---
 
-## Wallet-Specific Authentication
+## Cüzdana Özel Kimlik Doğrulama
 
 :::important
-**All wallet endpoints require wallet authentication.** There is no endpoint that can be called without wallet credentials.
-- **Individual Wallets**: Use the `walletId` and `accessKey` returned from the `/wallet/register` endpoint.
-- **Corporate Wallets**: Use the `walletId` and `accessKey` provided to you by PayPorter during onboarding.
+**Tüm cüzdan uç noktaları cüzdan kimlik doğrulaması gerektirir.** Cüzdan kimlik bilgileri olmadan çağrılabilecek hiçbir uç nokta yoktur.
+- **Bireysel Cüzdanlar**: `/wallet/register` uç noktasından dönen `walletId` ve `accessKey`'i kullanın.
+- **Kurumsal Cüzdanlar**: PayPorter tarafından sağlanan `walletId` ve `accessKey`'i kullanın.
 :::
 
-Corporate wallets function identically to individual wallets. You can use `GET /wallet` to view your corporate wallet balance and perform operations (transfers, EFT, debit, credit) using the same endpoints with corporate wallet authentication.
+Kurumsal cüzdanlar, bireysel cüzdanlarla aynı şekilde çalışır. Kurumsal cüzdan bakiyenizi görüntülemek ve aynı uç noktaları kurumsal cüzdan kimlik doğrulamasıyla kullanarak işlemler (transferler, EFT, borç, alacak) gerçekleştirmek için `GET /wallet` kullanabilirsiniz.
 
-For wallet-bound operations, additional headers are required:
+Cüzdan bağlantılı işlemler için ek başlıklar gereklidir:
 
-| Header | Description | Example |
+| Başlık | Açıklama | Örnek |
 |--------|-------------|---------|
-| `X-Wallet-Id` | Target wallet identifier | `1234567890` |
-| `X-Security-Key` | Encrypted secure data token | Base64 string |
-| `X-Device-Info` | Device brand and model | `Samsung-S21`, `iPhone-12 Pro` |
-| `X-Device-Id` | Unique device identifier | UUID |
-| `X-Access-Ip` | Client's IP address | `192.168.1.1` |
-| `X-Access-Port` | Client's port | `443` |
+| `X-Wallet-Id` | Hedef cüzdan tanımlayıcısı | `1234567890` |
+| `X-Security-Key` | Şifrelenmiş güvenli veri belirteci | Base64 dizesi |
+| `X-Device-Info` | Cihaz marka ve modeli | `Samsung-S21`, `iPhone-12 Pro` |
+| `X-Device-Id` | Benzersiz cihaz tanımlayıcısı | UUID |
+| `X-Access-Ip` | İstemcinin IP adresi | `192.168.1.1` |
+| `X-Access-Port` | İstemcinin portu | `443` |
 
 ---
 
-## Secure Data Header Generation
+## Güvenli Veri Başlığı Oluşturma
 
-You need to have a `walletId` and its corresponding RSA public key (`accessKey`) to generate the `X-Security-Key` header for authenticated requests. The `X-Security-Key` header contains encrypted wallet authentication data.
+Kimlik doğrulamalı istekler için `X-Security-Key` başlığını oluşturmak üzere bir `walletId` ve buna karşılık gelen RSA ortak anahtarına (`accessKey`) sahip olmanız gerekir. `X-Security-Key` başlığı şifrelenmiş cüzdan kimlik doğrulama verilerini içerir.
 
-### 1. Data Structure
+### 1. Veri Yapısı
 
-Create a JSON payload with the following fields:
+Aşağıdaki alanları içeren bir JSON nesnesi oluşturun:
 
-| Field | Type | Description |
+| Alan | Tip | Açıklama |
 |-------|------|-------------|
-| `deviceId` | String | The wallet ID |
-| `timestamp` | String | ISO 8601 format: `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'` |
+| `deviceId` | String | Cüzdan ID'si |
+| `timestamp` | String | ISO 8601 formatı: `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'` |
 
-**Example:**
+**Örnek:**
 
 ```json
 {
@@ -65,22 +65,22 @@ Create a JSON payload with the following fields:
 }
 ```
 
-### 2. Encryption
+### 2. Şifreleme
 
-Encrypt the JSON string using RSA:
+JSON dizesini RSA kullanarak şifreleyin:
 
-| Parameter | Value |
+| Parametre | Değer |
 |-----------|-------|
-| Algorithm | RSA |
-| Mode | ECB |
-| Padding | PKCS1Padding (PKCS#1 v1.5) |
-| Key | Wallet's RSA Public Key (X.509 encoded) |
+| Algoritma | RSA |
+| Mod | ECB |
+| Dolgu (Padding) | PKCS1Padding (PKCS#1 v1.5) |
+| Anahtar | Cüzdanın RSA Ortak Anahtarı (X.509 kodlu) |
 
-### 3. Encoding
+### 3. Kodlama
 
-Base64 encode the encrypted byte array.
+Şifrelenmiş bayt dizisini Base64 ile kodlayın.
 
-### Reference Implementations
+### Referans Uygulamalar
 
 <Tabs>
   <TabItem value="js" label="JavaScript" default>

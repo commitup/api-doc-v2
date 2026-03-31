@@ -4,21 +4,21 @@ sidebar_position: 5
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 
-# Relationship with Sender
+# Отношения с отправителем
 
-List of relationships used in the `relationshipWithSenderId` field of the validate request.
+Список отношений, используемых в поле `relationshipWithSenderId` запроса на проверку.
 
 <ApiEndpoint method="GET" url="/mt-api/V2/moneytransfercommon/relationship-with-sender-list" />
 
-:::info Static List
-This is a static list that rarely changes. You do not need to call the endpoint for every transaction — you can safely hardcode these values. If any changes are made, they will be communicated in advance.
+:::info Статический список
+Это статический список, который редко меняется. Вам не нужно вызывать конечную точку для каждой транзакции — вы можете смело прописывать эти значения в коде. О любых изменениях будет сообщено заранее.
 :::
 
-| ID | Relationship |
+| ID | Отношения |
 | :--- | :--- |
-| 1 | Child |
-| 2 | Spouse |
-| 3 | Parent |
-| 4 | Friend |
-| 5 | Work Friend |
-| 6 | Brother/Sister |
+| 1 | Ребенок |
+| 2 | Супруг(а) |
+| 3 | Родитель |
+| 4 | Друг |
+| 5 | Коллега по работе |
+| 6 | Брат/Сестра |

@@ -7,17 +7,17 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Deposits & Withdrawals
+# Депозиты и Вывод средств
 
-Manage funds entering and leaving the wallet via cash or master account operations.
+Управляйте средствами, поступающими в кошелек и покидающими его, через кассовые операции или операции с основным счетом.
 
-## Cash Drop (Deposit)
-For depositing cash into the wallet using a PIN from a supported remittance firm.
+## Внесение наличных (Депозит)
+Для внесения наличных в кошелек с использованием ПИН-кода от поддерживаемой системы денежных переводов.
 
-### 1. Validate Payment
+### 1. Проверка платежа
 <ApiEndpoint method="POST" url="/wallet/payment/validate" />
 
-**Request Example:**
+**Пример запроса:**
 ```json
 {
   "externalFirmCode": 47,
@@ -25,18 +25,18 @@ For depositing cash into the wallet using a PIN from a supported remittance firm
 }
 ```
 
-### 2. Confirm Payment
+### 2. Подтверждение платежа
 <ApiEndpoint method="POST" url="/wallet/payment/confirm" />
 
 ---
 
-## Debit (From Wallet to Master Account)
-Withdraw funds from the wallet to your master account.
+## Дебет (Из кошелька на основной счет)
+Вывод средств из кошелька на ваш основной счет.
 
-### 1. Validate Debit
+### 1. Проверка дебета
 <ApiEndpoint method="POST" url="/wallet/debit/validate" />
 
-**Request Example:**
+**Пример запроса:**
 ```json
 {
   "amount": 170.50,
@@ -45,16 +45,16 @@ Withdraw funds from the wallet to your master account.
 }
 ```
 
-### 2. Confirm Debit
+### 2. Подтверждение дебета
 <ApiEndpoint method="POST" url="/wallet/debit/confirm" />
 
 ---
 
-## Credit (From Master Account to Wallet)
-Deposit funds from your master account into a specific wallet.
+## Кредит (С основного счета в кошелек)
+Внесение средств с вашего основного счета в конкретный кошелек.
 
-### 1. Validate Credit
+### 1. Проверка кредита
 <ApiEndpoint method="POST" url="/wallet/credit/validate" />
 
-### 2. Confirm Credit
+### 2. Подтверждение кредита
 <ApiEndpoint method="POST" url="/wallet/credit/confirm" />

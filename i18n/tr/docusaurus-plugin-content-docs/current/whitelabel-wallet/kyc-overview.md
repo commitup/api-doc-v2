@@ -7,23 +7,23 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# KYC Overview
+# KYC Genel Bakış
 
-KYC (Know Your Customer) verification is required to upgrade wallets from `UN_CONFIRMED` to `CONFIRMED` level. There are two methods available:
+Cüzdanları `UN_CONFIRMED` (ONAYLANMAMIŞ) seviyesinden `CONFIRMED` (ONAYLANMIŞ) seviyesine yükseltmek için KYC (Müşterini Tanı) doğrulaması gereklidir. Mevcut iki yöntem vardır:
 
-### Manual KYC
-The traditional verification method where users submit identity documents and personal information. After submission:
-1. Documents are reviewed manually by PayPorter's compliance team
-2. User is required to visit a physical location for agreement signing
-3. Status progresses through `WAITING_TO_PHYSICAL_LOCATION` → `WAITING_APPROVAL` → `APPROVED`/`REJECTED`
+### Manuel KYC
+Kullanıcıların kimlik belgelerini ve kişisel bilgilerini sunduğu geleneksel doğrulama yöntemi. Gönderimden sonra:
+1. Belgeler PayPorter'ın uyum ekibi tarafından manuel olarak incelenir
+2. Kullanıcının sözleşme imzalaması için fiziksel bir noktayı ziyaret etmesi gerekir
+3. Durum şu sırayla ilerler: `WAITING_TO_PHYSICAL_LOCATION` (FIZIKSEL_LOKASYON_BEKLENIYOR) → `WAITING_APPROVAL` (ONAY_BEKLENIYOR) → `APPROVED` (ONAYLANDI)/`REJECTED` (REDDEDILDI)
 
-### Digital KYC (Recommended)
-SDK-based automated verification using mobile device capabilities:
-1. Real-time ID document capture and validation
-2. NFC chip reading for enhanced security
-3. Liveness detection to prevent fraud
-4. Faster approval with minimal manual intervention
+### Dijital KYC (Önerilen)
+Mobil cihaz özelliklerini kullanan SDK tabanlı otomatik doğrulama:
+1. Gerçek zamanlı kimlik belgesi yakalama ve doğrulama
+2. Artırılmış güvenlik için NFC çip okuma
+3. Dolandırıcılığı önlemek için canlılık tespiti (liveness)
+4. Minimum manuel müdahale ile daha hızlı onay
 
-:::tip Recommendation
-Digital KYC provides faster processing times and better user experience. Use Manual KYC only when digital verification is not available on the user's device.
+:::tip Öneri
+Dijital KYC daha hızlı işlem süreleri ve daha iyi kullanıcı deneyimi sağlar. Manuel KYC'yi yalnızca kullanıcının cihazında dijital doğrulama mevcut olmadığında kullanın.
 :::

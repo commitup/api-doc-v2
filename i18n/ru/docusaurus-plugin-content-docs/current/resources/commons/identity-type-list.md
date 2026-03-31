@@ -4,26 +4,26 @@ sidebar_position: 1
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 
-# Identity Type List
+# Список типов документов
 
-List of identity document types used in the `identityTypeId` field of the [Person Object](../person-object).
+Список типов документов, удостоверяющих личность, используемых в поле `identityTypeId` объекта [Person Object](../person-object).
 
 <ApiEndpoint method="GET" url="/mt-api/V2/moneytransfercommon/identity-type-list" />
 
-:::info Static List
-This is a static list that rarely changes. You do not need to call the endpoint for every transaction — you can safely hardcode these values. If any changes are made, they will be communicated in advance.
+:::info Статический список
+Это статический список, который редко меняется. Вам не нужно вызывать конечную точку для каждой транзакции — вы можете смело прописывать эти значения в коде. О любых изменениях будет сообщено заранее.
 :::
 
-| ID | Name |
+| ID | Название |
 | :--- | :--- |
-| 1 | Passport |
-| 2 | Driving License |
-| 3 | Identity Card |
-| 4 | Foreign Identity Card |
-| 5 | New Identity Card |
-| 11 | National ID Document |
-| 14 | Residence Document |
-| 33 | Ex-Citizen/Blue Identity |
-| 61 | Northern Cyprus Identity |
-| 62 | Temporary Protection Document |
-| 63 | Seafarer Identity |
+| 1 | Паспорт |
+| 2 | Водительское удостоверение |
+| 3 | Удостоверение личности (ID-карта) |
+| 4 | Удостоверение личности иностранца |
+| 5 | Новое удостоверение личности (ID-карта) |
+| 11 | Национальное удостоверение личности |
+| 14 | Вид на жительство |
+| 33 | Синяя карта (для бывших граждан) |
+| 61 | Удостоверение личности Северного Кипра |
+| 62 | Документ о временной защите |
+| 63 | Удостоверение личности моряка |

@@ -7,80 +7,80 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Card Operations
+# Kart İşlemleri
 
-Comprehensive management for virtual and physical (no-name) cards linked to the wallet.
+Cüzdana bağlı sanal ve fiziksel (isimsiz) kartlar için kapsamlı yönetim.
 
-## Card Inventory
+## Kart Envanteri
 <ApiEndpoint method="GET" url="/wallet/cards" />
 
-Returns all cards associated with the wallet.
+Cüzdanla ilişkili tüm kartları döndürür.
 
 ---
 
-## Creation & Activation
+## Oluşturma ve Aktivasyon
 
-### Create Virtual Card
+### Sanal Kart Oluştur
 <ApiEndpoint method="POST" url="/wallet/cards/virtual" />
 
-### Personalize No-Name Card
+### İsimsiz Kartı Kişiselleştir
 <ApiEndpoint method="POST" url="/wallet/cards/no-name" />
 
 ---
 
-## Security & Access
+## Güvenlik ve Erişim
 
-### Get Security Data (CVV/Expiry)
+### Güvenlik Verilerini Al (CVV/Son Kullanma)
 <ApiEndpoint method="GET" url="/wallet/cards/{cardId}/security-data" />
 
-### Set/Change Card PIN
+### Kart PIN Belirle/Değiştir
 <ApiEndpoint method="POST" url="/wallet/cards/{cardId}/set-pin" />
 
 ---
 
-## Limits & Controls
+## Limitler ve Kontroller
 
-### Management Authorization
+### Yönetim Yetkilendirmesi
 <ApiEndpoint method="POST" url="/wallet/cards/{cardId}/auth-info" />
 
-Controls features like `moto`, `contactless`, `cash`, `international`, and `ecom`.
+`moto`, `temassız`, `nakit`, `yurt dışı` ve `e-ticaret` gibi özellikleri kontrol eder.
 
-### Transaction Limits
+### İşlem Limitleri
 <ApiEndpoint method="POST" url="/wallet/cards/{cardId}/limit-info" />
 
-Set `dailyLimit`, `weeklyLimit`, and `monthlyLimit`.
+`günlükLimit`, `haftalıkLimit` ve `aylıkLimit` belirleyin.
 
 ---
 
-## Status Management
+## Durum Yönetimi
 
-### Temporary Close/Open
+### Geçici Kapat/Aç
 <ApiEndpoint method="POST" url="/wallet/cards/{cardId}/temporally-close/{isClose}" />
 
-### Cancel Card (Permanent)
+### Kartı İptal Et (Kalıcı)
 <ApiEndpoint method="POST" url="/wallet/cards/{cardId}/cancel" />
 
 ---
 
-## Reference Lists
+## Referans Listeleri
 
 <Tabs>
-  <TabItem value="type" label="Card Types" default>
+  <TabItem value="type" label="Kart Tipleri" default>
 
-| Code | Description |
+| Kod | Açıklama |
 |------|-------------|
-| `VIRTUAL` | Digital-only card |
-| `NO_NAME` | Physical card without printed name |
+| `VIRTUAL` | Sadece dijital kart |
+| `NO_NAME` | Üzerinde isim yazılı olmayan fiziksel kart |
 
   </TabItem>
-  <TabItem value="status" label="Card Statuses">
+  <TabItem value="status" label="Kart Durumları">
 
-| Code | Description |
+| Kod | Açıklama |
 |------|-------------|
-| `ACTIVE` | Ready for use |
-| `TEMPORARY_CLOSED` | Locked by user |
-| `CANCELLED` | Permanently disabled |
-| `LOST_STOLEN` | Reported missing |
+| `ACTIVE` | Kullanıma hazır |
+| `TEMPORARY_CLOSED` | Kullanıcı tarafından kilitlendi |
+| `CANCELLED` | Kalıcı olarak devre dışı bırakıldı |
+| `LOST_STOLEN` | Kayıp/Çalıntı ihbarı yapıldı |
 
   </TabItem>
 

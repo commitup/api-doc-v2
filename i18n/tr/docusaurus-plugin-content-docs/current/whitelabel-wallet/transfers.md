@@ -7,31 +7,31 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Internal Transfers
+# Dahili Transferler
 
-Send money between wallets within the same whitelabel system.
+Aynı whitelabel sistemi içindeki cüzdanlar arasında para gönderin.
 
-## 1. Validate Transfer
+## 1. Transferi Doğrula
 <ApiEndpoint method="POST" url="/wallet/transfer/validate" />
 
-Checks if the destination wallet exists and if the source has sufficient balance.
+Hedef cüzdanın mevcut olup olmadığını ve kaynağın yeterli bakiyesi olup olmadığını kontrol eder.
 
-**Request Example:**
+**İstek Örneği:**
 ```json
 {
   "toWalletId": 13359415,
   "amount": 12.25,
   "currency": "TRY",
-  "comment": "Test transfer"
+  "comment": "Test transferi"
 }
 ```
 
-## 2. Confirm Transfer
+## 2. Transferi Onayla
 <ApiEndpoint method="POST" url="/wallet/transfer/confirm" />
 
-Executes the transfer using the `transactionId` obtained from the validation step.
+Doğrulama adımından elde edilen `transactionId`'yi kullanarak transferi gerçekleştirir.
 
-**Request Example:**
+**İstek Örneği:**
 ```json
 {
   "transactionId": "f66ef144-85cf-43a6-a3cd-bc4e1f858fd1"

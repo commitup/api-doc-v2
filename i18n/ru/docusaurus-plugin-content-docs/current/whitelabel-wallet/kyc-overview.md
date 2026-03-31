@@ -7,23 +7,23 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# KYC Overview
+# Обзор KYC
 
-KYC (Know Your Customer) verification is required to upgrade wallets from `UN_CONFIRMED` to `CONFIRMED` level. There are two methods available:
+Верификация KYC (Знай своего клиента) необходима для повышения уровня кошелька с `UN_CONFIRMED` до `CONFIRMED`. Доступны два метода:
 
-### Manual KYC
-The traditional verification method where users submit identity documents and personal information. After submission:
-1. Documents are reviewed manually by PayPorter's compliance team
-2. User is required to visit a physical location for agreement signing
-3. Status progresses through `WAITING_TO_PHYSICAL_LOCATION` → `WAITING_APPROVAL` → `APPROVED`/`REJECTED`
+### Ручной KYC (Manual KYC)
+Традиционный метод верификации, при котором пользователи предоставляют документы, удостоверяющие личность, и личную информацию. После подачи:
+1. Документы проверяются вручную отделом комплаенса PayPorter.
+2. Пользователю необходимо посетить физический офис для подписания договора.
+3. Статус проходит через этапы `WAITING_TO_PHYSICAL_LOCATION` → `WAITING_APPROVAL` → `APPROVED`/`REJECTED`.
 
-### Digital KYC (Recommended)
-SDK-based automated verification using mobile device capabilities:
-1. Real-time ID document capture and validation
-2. NFC chip reading for enhanced security
-3. Liveness detection to prevent fraud
-4. Faster approval with minimal manual intervention
+### Цифровой KYC (Digital KYC - Рекомендуется)
+Автоматизированная верификация на основе SDK с использованием мобильного устройства:
+1. Захват и проверка документов, удостоверяющих личность, в режиме реального времени.
+2. Чтение чипа NFC для повышения безопасности.
+3. Определение "живости" (Liveness detection) для предотвращения мошенничества.
+4. Более быстрое одобрение с минимальным ручным вмешательством.
 
-:::tip Recommendation
-Digital KYC provides faster processing times and better user experience. Use Manual KYC only when digital verification is not available on the user's device.
+:::tip Рекомендация
+Цифровой KYC обеспечивает более быструю обработку и лучший пользовательский опыт. Используйте ручной KYC только в том случае, если цифровая верификация недоступна на устройстве пользователя.
 :::

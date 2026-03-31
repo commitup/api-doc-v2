@@ -7,17 +7,17 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Deposits & Withdrawals
+# Yatırma ve Çekme
 
-Manage funds entering and leaving the wallet via cash or master account operations.
+Nakit veya ana hesap işlemleri yoluyla cüzdana giren ve çıkan fonları yönetin.
 
-## Cash Drop (Deposit)
-For depositing cash into the wallet using a PIN from a supported remittance firm.
+## Nakit Girişi (Para Yatırma)
+Desteklenen bir gönderim firmasından alınan PIN kodunu kullanarak cüzdana nakit yatırmak için kullanılır.
 
-### 1. Validate Payment
+### 1. Ödemeyi Doğrula
 <ApiEndpoint method="POST" url="/wallet/payment/validate" />
 
-**Request Example:**
+**İstek Örneği:**
 ```json
 {
   "externalFirmCode": 47,
@@ -25,18 +25,18 @@ For depositing cash into the wallet using a PIN from a supported remittance firm
 }
 ```
 
-### 2. Confirm Payment
+### 2. Ödemeyi Onayla
 <ApiEndpoint method="POST" url="/wallet/payment/confirm" />
 
 ---
 
-## Debit (From Wallet to Master Account)
-Withdraw funds from the wallet to your master account.
+## Borç (Cüzdandan Ana Hesaba)
+Cüzdanınızdaki fonları ana hesabınıza çekin.
 
-### 1. Validate Debit
+### 1. Borç İşlemini Doğrula
 <ApiEndpoint method="POST" url="/wallet/debit/validate" />
 
-**Request Example:**
+**İstek Örneği:**
 ```json
 {
   "amount": 170.50,
@@ -45,16 +45,16 @@ Withdraw funds from the wallet to your master account.
 }
 ```
 
-### 2. Confirm Debit
+### 2. Borç İşlemini Onayla
 <ApiEndpoint method="POST" url="/wallet/debit/confirm" />
 
 ---
 
-## Credit (From Master Account to Wallet)
-Deposit funds from your master account into a specific wallet.
+## Alacak (Ana Hesaptan Cüzdana)
+Ana hesabınızdaki fonları belirli bir cüzdana yatırın.
 
-### 1. Validate Credit
+### 1. Alacak İşlemini Doğrula
 <ApiEndpoint method="POST" url="/wallet/credit/validate" />
 
-### 2. Confirm Credit
+### 2. Alacak İşlemini Onayla
 <ApiEndpoint method="POST" url="/wallet/credit/confirm" />

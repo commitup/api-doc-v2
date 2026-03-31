@@ -7,19 +7,19 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Digital KYC (SDK-Based)
+# Dijital KYC (SDK Tabanlı)
 
-Automated verification using mobile SDK integration for real-time ID capture, NFC reading, and liveness detection.
+Gerçek zamanlı kimlik yakalama, NFC okuma ve canlılık tespiti (liveness) için mobil SDK entegrasyonu kullanan otomatik doğrulama.
 
 :::important
-The client must check `status` and `currentVerificationType` fields in each response to determine the next step. Continue submitting verifications until `status` is no longer `IN_PROGRESS`.
+İstemci, bir sonraki adımı belirlemek için her yanıttaki `status` ve `currentVerificationType` alanlarını kontrol etmelidir. `status` artık `IN_PROGRESS` olmayana kadar doğrulamaları göndermeye devam edin.
 :::
 
-## Digital KYC Flow
+## Dijital KYC Akışı
 
 ```mermaid
 graph TD
-    A[Start Session /start] --> B{Check currentVerificationType}
+    A[Oturumu Başlat /start] --> B{currentVerificationType Kontrolü}
     B -- ID_FRONT --> C[POST /id-front]
     C --> B
     B -- ID_BACK --> D[POST /id-back]
@@ -29,16 +29,16 @@ graph TD
     B -- LIVENESS --> F[POST /liveliness]
     F --> B
     B -- ADDRESS_DOCUMENT --> G[POST /address-and-survey]
-    G --> H[Final Status Check]
+    G --> H[Final Durum Kontrolü]
 ```
 
 ---
 
-## SDK Configuration
+## SDK Yapılandırması
 
 ### iOS
-- **SPM**: `https://github.com/Techsign/TechsignKYC` (version `2.9.0-wrapper`)
-- Components: `RKYC_iOS` (liveness), `passport_reader` (NFC), `id_card_detection_ios_wrapper` (ID capture)
+- **SPM**: `https://github.com/Techsign/TechsignKYC` (versiyon `2.9.0-wrapper`)
+- Bileşenler: `RKYC_iOS` (liveness), `passport_reader` (NFC), `id_card_detection_ios_wrapper` (kimlik yakalama)
 
 ### Android
 ```gradle
@@ -49,46 +49,46 @@ implementation 'com.techsign:passport-reader-cnn:1.1.5'
 
 ---
 
-## Endpoints
+## Uç Noktalar
 
-### Start Session
+### Oturumu Başlat
 <ApiEndpoint method="POST" url="/wallet/kyc/start" />
 
-### Submit Media
-- **Front Side**: `POST /wallet/kyc/{kycId}/id-front`
-- **Back Side**: `POST /wallet/kyc/{kycId}/id-back`
-- **Hologram Video**: `POST /wallet/kyc/{kycId}/holo`
-- **NFC Data**: `POST /wallet/kyc/{kycId}/nfc`
-- **Liveness Video**: `POST /wallet/kyc/{kycId}/liveliness`
-- **Final Survey**: `POST /wallet/kyc/{kycId}/address-and-survey`
+### Medya Gönder
+- **Ön Yüz**: `POST /wallet/kyc/{kycId}/id-front`
+- **Arka Yüz**: `POST /wallet/kyc/{kycId}/id-back`
+- **Hologram Videosu**: `POST /wallet/kyc/{kycId}/holo`
+- **NFC Verisi**: `POST /wallet/kyc/{kycId}/nfc`
+- **Canlılık Videosu**: `POST /wallet/kyc/{kycId}/liveliness`
+- **Final Anketi**: `POST /wallet/kyc/{kycId}/address-and-survey`
 
-### NFC Error Handling
+### NFC Hata Yönetimi
 <ApiEndpoint method="POST" url="/wallet/kyc/{kycId}/nfc/error" />
 
 ---
 
-## Response Reference
+## Yanıt Referansı
 
 <Tabs>
-  <TabItem value="status" label="Digital KYC Status" default>
+  <TabItem value="status" label="Dijital KYC Durumu" default>
 
-| Code | Description |
+| Kod | Açıklama |
 |------|-------------|
-| `IN_PROGRESS` | Verification steps ongoing |
-| `FAILED` | Process failed (requires restart) |
-| `WAITING_FOR_BANK_TRANSFER` | Requires bank transfer verification |
-| `WAITING_APPROVAL` | Under manual compliance review |
-| `APPROVED` | Verification successful |
+| `IN_PROGRESS` | Doğrulama adımları devam ediyor |
+| `FAILED` | İşlem başarısız oldu (yeniden başlatma gerektirir) |
+| `WAITING_FOR_BANK_TRANSFER` | Banka transferi doğrulaması gerekiyor |
+| `WAITING_APPROVAL` | Manuel uyum incelemesinde |
+| `APPROVED` | Doğrulama başarılı |
 
   </TabItem>
-  <TabItem value="errors" label="Failure Codes">
+  <TabItem value="errors" label="Hata Kodları">
 
-| Code | Reason |
+| Kod | Neden |
 |------|--------|
-| `THRESHOLDS_NOT_MET` | Image quality/match too low |
-| `ID_EXPIRED` | Document is not valid |
-| `NFC_NO_CONNECTION` | Chip could not be read |
-| `RETRY_COUNT_EXCEEDED` | Too many failed attempts |
+| `THRESHOLDS_NOT_MET` | Görüntü kalitesi/eşleşme çok düşük |
+| `ID_EXPIRED` | Belge geçerli değil |
+| `NFC_NO_CONNECTION` | Çip okunamadı |
+| `RETRY_COUNT_EXCEEDED` | Çok fazla başarısız deneme |
 
   </TabItem>
 

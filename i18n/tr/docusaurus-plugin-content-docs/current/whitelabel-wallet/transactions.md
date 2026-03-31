@@ -7,9 +7,9 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Transaction History
+# İşlem Geçmişi
 
-Retrieve a list of transactions for the authenticated wallet.
+Kimliği doğrulanmış cüzdan için işlemlerin listesini alın.
 
 <ApiEndpoint method="POST" url="/wallet/transactions" />
 
@@ -22,7 +22,7 @@ Retrieve a list of transactions for the authenticated wallet.
 }
 ```
 
-### Response
+### Yanıt
 
 <ApiResponseSelector>
 

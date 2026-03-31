@@ -7,34 +7,34 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Wallet Registration
+# Cüzdan Kaydı
 
-### Register and Get Access Key
+### Kaydol ve Erişim Anahtarını Al
 
-Creates a new wallet and returns the access key for secure data generation.
+Yeni bir cüzdan oluşturur ve güvenli veri üretimi için erişim anahtarını döndürür.
 
 <ApiEndpoint method="POST" url="/wallet/register" />
 
-:::info Authentication
-Requires **API Key** headers. Use corporate wallet credentials in the `X-Wallet-Id` and `X-Security-Key` headers to register individual wallets.
+:::info Kimlik Doğrulama
+**API Anahtarı** başlıklarını gerektirir. Bireysel cüzdanları kaydetmek için `X-Wallet-Id` ve `X-Security-Key` başlıklarında kurumsal cüzdan kimlik bilgilerini kullanın.
 :::
 
-**Request Parameters:**
+**İstek Parametreleri:**
 
 <Tabs>
-  <TabItem value="fields" label="Request Fields" default>
+  <TabItem value="fields" label="İstek Alanları" default>
 
-| Field | Type | Required | Description |
+| Alan | Tip | Zorunlu | Açıklama |
 |-------|------|----------|-------------|
-| tenantUserId | String | Yes | Unique identifier for the user in your system. |
-| firstName | String | Yes | User's first name. |
-| lastName | String | Yes | User's last name. |
-| mail | String | Yes | User's email address. |
-| phoneCountryCode | String | Yes | ISO country code (e.g., `TUR`). |
-| phoneNumber | String | Yes | User's mobile phone number. |
+| tenantUserId | String | Evet | Sisteminizdeki kullanıcı için benzersiz tanımlayıcı. |
+| firstName | String | Evet | Kullanıcının adı. |
+| lastName | String | Evet | Kullanıcının soyadı. |
+| mail | String | Evet | Kullanıcının e-posta adresi. |
+| phoneCountryCode | String | Evet | ISO ülke kodu (örn. `TUR`). |
+| phoneNumber | String | Evet | Kullanıcının cep telefonu numarası. |
 
   </TabItem>
-  <TabItem value="example" label="Example Request">
+  <TabItem value="example" label="Örnek İstek">
 
 ```json
 {
@@ -51,11 +51,11 @@ Requires **API Key** headers. Use corporate wallet credentials in the `X-Wallet-
 
 </Tabs>
 
-### Response
+### Yanıt
 
 <ApiResponseSelector>
 
-```json status="200" title="Success"
+```json status="200" title="Başarılı"
 {
   "tenantUserId": "ABC123XYZ",
   "walletId": "1234567890",
@@ -65,6 +65,6 @@ Requires **API Key** headers. Use corporate wallet credentials in the `X-Wallet-
 
 </ApiResponseSelector>
 
-:::warning Important
-Store the `accessKey` securely. It is required to encrypt payloads for subsequent wallet-bound requests (as the `X-Security-Key` header).
+:::warning Önemli
+`accessKey`'i güvenli bir şekilde saklayın. Sonraki cüzdan bağlantılı istekler için (`X-Security-Key` başlığı olarak) yükleri şifrelemek için gereklidir.
 :::

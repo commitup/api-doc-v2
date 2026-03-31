@@ -7,41 +7,41 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Internal Transfers
+# Внутренние переводы
 
-Send money between wallets within the same whitelabel system.
+Перевод денег между кошельками внутри одной системы whitelabel.
 
-## 1. Validate Transfer
+## 1. Проверка перевода
 <ApiEndpoint method="POST" url="/wallet/transfer/validate" />
 
-Checks if the destination wallet exists and if the source has sufficient balance.
+Проверяет, существует ли целевой кошелек и достаточно ли средств на балансе отправителя.
 
-**Request Example:**
+**Пример запроса:**
 ```json
 {
   "toWalletId": 13359415,
   "amount": 12.25,
   "currency": "TRY",
-  "comment": "Test transfer"
+  "comment": "Тестовый перевод"
 }
 ```
 
-## 2. Confirm Transfer
+## 2. Подтверждение перевода
 <ApiEndpoint method="POST" url="/wallet/transfer/confirm" />
 
-Executes the transfer using the `transactionId` obtained from the validation step.
+Выполняет перевод, используя `transactionId`, полученный на этапе проверки.
 
-**Request Example:**
+**Пример запроса:**
 ```json
 {
   "transactionId": "f66ef144-85cf-43a6-a3cd-bc4e1f858fd1"
 }
 ```
 
-### Response
+### Ответ
 <ApiResponseSelector>
 
-```json status="200" title="Success"
+```json status="200" title="Успешно"
 {
   "transferReference": "47004897230",
   "transactionId": "f66ef144-85cf-43a6-a3cd-bc4e1f858fd1",

@@ -4,21 +4,21 @@ sidebar_position: 5
 
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 
-# Relationship with Sender
+# Gönderen ile İlişki
 
-List of relationships used in the `relationshipWithSenderId` field of the validate request.
+Doğrulama (validate) isteğinin `relationshipWithSenderId` alanında kullanılan ilişkilerin listesi.
 
 <ApiEndpoint method="GET" url="/mt-api/V2/moneytransfercommon/relationship-with-sender-list" />
 
-:::info Static List
-This is a static list that rarely changes. You do not need to call the endpoint for every transaction — you can safely hardcode these values. If any changes are made, they will be communicated in advance.
+:::info Statik Liste
+Bu, nadiren değişen statik bir listedir. Her işlem için uç noktayı çağırmanıza gerek yoktur — bu değerleri güvenle sabit kodlayabilirsiniz. Herhangi bir değişiklik olduğunda önceden haber verilecektir.
 :::
 
-| ID | Relationship |
+| ID | İlişki |
 | :--- | :--- |
-| 1 | Child |
-| 2 | Spouse |
-| 3 | Parent |
-| 4 | Friend |
-| 5 | Work Friend |
-| 6 | Brother/Sister |
+| 1 | Çocuk |
+| 2 | Eş |
+| 3 | Ebeveyn |
+| 4 | Arkadaş |
+| 5 | İş Arkadaşı |
+| 6 | Kardeş |

@@ -6,14 +6,14 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 
-# Webhooks
+# Webhook'lar
 
-Real-time notifications for transaction events, KYC status changes, and card authorizations.
+İşlem olayları, KYC durum değişiklikleri ve kart yetkilendirmeleri için gerçek zamanlı bildirimler.
 
-## Transaction Notification
-PayPorter sends a `POST` request to your configured webhook URL for every financial event.
+## İşlem Bildirimi
+PayPorter, her finansal olay için yapılandırılmış webhook URL'nize bir `POST` isteği gönderir.
 
-**Payload Example:**
+**Yük (Payload) Örneği:**
 ```json
 {
   "walletId": 13920918,
@@ -27,14 +27,14 @@ PayPorter sends a `POST` request to your configured webhook URL for every financ
 
 ---
 
-## Card Authorization
-Real-time authorization request for card transactions.
+## Kart Yetkilendirmesi
+Kart işlemleri için gerçek zamanlı yetkilendirme isteği.
 
 :::important
-Respond within **300ms** with `200 OK`. If no response is received, the transaction is **approved by default**.
+**300ms** içinde `200 OK` ile yanıt verin. Yanıt alınmazsa, işlem **varsayılan olarak onaylanır**.
 :::
 
-**Payload Example:**
+**Yük (Payload) Örneği:**
 ```json
 {
   "ref_number": "47004583620",
@@ -45,13 +45,13 @@ Respond within **300ms** with `200 OK`. If no response is received, the transact
 
 ---
 
-## KYC Status Change
-Notification when a wallet's KYC status is updated.
+## KYC Durum Değişikliği
+Bir cüzdanın KYC durumu güncellendiğinde gelen bildirim.
 
-**Approved Example:**
+**Onaylandı Örneği:**
 <ApiResponseSelector>
 
-```json title="KYC Approved"
+```json title="KYC Onaylandı"
 {
   "walletLevel": "CONFIRMED",
   "kycStatus": "APPROVED"
@@ -60,10 +60,10 @@ Notification when a wallet's KYC status is updated.
 
 </ApiResponseSelector>
 
-**Rejected Example:**
+**Reddedildi Örneği:**
 <ApiResponseSelector>
 
-```json title="KYC Rejected"
+```json title="KYC Reddedildi"
 {
   "walletLevel": "UN_CONFIRMED",
   "kycStatus": "REJECTED",
