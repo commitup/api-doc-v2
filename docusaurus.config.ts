@@ -1,36 +1,39 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+// @ts-ignore
+import customers from './customers.config.json';
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+const customersMap = customers as Record<string, any>;
+const CUSTOMER_ID = process.env.CUSTOMER_ID || 'payporter';
+let activeCustomer = customersMap[CUSTOMER_ID] || customersMap['payporter'];
+
+const hasAccess = (sidebarId: string) => {
+  // Eğer activeCustomer veya allowedSidebars yoksa, default olarak TRUE dön (Full versiyon mantığı)
+  if (!activeCustomer || !Array.isArray(activeCustomer.allowedSidebars)) {
+    return true; 
+  }
+  return activeCustomer.allowedSidebars.includes(sidebarId);
+};
 
 const config: Config = {
   title: 'Payporter API Platform',
   tagline: 'Comprehensive documentation and integration guides for Payporter',
   favicon: 'img/favicon.ico',
 
-  // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
-    v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    v4: true,
   },
 
-  // Set the production url of your site here
   url: 'https://commitup.github.io',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/api-doc-v2/',
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'commitup', // Usually your GitHub org/user name.
-  projectName: 'api-doc-v2', // Usually your repo name.
+  baseUrl: process.env.CUSTOMER_ID ? `/api-doc-v2/${process.env.CUSTOMER_ID}/` : '/api-doc-v2/',
+  
+  organizationName: 'commitup',
+  projectName: 'api-doc-v2',
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'tr', 'ru'],
@@ -40,9 +43,11 @@ const config: Config = {
       ru: { label: 'Русский' },
     },
   },
+  
   markdown: {
     mermaid: true,
   },
+  
   themes: [
     '@docusaurus/theme-mermaid',
     [
@@ -60,10 +65,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: {
           showReadingTime: true,
@@ -71,11 +73,7 @@ const config: Config = {
             type: ['rss', 'atom'],
             xslt: true,
           },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          // Useful options to enforce blogging best practices
+          editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
           onUntruncatedBlogPosts: 'warn',
@@ -88,7 +86,6 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     colorMode: {
       respectPrefersColorScheme: true,
@@ -100,45 +97,23 @@ const config: Config = {
         src: 'img/pp-logo.png',
       },
       items: [
-        {
-          type: 'docSidebar',
-          sidebarId: 'introductionSidebar',
-          position: 'left',
-          label: 'Introduction',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'eftSidebar',
-          position: 'left',
-          label: 'EFT to Turkish Banks',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'qrPaymentsSidebar',
-          position: 'left',
-          label: 'QR Payments',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'moneyTransfersSidebar',
-          position: 'left',
-          label: 'Money Transfers',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'whitelabelWalletSidebar',
-          position: 'left',
-          label: 'Whitelabel Wallet',
-        },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        // Dinamik Sidebar Linkleri
+        ...(hasAccess('introductionSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'introductionSidebar', position: 'left' as const, label: 'Introduction' }] : []),
+        ...(hasAccess('eftSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'eftSidebar', position: 'left' as const, label: 'EFT to Turkish Banks' }] : []),
+        ...(hasAccess('qrPaymentsSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'qrPaymentsSidebar', position: 'left' as const, label: 'QR Payments' }] : []),
+        ...(hasAccess('moneyTransfersSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'moneyTransfersSidebar', position: 'left' as const, label: 'Money Transfers' }] : []),
+        ...(hasAccess('whitelabelWalletSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'whitelabelWalletSidebar', position: 'left' as const, label: 'Whitelabel Wallet' }] : []),
+        ...(hasAccess('posApiSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'posApiSidebar', position: 'left' as const, label: 'POS API' }] : []),
+        
+        {to: '/blog', label: 'Blog', position: 'left' as const},
         {
           type: 'localeDropdown',
-          position: 'right',
+          position: 'right' as const,
         },
         {
           href: 'https://github.com/commitup/api-doc-v2',
           label: 'GitHub',
-          position: 'right',
+          position: 'right' as const,
         },
       ],
     },
@@ -148,30 +123,15 @@ const config: Config = {
         {
           title: 'Documentation',
           items: [
-            {
-              label: 'Introduction',
-              to: '/docs/introduction/intro',
-            },
-            {
-              label: 'EFT to Turkish Banks',
-              to: '/docs/eft-turkish-banks/intro',
-            },
-            {
-              label: 'QR Payments',
-              to: '/docs/qr-payments/intro',
-            },
-            {
-              label: 'Money Transfers',
-              to: '/docs/money-transfers/intro',
-            },
-            {
-              label: 'Whitelabel Wallet',
-              to: '/docs/whitelabel-wallet/intro',
-            },
-            {
-              label: 'Payments',
-              to: '/docs/payments/overview',
-            },
+            ...(hasAccess('introductionSidebar') ? [{ label: 'Introduction', to: '/docs/introduction/intro' }] : []),
+            ...(hasAccess('eftSidebar') ? [{ label: 'EFT to Turkish Banks', to: '/docs/eft-turkish-banks/intro' }] : []),
+            ...(hasAccess('qrPaymentsSidebar') ? [{ label: 'QR Payments', to: '/docs/qr-payments/intro' }] : []),
+            ...(hasAccess('moneyTransfersSidebar') ? [
+              { label: 'Money Transfers', to: '/docs/money-transfers/intro' },
+              { label: 'Payments', to: '/docs/payments/overview' }
+            ] : []),
+            ...(hasAccess('whitelabelWalletSidebar') ? [{ label: 'Whitelabel Wallet', to: '/docs/whitelabel-wallet/intro' }] : []),
+            ...(hasAccess('posApiSidebar') ? [{ label: 'POS API', to: '/docs/pos-api/intro' }] : []),
           ],
         },
         {

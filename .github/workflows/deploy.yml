@@ -25,19 +25,22 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22 # Lokalindeki sürümle eşitledik
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build website
-        run: npm run build
+      - name: Build All Tenants
+        # Burada "npm run build" yerine senin scriptini çalıştırıyoruz
+        run: node build-all.js 
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build
+          # ÖNEMLİ: Artik "build" klasörünü değil, 
+          # her şeyin toplandığı "dist" klasörünü yüklüyoruz.
+          path: dist
 
   deploy:
     name: Deploy to GitHub Pages

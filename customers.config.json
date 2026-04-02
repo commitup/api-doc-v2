@@ -1,0 +1,18 @@
+{
+  "payermax": {
+    "name": "Payermax",
+    "allowedSidebars": ["introductionSidebar", "eftSidebar"]
+  },
+  "commitup": {
+    "name": "commitup",
+    "allowedSidebars": ["introductionSidebar", "moneyTransfersSidebar", "qrPaymentsSidebar", "posApiSidebar"],
+    "excludedDocs": [
+      "money-transfers/to-card",
+      "money-transfers/to-wallet/get-holder"
+    ]
+  },
+  "payporter": {
+    "name": "Payporter",
+    "allowedSidebars": ["introductionSidebar", "eftSidebar", "qrPaymentsSidebar", "moneyTransfersSidebar", "whitelabelWalletSidebar", "posApiSidebar"]
+  }
+}
