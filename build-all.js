@@ -29,8 +29,8 @@ buildIds.forEach((id) => {
     return;
   }
 
-  // Taşıma: baseUrl ile uyumlu olması için dist/api-doc-v2/id yapısını kuruyoruz
-  const targetDir = path.join(DIST_DIR, BASE_PATH, id);
+  // Taşıma: baseUrl (/api-doc-v2/id/) ile uyumlu olması için dist/id yapısını kuruyoruz
+  const targetDir = path.join(DIST_DIR, id);
   fs.mkdirSync(targetDir, { recursive: true });
   
   // Build içeriğini hedef klasöre kopyala

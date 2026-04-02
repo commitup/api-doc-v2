@@ -30,9 +30,9 @@ const config: Config = {
   
   organizationName: 'commitup',
   projectName: 'api-doc-v2',
-  trailingSlash: true,
+  trailingSlash: false,
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
 
   i18n: {
     defaultLocale: 'en',
