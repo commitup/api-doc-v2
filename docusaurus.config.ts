@@ -30,7 +30,7 @@ const config: Config = {
   
   organizationName: 'commitup',
   projectName: 'api-doc-v2',
-  trailingSlash: false,
+  trailingSlash: true,
 
   onBrokenLinks: 'throw',
 
