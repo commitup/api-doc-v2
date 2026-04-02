@@ -1,49 +1,8 @@
-const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-
-// Müşteri listesini oku
-const customers = JSON.parse(fs.readFileSync('./customers.config.json', 'utf-8'));
 const DIST_DIR = path.join(__dirname, 'dist');
-const BASE_PATH = 'api-doc-v2';
+if (!fs.existsSync(DIST_DIR)) fs.mkdirSync(DIST_DIR);
 
-console.log('🚀 Starting multi-tenant build process...');
-
-// 1. Temizlik
-if (fs.existsSync(DIST_DIR)) {
-  console.log('🧹 Cleaning existing dist folder...');
-  fs.rmSync(DIST_DIR, { recursive: true, force: true });
-}
-fs.mkdirSync(DIST_DIR);
-
-// 2. Döngü
-const buildIds = Object.keys(customers);
-buildIds.forEach((id) => {
-  console.log(`\n--- BUILDING: ${id} (${customers[id].name}) ---`);
-  
-  // Build komutunu çalıştır (CUSTOMER_ID environment variable ile)
-  try {
-    execSync(`CUSTOMER_ID=${id} npm run build`, { stdio: 'inherit' });
-  } catch (error) {
-    console.error(`❌ Build failed for ${id}:`, error.message);
-    return;
-  }
-
-  // Taşıma: baseUrl (/api-doc-v2/id/) ile uyumlu olması için dist/id yapısını kuruyoruz
-  const targetDir = path.join(DIST_DIR, id);
-  fs.mkdirSync(targetDir, { recursive: true });
-  
-  // Build içeriğini hedef klasöre kopyala
-  const buildPath = path.join(__dirname, 'build');
-  if (fs.existsSync(buildPath)) {
-    fs.cpSync(buildPath, targetDir, { recursive: true });
-    console.log(`✅ Completed: ${id} -> dist/${BASE_PATH}/${id}`);
-  } else {
-    console.error(`❌ Build folder not found for ${id}`);
-  }
-});
-
-// 3. Root index.html oluştur (Güvenlik için listeleme kaldırıldı)
 const indexHtml = `
 <!DOCTYPE html>
 <html lang="en">
@@ -125,6 +84,4 @@ const indexHtml = `
 `;
 
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
-
-console.log('\n✨ All builds are ready in /dist folder!');
-console.log(`👉 Run 'npx serve dist' to view the landing page.`);
+console.log('✅ Generated restricted index.html in /dist');

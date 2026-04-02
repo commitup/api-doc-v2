@@ -4,6 +4,7 @@
 # Production
 /build
 /dist
+/local-preview
 
 # Generated files
 .docusaurus
