@@ -16,6 +16,41 @@ const hasAccess = (sidebarId: string) => {
   return activeCustomer.allowedSidebars.includes(sidebarId);
 };
 
+// Search plugin için hangi klasörlerin hangi sidebar ile ilişkili olduğunu tanımlıyoruz
+const sidebarToPathMap: Record<string, string[]> = {
+  introductionSidebar: ['introduction'],
+  eftSidebar: ['eft-turkish-banks'],
+  qrPaymentsSidebar: ['qr-payments'],
+  moneyTransfersSidebar: ['money-transfers', 'payments', 'resources'],
+  whitelabelWalletSidebar: ['whitelabel-wallet'],
+  posApiSidebar: ['pos-api'],
+};
+
+const calculatedIgnorePaths: (string | RegExp)[] = [];
+
+// Hem ana dil (en) hem de diğer dillerdeki (tr, ru vb.) doküman yollarını yakalamak için regex oluşturucu
+const createDocExcludeRegex = (path: string) => {
+  // Daha esnek eşleşme: docs/klasor-adi/ içeren herhangi bir route'u yakalar
+  // Başındaki / veya tr/docs/ kısımlarını da kapsar
+  return new RegExp(`docs/${path}(/.*)?$`, 'i');
+};
+
+// Müşterinin erişimi olmayan sidebar yollarını ignore listesine ekle
+Object.keys(sidebarToPathMap).forEach(sidebarId => {
+  if (!hasAccess(sidebarId)) {
+    sidebarToPathMap[sidebarId].forEach(path => {
+      calculatedIgnorePaths.push(createDocExcludeRegex(path));
+    });
+  }
+});
+
+// Explicit olarak hariç tutulan dokümanları ekle
+if (activeCustomer && Array.isArray(activeCustomer.excludedDocs)) {
+  activeCustomer.excludedDocs.forEach((path: string) => {
+    calculatedIgnorePaths.push(createDocExcludeRegex(path));
+  });
+}
+
 const config: Config = {
   title: 'Payporter API Platform',
   tagline: 'Comprehensive documentation and integration guides for Payporter',
@@ -55,6 +90,10 @@ const config: Config = {
       {
         hashed: true,
         language: ["en", "tr"],
+        indexDocs: true,
+        indexBlog: true,
+        indexPages: true,
+        ignoreFiles: calculatedIgnorePaths,
       },
     ],
   ],

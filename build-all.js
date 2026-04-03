@@ -21,6 +21,10 @@ const buildIds = Object.keys(customers);
 buildIds.forEach((id) => {
   console.log(`\n--- BUILDING: ${id} (${customers[id].name}) ---`);
   
+  // Clear old build artifacts and cache to prevent search leaks
+  console.log(`🧹 Clearing cache for ${id}...`);
+  execSync('npm run clear', { stdio: 'inherit' });
+  
   // Build komutunu çalıştır (CUSTOMER_ID environment variable ile)
   try {
     execSync(`CUSTOMER_ID=${id} npm run build`, { stdio: 'inherit' });
