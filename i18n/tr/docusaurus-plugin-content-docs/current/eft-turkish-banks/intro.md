@@ -29,3 +29,7 @@ EFT (Elektronik Fon Transferi), Türkiye'deki farklı bankalar arasındaki yerel
 1. Geçerli bir **Erişim Token'ı** (`/login` uç noktasından alınan).
 2. Operasyon hesabınızda yeterli bakiye.
 3. Alıcının **IBAN** numarası ve Tam Adı.
+
+## V1'den Geçiş
+
+**EFT API Versiyon 1** kullanan mevcut bir müşterimizseniz, uç nokta değişikliklerinin ve istek gövdesi güncellemelerinin ayrıntılı dökümü için lütfen **[Geçiş Kılavuzu'na](./migration-v1-v2)** bakın.

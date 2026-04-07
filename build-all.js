@@ -7,47 +7,44 @@ const customers = JSON.parse(fs.readFileSync('./customers.config.json', 'utf-8')
 const DIST_DIR = path.join(__dirname, 'dist');
 const BASE_PATH = 'api-doc-v2';
 
-console.log('🚀 Starting multi-tenant build process...');
+console.log('🚀 Starting optimized multi-tenant build process...');
 
-// 1. Temizlik
+// 1. Global Temizlik (Sadece bir kez)
+console.log('🧹 Clearing initial cache and dist folder...');
 if (fs.existsSync(DIST_DIR)) {
-  console.log('🧹 Cleaning existing dist folder...');
   fs.rmSync(DIST_DIR, { recursive: true, force: true });
 }
 fs.mkdirSync(DIST_DIR);
 
+try {
+  execSync('npm run clear', { stdio: 'inherit' });
+} catch (e) {
+  console.warn('⚠️ Clear cache failed, but continuing...');
+}
+
 // 2. Döngü
 const buildIds = Object.keys(customers);
-buildIds.forEach((id) => {
-  console.log(`\n--- BUILDING: ${id} (${customers[id].name}) ---`);
+const total = buildIds.length;
+
+buildIds.forEach((id, index) => {
+  const currentCount = index + 1;
+  console.log(`\n--- BUILDING [${currentCount}/${total}]: ${id} (${customers[id].name}) ---`);
   
-  // Clear old build artifacts and cache to prevent search leaks
-  console.log(`🧹 Clearing cache for ${id}...`);
-  execSync('npm run clear', { stdio: 'inherit' });
-  
-  // Build komutunu çalıştır (CUSTOMER_ID environment variable ile)
+  // Docusaurus build doğrudan hedef klasöre (dist/id) yapılabilir
+  const targetDir = path.join(DIST_DIR, id);
+  const relativeTargetDir = path.relative(__dirname, targetDir);
+
   try {
-    execSync(`CUSTOMER_ID=${id} npm run build`, { stdio: 'inherit' });
+    // CUSTOMER_ID environment variable ile build komutunu çalıştır
+    // --out-dir parametresi ile build/ klasörünü kullanmadan doğrudan dist altına yazıyoruz
+    execSync(`CUSTOMER_ID=${id} npx docusaurus build --out-dir "${relativeTargetDir}"`, { stdio: 'inherit' });
+    console.log(`✅ Completed: ${id} -> dist/${id}`);
   } catch (error) {
     console.error(`❌ Build failed for ${id}:`, error.message);
-    return;
-  }
-
-  // Taşıma: baseUrl (/api-doc-v2/id/) ile uyumlu olması için dist/id yapısını kuruyoruz
-  const targetDir = path.join(DIST_DIR, id);
-  fs.mkdirSync(targetDir, { recursive: true });
-  
-  // Build içeriğini hedef klasöre kopyala
-  const buildPath = path.join(__dirname, 'build');
-  if (fs.existsSync(buildPath)) {
-    fs.cpSync(buildPath, targetDir, { recursive: true });
-    console.log(`✅ Completed: ${id} -> dist/${BASE_PATH}/${id}`);
-  } else {
-    console.error(`❌ Build folder not found for ${id}`);
   }
 });
 
-// 3. Root index.html oluştur (Güvenlik için listeleme kaldırıldı)
+// 3. Root index.html oluştur
 const indexHtml = `
 <!DOCTYPE html>
 <html lang="en">

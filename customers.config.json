@@ -14,5 +14,9 @@
   "payporter": {
     "name": "Payporter",
     "allowedSidebars": ["introductionSidebar", "eftSidebar", "qrPaymentsSidebar", "moneyTransfersSidebar", "whitelabelWalletSidebar", "posApiSidebar"]
+  },
+  "eft-only": {
+    "name": "Eft Turkish Banks",
+    "allowedSidebars": ["introductionSidebar", "eftSidebar"]
   }
 }

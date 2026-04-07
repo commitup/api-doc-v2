@@ -80,6 +80,11 @@ const sidebars: SidebarsConfig = {
       value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
     },
     'eft-turkish-banks/error-codes',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'eft-turkish-banks/migration-v1-v2',
   ],
   qrPaymentsSidebar: [
     'qr-payments/intro',

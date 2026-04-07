@@ -51,6 +51,25 @@ if (activeCustomer && Array.isArray(activeCustomer.excludedDocs)) {
   });
 }
 
+// Docs plugin için hariç tutulacak dosyalar (glob pattern)
+const docsExclude: string[] = [];
+Object.keys(sidebarToPathMap).forEach(sidebarId => {
+  if (!hasAccess(sidebarId)) {
+    sidebarToPathMap[sidebarId].forEach(path => {
+      docsExclude.push(`${path}/**`);
+    });
+  }
+});
+
+// Explicit excluded docs'ları da ekle
+if (activeCustomer && Array.isArray(activeCustomer.excludedDocs)) {
+  activeCustomer.excludedDocs.forEach((path: string) => {
+    docsExclude.push(`${path}/**`);
+    docsExclude.push(`${path}.md`);
+    docsExclude.push(`${path}.mdx`);
+  });
+}
+
 const config: Config = {
   title: 'Payporter API Platform',
   tagline: 'Comprehensive documentation and integration guides for Payporter',
@@ -104,6 +123,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          exclude: docsExclude,
           editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: {

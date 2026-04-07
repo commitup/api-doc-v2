@@ -30,3 +30,6 @@ Ensure you have:
 2. Sufficient balance in your operating account.
 3. The recipient's **IBAN** and Full Name.
 
+## Migrating from V1
+
+If you are an existing customer using our **EFT API Version 1**, please refer to our **[Migration Guide](./migration-v1-v2)** for a detailed mapping of endpoint changes and request body updates.
