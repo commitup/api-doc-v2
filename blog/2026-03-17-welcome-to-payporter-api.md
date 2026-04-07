@@ -1,6 +1,6 @@
 ---
 slug: welcome-payporter-api
-title: Welcome to the New PayPorter API Portal
+title: New PayPorter API Portal
 authors:
   - system
 tags: [api, release]

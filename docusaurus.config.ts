@@ -158,10 +158,10 @@ const config: Config = {
       items: [
         // Dinamik Sidebar Linkleri
         ...(hasAccess('introductionSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'introductionSidebar', position: 'left' as const, label: 'Introduction' }] : []),
-        ...(hasAccess('eftSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'eftSidebar', position: 'left' as const, label: 'EFT to Turkish Banks' }] : []),
-        ...(hasAccess('qrPaymentsSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'qrPaymentsSidebar', position: 'left' as const, label: 'QR Payments' }] : []),
         ...(hasAccess('moneyTransfersSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'moneyTransfersSidebar', position: 'left' as const, label: 'Money Transfers' }] : []),
+        ...(hasAccess('eftSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'eftSidebar', position: 'left' as const, label: 'EFT to Turkish Banks' }] : []),
         ...(hasAccess('whitelabelWalletSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'whitelabelWalletSidebar', position: 'left' as const, label: 'Whitelabel Wallet' }] : []),
+        ...(hasAccess('qrPaymentsSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'qrPaymentsSidebar', position: 'left' as const, label: 'QR Payments' }] : []),
         ...(hasAccess('posApiSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'posApiSidebar', position: 'left' as const, label: 'POS API' }] : []),
         
         {to: '/blog', label: 'Blog', position: 'left' as const},

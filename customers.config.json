@@ -18,5 +18,9 @@
   "eft-only": {
     "name": "Eft Turkish Banks",
     "allowedSidebars": ["introductionSidebar", "eftSidebar"]
+  },
+  "mt": {
+    "name": "Money Transfer Only",
+    "allowedSidebars": ["introductionSidebar", "moneyTransfersSidebar"]
   }
 }
