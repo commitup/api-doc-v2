@@ -22,5 +22,17 @@
   "mt": {
     "name": "Money Transfer Only",
     "allowedSidebars": ["introductionSidebar", "moneyTransfersSidebar"]
+  },
+  "pos": {
+    "name": "POS API",
+    "allowedSidebars": ["introductionSidebar", "posApiSidebar"]
+  },
+  "qr": {
+    "name": "QR Payments",
+    "allowedSidebars": ["introductionSidebar", "qrPaymentsSidebar"]
+  },
+  "whitelabel": {
+    "name": "Whitelabel Wallet",
+    "allowedSidebars": ["introductionSidebar", "whitelabelWalletSidebar"]
   }
 }
