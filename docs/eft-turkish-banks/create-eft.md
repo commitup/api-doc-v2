@@ -104,6 +104,7 @@ Used for both senderInfo and receiverInfo fields.
 | firstName          | Sender and Receiver  | string | The participant's first name. |
 | lastName           | Sender and Receiver  | string | The participant's last name. |
 | middleName         | Optional             | string | The participant's middle name. |
+| nationalCountryCode| Sender             | string | Three-letter ISO 3166-1 alpha-3 country code. |  
 | birthDay           | Sender               | string | Date of birth in YYYY-MM-DD format. |
 | birthPlace         | Sender               | string | Place of birth. |
 | address            | Optional             | string | The participant's address. |

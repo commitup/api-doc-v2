@@ -524,6 +524,7 @@
     <a href="#authentication">Authentication</a>
     <a href="#secure-data">Secure Data</a>
     <a href="#transaction-types">Transaction Types</a>
+    <a href="#payment-object">Payment Object</a>
     <a href="#statuses">QR Code Statuses</a>
     <a href="#flow">Payment Flow</a>
     <a href="#refund-flow">Refund Flow</a>
@@ -570,7 +571,7 @@
             <tr>
               <td>1.0.1</td>
               <td>2026-04-08</td>
-              <td style="font-family: 'Inter', sans-serif;">Updated field requirements and refined length constraints for Read and Confirm APIs.</td>
+              <td style="font-family: 'Inter', sans-serif;">Added QR Code Payment Object section. Refined length constraints for Read and Confirm APIs. Standardized ISO 8601 date formats and specified decimal precision for amount. Removed merchantId field.</td>
             </tr>
             <tr>
               <td>1.0.0</td>
@@ -727,6 +728,123 @@
       <p>→ <a href="example.php" style="color: var(--accent);">PHP Implementation</a></p>
     </section>
 
+
+
+    <!-- ── PAYMENT OBJECT ───────────────────────────────────── -->
+    <section id="payment-object">
+      <h2>QR Code Payment Object</h2>
+      <p>The detailed transaction object returned by most QR code endpoints.</p>
+      <div class="table-wrap">
+        <table class="param-table">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Length</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>transactionId</td>
+              <td>String</td>
+              <td>255</td>
+              <td>PayPorter transaction ID</td>
+            </tr>
+            <tr>
+              <td>tenantReferenceId</td>
+              <td>String</td>
+              <td>100</td>
+              <td>Partner reference ID</td>
+            </tr>
+            <tr>
+              <td>tenantUserId</td>
+              <td>String</td>
+              <td>50</td>
+              <td>Identifier for the tenant's customer</td>
+            </tr>
+            <tr>
+              <td>parentTransactionId</td>
+              <td>String</td>
+              <td>255</td>
+              <td>Original transaction ID (for refunds)</td>
+            </tr>
+            <tr>
+              <td>transactionType</td>
+              <td>String</td>
+              <td>-</td>
+              <td>One of: <code>PAYMENT</code>, <code>REFUND</code></td>
+            </tr>
+            <tr>
+              <td>status</td>
+              <td>String</td>
+              <td>-</td>
+              <td>Current state (see <a href="#statuses">Statuses</a>)</td>
+            </tr>
+            <tr>
+              <td>amount</td>
+              <td>BigDecimal</td>
+              <td>9 (int), 2 (dec)</td>
+              <td>Transaction amount. Separator: <code>.</code></td>
+            </tr>
+            <tr>
+              <td>currency</td>
+              <td>String</td>
+              <td>3</td>
+              <td>ISO 4217 Currency Code (e.g. <code>TRY</code>)</td>
+            </tr>
+            <tr>
+              <td>qrGenerationDate</td>
+              <td>Date</td>
+              <td>-</td>
+              <td>ISO 8601 format (e.g. <code>2025-07-14T15:53:21.000+0300</code>)</td>
+            </tr>
+            <tr>
+              <td>qrExpireDate</td>
+              <td>Date</td>
+              <td>-</td>
+              <td>ISO 8601 format (e.g. <code>2025-07-14T15:53:21.000+0300</code>)</td>
+            </tr>
+            <tr>
+              <td>mcc</td>
+              <td>Integer</td>
+              <td>4</td>
+              <td>Merchant Category Code</td>
+            </tr>
+            <tr>
+              <td>merchantName</td>
+              <td>String</td>
+              <td>255</td>
+              <td>The name of the merchant</td>
+            </tr>
+            <tr>
+              <td>countryCode</td>
+              <td>String</td>
+              <td>2</td>
+              <td>ISO 3166 Country Code (e.g. <code>TR</code>)</td>
+            </tr>
+            <tr>
+              <td>merchantCity</td>
+              <td>String</td>
+              <td>255</td>
+              <td>The city of the merchant</td>
+            </tr>
+            <tr>
+              <td>terminalType</td>
+              <td>String</td>
+              <td>-</td>
+              <td>One of: <code>STATIC_QRCODE</code>, <code>DYNAMIC_QRCODE</code></td>
+            </tr>
+            <tr>
+              <td>terminalId</td>
+              <td>String</td>
+              <td>255</td>
+              <td>The terminal ID of the merchant</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
 
     <!-- ── TRANSACTION TYPES ─────────────────────────────────── -->
@@ -998,7 +1116,6 @@
   <span class="json-key">"qrGenerationDate"</span>: <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"qrExpireDate"</span>:     <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"currency"</span>:         <span class="json-str">"TRY"</span>,
-  <span class="json-key">"merchantId"</span>:       <span class="json-num">98765433210</span>,
   <span class="json-key">"mcc"</span>:              <span class="json-num">5411</span>,
   <span class="json-key">"merchantName"</span>:     <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:      <span class="json-str">"TR"</span>,
@@ -1019,7 +1136,6 @@
   <span class="json-key">"status"</span>:           <span class="json-str">"READ_QR"</span>,
   <span class="json-key">"amount"</span>:           <span class="json-num">11.50</span>,
   <span class="json-key">"currency"</span>:         <span class="json-str">"TRY"</span>,
-  <span class="json-key">"merchantId"</span>:       <span class="json-num">98765433210</span>,
   <span class="json-key">"mcc"</span>:              <span class="json-num">5411</span>,
   <span class="json-key">"merchantName"</span>:     <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:      <span class="json-str">"TR"</span>,
@@ -1077,8 +1193,8 @@
               <td>amount</td>
               <td>BigDecimal</td>
               <td><span class="required">Required</span></td>
-              <td>-</td>
-              <td>The transaction amount.</td>
+              <td>9 (int), 2 (dec)</td>
+              <td>Transaction amount. Left side is 9 digits, decimal part is 2 digits. Separator: <code>.</code></td>
             </tr>
             <tr>
               <td>tenantUserId</td>
@@ -1113,7 +1229,7 @@
               <td>String</td>
               <td><span class="optional">Optional</span></td>
               <td>10</td>
-              <td>The birth date of the tenant user (e.g. <code>28-12-1996</code>).</td>
+              <td>The birth date of the tenant user in ISO 8601 (<code>yyyy-MM-dd</code>) format.</td>
             </tr>
           </tbody>
         </table>
@@ -1130,7 +1246,7 @@
   <span class="json-key">"tenantName"</span>:         <span class="json-str">"Tahir"</span>,
   <span class="json-key">"tenantSurname"</span>:      <span class="json-str">"incedere"</span>,
   <span class="json-key">"tenantNationality"</span>:  <span class="json-str">"türkiye"</span>,
-  <span class="json-key">"tenantBirthDate"</span>:    <span class="json-str">"28-12-1996"</span>
+  <span class="json-key">"tenantBirthDate"</span>:    <span class="json-str">"1996-12-28"</span>
 }</pre>
       </div>
 
@@ -1148,7 +1264,6 @@
   <span class="json-key">"qrGenerationDate"</span>: <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"qrExpireDate"</span>:     <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"currency"</span>:         <span class="json-str">"TRY"</span>,
-  <span class="json-key">"merchantId"</span>:       <span class="json-num">98765433210</span>,
   <span class="json-key">"mcc"</span>:              <span class="json-num">5411</span>,
   <span class="json-key">"merchantName"</span>:     <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:      <span class="json-str">"TR"</span>,
@@ -1172,7 +1287,6 @@
   <span class="json-key">"status"</span>:           <span class="json-str">"IN_PROGRESS"</span>,
   <span class="json-key">"amount"</span>:           <span class="json-num">11.50</span>,
   <span class="json-key">"currency"</span>:         <span class="json-str">"TRY"</span>,
-  <span class="json-key">"merchantId"</span>:       <span class="json-num">98765433210</span>,
   <span class="json-key">"mcc"</span>:              <span class="json-num">5411</span>,
   <span class="json-key">"merchantName"</span>:     <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:      <span class="json-str">"TR"</span>,
@@ -1239,7 +1353,6 @@
   <span class="json-key">"qrGenerationDate"</span>:   <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"qrExpireDate"</span>:       <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"currency"</span>:           <span class="json-str">"TRY"</span>,
-  <span class="json-key">"merchantId"</span>:         <span class="json-num">98765433210</span>,
   <span class="json-key">"mcc"</span>:                <span class="json-num">5411</span>,
   <span class="json-key">"merchantName"</span>:       <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:        <span class="json-str">"TR"</span>,
@@ -1326,7 +1439,6 @@
   <span class="json-key">"qrGenerationDate"</span>:   <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"qrExpireDate"</span>:       <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"currency"</span>:           <span class="json-str">"TRY"</span>,
-  <span class="json-key">"merchantId"</span>:         <span class="json-num">98765433210</span>,
   <span class="json-key">"mcc"</span>:                <span class="json-num">5411</span>,
   <span class="json-key">"merchantName"</span>:       <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:        <span class="json-str">"TR"</span>,
@@ -1350,7 +1462,6 @@
   <span class="json-key">"qrGenerationDate"</span>:   <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"qrExpireDate"</span>:       <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
   <span class="json-key">"currency"</span>:           <span class="json-str">"TRY"</span>,
-  <span class="json-key">"merchantId"</span>:         <span class="json-num">98765433210</span>,
   <span class="json-key">"mcc"</span>:                <span class="json-num">5411</span>,
   <span class="json-key">"merchantName"</span>:       <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:        <span class="json-str">"TR"</span>
@@ -1494,12 +1605,14 @@
               <td>amount</td>
               <td>BigDecimal</td>
               <td><span class="required">Required</span></td>
-              <td>Transaction amount</td>
+              <td>9 (int), 2 (dec)</td>
+              <td>Transaction amount. Left side is 9 digits, decimal part is 2 digits. Separator: <code>.</code></td>
             </tr>
             <tr>
               <td>parentTransactionId</td>
               <td>String</td>
               <td><span class="optional">Optional</span></td>
+              <td>-</td>
               <td>Original transaction ID (for <code>REFUND</code> mocks)</td>
             </tr>
             <tr>

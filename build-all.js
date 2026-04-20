@@ -127,5 +127,12 @@ const indexHtml = `
 
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
 
+// 4. Global static assets (e.g. qrpayment) copy to dist root
+console.log('📦 Copying global static assets to dist root...');
+const STATIC_DIR = path.join(__dirname, 'static');
+if (fs.existsSync(STATIC_DIR)) {
+  fs.cpSync(STATIC_DIR, DIST_DIR, { recursive: true });
+}
+
 console.log('\n✨ All builds are ready in /dist folder!');
 console.log(`👉 Run 'npx serve dist' to view the landing page.`);
