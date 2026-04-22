@@ -161,6 +161,7 @@ const sidebars: SidebarsConfig = {
     },
     'money-transfers/transfer-details',
     'money-transfers/transfer-errors',
+    'money-transfers/webhooks',
     {
       type: 'html',
       value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
