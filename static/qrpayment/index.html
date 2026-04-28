@@ -9,6 +9,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true,theme:'dark',themeVariables:{primaryColor:'#1a2744',primaryTextColor:'#58a6ff',primaryBorderColor:'#30363d',lineColor:'#8b949e',secondaryColor:'#161b22',tertiaryColor:'#1c2230',noteBkgColor:'#2d1e0e',noteTextColor:'#f0b97e',noteBorderColor:'#5a3310',actorBkg:'#1a2744',actorBorder:'#58a6ff',actorTextColor:'#e6edf3',signalColor:'#8b949e',signalTextColor:'#e6edf3',labelBoxBkgColor:'#161b22',labelBoxBorderColor:'#30363d',labelTextColor:'#e6edf3',loopTextColor:'#8b949e',activationBorderColor:'#58a6ff',activationBkgColor:'#1a2744',sequenceNumberColor:'#0d1117',sectionBkgColor:'#161b22',altSectionBkgColor:'#1c2230',sectionBkgColor2:'#1c2230',excludeBkgColor:'#161b22',taskBkgColor:'#1a2744',taskTextColor:'#e6edf3',activeTaskBkgColor:'#58a6ff',activeTaskBorderColor:'#58a6ff',gridColor:'#30363d',doneTaskBkgColor:'#12281a',critBkgColor:'#2b1215',todayLineColor:'#f85149',transitionColor:'#8b949e',stateBkg:'#1a2744',stateTextColor:'#e6edf3'}});</script>
   <style>
     :root {
       --bg: #0d1117;
@@ -500,6 +502,10 @@
       margin-bottom: 0;
     }
 
+    .mermaid-wrap { margin: 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; overflow-x: auto; }
+    .mermaid-wrap .mermaid { display: flex; justify-content: center; }
+    .mermaid-wrap .mermaid svg { max-width: 100%; height: auto; }
+
     /* ── Responsive ────────────────────────────────────────── */
     @media (max-width: 768px) {
       nav {
@@ -522,12 +528,20 @@
     <div class="nav-section">Overview</div>
     <a href="#version-history">Version History</a>
     <a href="#authentication">Authentication</a>
-    <a href="#secure-data">Secure Data</a>
-    <a href="#transaction-types">Transaction Types</a>
+    <a href="#secure-data">Security Key</a>
+    <a href="#amount-format">Amount Format</a>
     <a href="#payment-object">Payment Object</a>
-    <a href="#statuses">QR Code Statuses</a>
+    <a href="#transaction-types">Transaction Types</a>
+    <a href="#statuses">Statuses & State Machine</a>
+    <a href="#transaction-source">Transaction Sources</a>
+    <a href="#terminal-types">Terminal Types</a>
+    <a href="#idempotency">Idempotency & Retries</a>
+    <a href="#error-format">Error Response Format</a>
+
+    <div class="nav-section">Flow Diagrams</div>
     <a href="#flow">Payment Flow</a>
     <a href="#refund-flow">Refund Flow</a>
+    <a href="#late-reversal-flow">Late Reversal / Dispute</a>
 
     <div class="nav-section">Endpoints</div>
     <a href="#read">POST /payment/read</a>
@@ -537,8 +551,9 @@
     <div class="nav-section">Webhook</div>
     <a href="#webhook">Webhook</a>
 
-    <div class="nav-section">Reconciliation</div>
+    <div class="nav-section">Reconciliation & Balance</div>
     <a href="#reconciliation">Reconciliation Search</a>
+    <a href="#balance">Balance Inquiry</a>
 
     <div class="nav-section">Mock APIs</div>
     <a href="#mock-generate">Generate Mock QR</a>
@@ -569,9 +584,19 @@
           </thead>
           <tbody>
             <tr>
+              <td>1.2.0</td>
+              <td>2026-04-28</td>
+              <td style="font-family: 'Inter', sans-serif;">Added Idempotency & Deduplication section. Added Transaction State Machine with finality rules. Added Error Codes table. Documented amount format conventions. Documented partial/multiple refund and cancellation equivalence. Added <code>tenantReferenceId</code> uniqueness constraint.</td>
+            </tr>
+            <tr>
+              <td>1.1.0</td>
+              <td>2026-04-28</td>
+              <td style="font-family: 'Inter', sans-serif;">Added <code>transactionSource</code>, <code>acquirerId</code> fields. Added Balance Inquiry endpoint. Added response field tables. Updated webhook signing to RSA-SHA256. Documented refund 180s webhook delay.</td>
+            </tr>
+            <tr>
               <td>1.0.1</td>
               <td>2026-04-08</td>
-              <td style="font-family: 'Inter', sans-serif;">Added QR Code Payment Object section. Refined length constraints for Read and Confirm APIs. Standardized ISO 8601 date formats and specified decimal precision for amount. Removed merchantId field.</td>
+              <td style="font-family: 'Inter', sans-serif;">Updated field requirements and refined length constraints for Read and Confirm APIs.</td>
             </tr>
             <tr>
               <td>1.0.0</td>
@@ -588,8 +613,7 @@
     <section id="authentication">
       <h2>Authentication</h2>
 
-      <p>All API requests require authentication via API key/secret and a secure data. Secure data is constructed from
-        walletId and public RSA key provided by us.</p>
+      <p>All API requests require authentication via API key/secret and a security key. Security key is constructed from walletId and public RSA key provided by us.</p>
 
       <h3>API Key Authentication (Server-to-Server)</h3>
       <p>Include these headers in every request:</p>
@@ -620,9 +644,34 @@
               <td>1234567890</td>
             </tr>
             <tr>
-              <td>X-Secure-Data</td>
+              <td>X-Security-Key</td>
               <td style="font-family: 'Inter', sans-serif;">Encrypted secure data token</td>
               <td>Base64 string</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Authentication Errors</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>HTTP Status</th>
+              <th>Condition</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="pill red">401 Unauthorized</span></td>
+              <td style="font-family: 'Inter', sans-serif;">Invalid <code>X-Api-Key</code> or <code>X-Api-Secret</code></td>
+              <td style="font-family: 'Inter', sans-serif;">The API credentials are missing, expired, or incorrect.</td>
+            </tr>
+            <tr>
+              <td><span class="pill red">403 Forbidden</span></td>
+              <td style="font-family: 'Inter', sans-serif;">Invalid <code>X-Security-Key</code> for the given <code>X-Wallet-Id</code></td>
+              <td style="font-family: 'Inter', sans-serif;">The security key could not be decrypted or does not match the target wallet.</td>
             </tr>
           </tbody>
         </table>
@@ -632,11 +681,11 @@
 
     <!-- ── SECURE DATA ─────────────────────────────────────── -->
     <section id="secure-data">
-      <h2>X-Secure-Data Header Generation</h2>
+      <h2>X-Security-Key Header Generation</h2>
 
       <p>You need to have a <code>walletId</code> and its corresponding RSA public key (<code>accessKey</code>) stored
-        in previous step to generate the <code>X-Secure-Data</code> header for authenticated requests. The
-        <code>X-Secure-Data</code> header contains encrypted wallet authentication data.
+        in previous step to generate the <code>X-Security-Key</code> header for authenticated requests. The
+        <code>X-Security-Key</code> header contains encrypted wallet authentication data.
       </p>
 
       <h3>1. Data Structure</h3>
@@ -653,7 +702,7 @@
           </thead>
           <tbody>
             <tr>
-              <td>deviceId</td>
+              <td>walletId</td>
               <td>String</td>
               <td style="font-family: 'Inter', sans-serif;">The wallet ID</td>
             </tr>
@@ -670,7 +719,7 @@
       <div class="code-block">
         <div class="code-block-header"><span>JSON · Example Payload</span></div>
         <pre>{
-  <span class="json-key">"deviceId"</span>: <span class="json-str">"16250953"</span>,
+  <span class="json-key">"walletId"</span>: <span class="json-str">"16250953"</span>,
   <span class="json-key">"timestamp"</span>: <span class="json-str">"2023-10-27T10:00:00.123Z"</span>
 }</pre>
       </div>
@@ -729,117 +778,179 @@
     </section>
 
 
+    <!-- ── AMOUNT FORMAT ──────────────────────────────────── -->
+    <section id="amount-format">
+      <h2>Amount Format</h2>
+      <p>All monetary values are represented as <strong>strings</strong> with a fixed decimal pattern.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Rule</th><th>Detail</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Currency</td><td style="font-family: 'Inter', sans-serif;">TRY (Turkish Lira)</td></tr>
+            <tr><td>Type</td><td><code>String</code></td></tr>
+            <tr><td>Pattern</td><td style="font-family: 'Inter', sans-serif;"><code>999999999.99</code> — up to 9 integer digits, dot, exactly 2 decimal digits</td></tr>
+            <tr><td>Examples</td><td><code>"11.50"</code>, <code>"84.00"</code>, <code>"0.01"</code></td></tr>
+            <tr><td>Sign</td><td style="font-family: 'Inter', sans-serif;">Always positive. The direction (debit/credit) is determined by <code>transactionType</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert info">
+        <span class="alert-icon">ℹ️</span>
+        <div>All amounts are denominated in TRY. No FX conversion is applied.</div>
+      </div>
+    </section>
+
 
     <!-- ── PAYMENT OBJECT ───────────────────────────────────── -->
     <section id="payment-object">
       <h2>QR Code Payment Object</h2>
-      <p>The detailed transaction object returned by most QR code endpoints.</p>
+      <p>The QR Code Payment Object is the common response model returned by Read, Confirm, Query, and Webhook endpoints.</p>
       <div class="table-wrap">
         <table class="param-table">
           <thead>
             <tr>
               <th>Field</th>
               <th>Type</th>
+              <th>Presence</th>
               <th>Length</th>
-              <th>Notes</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>transactionId</td>
               <td>String</td>
-              <td>255</td>
-              <td>PayPorter transaction ID</td>
+              <td>Always</td>
+              <td>11</td>
+              <td style="font-family: 'Inter', sans-serif;">Unique transaction identifier (11-digit numeric).</td>
             </tr>
             <tr>
               <td>tenantReferenceId</td>
               <td>String</td>
+              <td>After Confirm</td>
               <td>100</td>
-              <td>Partner reference ID</td>
+              <td style="font-family: 'Inter', sans-serif;">Partner's unique reference ID. <code>null</code> before Confirm and for externally triggered refunds.</td>
             </tr>
             <tr>
               <td>tenantUserId</td>
               <td>String</td>
+              <td>After Confirm</td>
               <td>50</td>
-              <td>Identifier for the tenant's customer</td>
+              <td style="font-family: 'Inter', sans-serif;">The tenant's user identifier. <code>null</code> before Confirm.</td>
             </tr>
             <tr>
               <td>parentTransactionId</td>
               <td>String</td>
-              <td>255</td>
-              <td>Original transaction ID (for refunds)</td>
+              <td>Refund only</td>
+              <td>11</td>
+              <td style="font-family: 'Inter', sans-serif;">Original payment transaction ID. Only present for REFUND transactions.</td>
             </tr>
             <tr>
               <td>transactionType</td>
               <td>String</td>
-              <td>-</td>
-              <td>One of: <code>PAYMENT</code>, <code>REFUND</code></td>
+              <td>Always</td>
+              <td>10</td>
+              <td style="font-family: 'Inter', sans-serif;"><code>PAYMENT</code> or <code>REFUND</code>. See <a href="#transaction-types">Transaction Types</a>.</td>
+            </tr>
+            <tr>
+              <td>transactionSource</td>
+              <td>String</td>
+              <td>Always</td>
+              <td>30</td>
+              <td style="font-family: 'Inter', sans-serif;">Source of the transaction. See <a href="#transaction-source">Transaction Source Types</a>.</td>
             </tr>
             <tr>
               <td>status</td>
               <td>String</td>
-              <td>-</td>
-              <td>Current state (see <a href="#statuses">Statuses</a>)</td>
+              <td>Always</td>
+              <td>20</td>
+              <td style="font-family: 'Inter', sans-serif;">Transaction status. See <a href="#statuses">QR Code Statuses</a>.</td>
             </tr>
             <tr>
               <td>amount</td>
-              <td>BigDecimal</td>
-              <td>9 (int), 2 (dec)</td>
-              <td>Transaction amount. Separator: <code>.</code></td>
+              <td>String</td>
+              <td>Always</td>
+              <td>12</td>
+              <td style="font-family: 'Inter', sans-serif;">Transaction amount (pattern <code>999999999.99</code>). <code>null</code> for static QR at Read phase.</td>
+            </tr>
+            <tr>
+              <td>qrGenerationDate</td>
+              <td>String</td>
+              <td>Always</td>
+              <td>24</td>
+              <td style="font-family: 'Inter', sans-serif;">QR generation timestamp (RFC 3339, e.g. <code>2024-05-15T14:30:00Z</code>).</td>
+            </tr>
+            <tr>
+              <td>qrExpireDate</td>
+              <td>String</td>
+              <td>Always</td>
+              <td>24</td>
+              <td style="font-family: 'Inter', sans-serif;">QR expiration timestamp (RFC 3339).</td>
             </tr>
             <tr>
               <td>currency</td>
               <td>String</td>
+              <td>Always</td>
               <td>3</td>
-              <td>ISO 4217 Currency Code (e.g. <code>TRY</code>)</td>
+              <td style="font-family: 'Inter', sans-serif;">Currency code (e.g., <code>TRY</code>).</td>
             </tr>
             <tr>
-              <td>qrGenerationDate</td>
-              <td>Date</td>
-              <td>-</td>
-              <td>ISO 8601 format (e.g. <code>2025-07-14T15:53:21.000+0300</code>)</td>
+              <td>merchantId</td>
+              <td>String</td>
+              <td>Always</td>
+              <td>20</td>
+              <td style="font-family: 'Inter', sans-serif;">Merchant's unique BKM identifier.</td>
             </tr>
             <tr>
-              <td>qrExpireDate</td>
-              <td>Date</td>
-              <td>-</td>
-              <td>ISO 8601 format (e.g. <code>2025-07-14T15:53:21.000+0300</code>)</td>
+              <td>acquirerId</td>
+              <td>String</td>
+              <td>Always</td>
+              <td>20</td>
+              <td style="font-family: 'Inter', sans-serif;">Acquirer identifier (BKM acquirer ID).</td>
             </tr>
             <tr>
               <td>mcc</td>
-              <td>Integer</td>
+              <td>String</td>
+              <td>Always</td>
               <td>4</td>
-              <td>Merchant Category Code</td>
+              <td style="font-family: 'Inter', sans-serif;">Merchant Category Code.</td>
             </tr>
             <tr>
               <td>merchantName</td>
               <td>String</td>
-              <td>255</td>
-              <td>The name of the merchant</td>
+              <td>Always</td>
+              <td>100</td>
+              <td style="font-family: 'Inter', sans-serif;">Merchant name.</td>
             </tr>
             <tr>
               <td>countryCode</td>
               <td>String</td>
+              <td>Always</td>
               <td>2</td>
-              <td>ISO 3166 Country Code (e.g. <code>TR</code>)</td>
+              <td style="font-family: 'Inter', sans-serif;">Country code (ISO 3166-1 alpha-2).</td>
             </tr>
             <tr>
               <td>merchantCity</td>
               <td>String</td>
-              <td>255</td>
-              <td>The city of the merchant</td>
+              <td>Always</td>
+              <td>50</td>
+              <td style="font-family: 'Inter', sans-serif;">Merchant city.</td>
             </tr>
             <tr>
               <td>terminalType</td>
               <td>String</td>
-              <td>-</td>
-              <td>One of: <code>STATIC_QRCODE</code>, <code>DYNAMIC_QRCODE</code></td>
+              <td>Always</td>
+              <td>30</td>
+              <td style="font-family: 'Inter', sans-serif;">Terminal type. See <a href="#terminal-types">Terminal Types</a>.</td>
             </tr>
             <tr>
               <td>terminalId</td>
               <td>String</td>
-              <td>255</td>
-              <td>The terminal ID of the merchant</td>
+              <td>Always</td>
+              <td>50</td>
+              <td style="font-family: 'Inter', sans-serif;">Terminal identifier.</td>
             </tr>
           </tbody>
         </table>
@@ -861,11 +972,11 @@
           <tbody>
             <tr>
               <td><span class="pill blue">PAYMENT</span></td>
-              <td>Standard purchase payment initiated by QR scan</td>
+              <td style="font-family: 'Inter', sans-serif;">Standard purchase payment initiated by QR scan</td>
             </tr>
             <tr>
               <td><span class="pill purple">REFUND</span></td>
-              <td>Refund against an original PAYMENT transaction</td>
+              <td style="font-family: 'Inter', sans-serif;">Refund against an original PAYMENT transaction</td>
             </tr>
           </tbody>
         </table>
@@ -873,37 +984,197 @@
     </section>
 
 
-    <!-- ── STATUSES ──────────────────────────────────────────── -->
+    <!-- ── STATUSES & STATE MACHINE ──────────────────────────── -->
     <section id="statuses">
-      <h2>QR Code Statuses</h2>
+      <h2>QR Code Statuses &amp; State Machine</h2>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>Code</th>
+              <th>Type</th>
               <th>Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><span class="pill blue">READ_QR</span></td>
-              <td>Payment info API was called; QR data received</td>
+              <td>Intermediate</td>
+              <td style="font-family: 'Inter', sans-serif;">QR code has been read; transaction is awaiting Confirm.</td>
             </tr>
             <tr>
               <td><span class="pill orange">IN_PROGRESS</span></td>
-              <td>QR code confirmed; awaiting fund transfer result</td>
-            </tr>
-            <tr>
-              <td><span class="pill red">FAILED</span></td>
-              <td>Transaction failed; no funds moved</td>
+              <td>Intermediate</td>
+              <td style="font-family: 'Inter', sans-serif;">Confirm accepted; awaiting asynchronous authorization result.</td>
             </tr>
             <tr>
               <td><span class="pill green">COMPLETED</span></td>
-              <td>Transaction successfully completed</td>
+              <td><strong>Final</strong></td>
+              <td style="font-family: 'Inter', sans-serif;">Transaction completed successfully.</td>
+            </tr>
+            <tr>
+              <td><span class="pill red">FAILED</span></td>
+              <td><strong>Final</strong></td>
+              <td style="font-family: 'Inter', sans-serif;">Transaction failed (authorization declined or reversal received).</td>
             </tr>
           </tbody>
         </table>
       </div>
+      <div class="alert info">
+        <span class="alert-icon">🔒</span>
+        <div><strong>Finality guarantee:</strong> <code>COMPLETED</code> and <code>FAILED</code> are <strong>irreversible terminal states</strong>. Once a transaction reaches either status, it will never change. Refunds or reversals of a completed payment are represented as separate <code>REFUND</code> transactions linked via <code>parentTransactionId</code>.</div>
+      </div>
+
+      <h3>State Transitions</h3>
+      <div class="mermaid-wrap">
+        <pre class="mermaid">
+stateDiagram-v2
+    [*] --> READ_QR : QR scanned (Read)
+    READ_QR --> IN_PROGRESS : Confirm accepted
+    IN_PROGRESS --> COMPLETED : Authorization approved
+    IN_PROGRESS --> FAILED : Authorization declined / Reversal received
+    COMPLETED --> [*]
+    FAILED --> [*]
+        </pre>
+      </div>
+      <p>A transaction can only move forward; backward transitions are not possible. <code>Query</code> and <code>Reconciliation</code> use the same status definitions.</p>
+    </section>
+
+
+    <!-- ── TRANSACTION SOURCE TYPES ────────────────────────── -->
+    <section id="transaction-source">
+      <h2>Transaction Source Types</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Code</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>MERCHANT_QR_SCAN</code></td><td style="font-family: 'Inter', sans-serif;">User scanned merchant QR code (online transaction)</td></tr>
+            <tr><td><code>DISPUTE</code></td><td style="font-family: 'Inter', sans-serif;">User's complaint succeeded</td></tr>
+            <tr><td><code>LATE_REVERSAL</code></td><td style="font-family: 'Inter', sans-serif;">Technical reversal</td></tr>
+            <tr><td><code>USER_NOT_PRESENT_REFUND</code></td><td style="font-family: 'Inter', sans-serif;">Merchant reversed while customer is not present</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ── TERMINAL TYPES ──────────────────────────────────── -->
+    <section id="terminal-types">
+      <h2>Terminal Types</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Code</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>POS</code></td><td style="font-family: 'Inter', sans-serif;">Physical POS terminal</td></tr>
+            <tr><td><code>STATIC_QRCODE</code></td><td style="font-family: 'Inter', sans-serif;">Static QR code on merchant display</td></tr>
+            <tr><td><code>MERCHANT_MOBILE_APP</code></td><td style="font-family: 'Inter', sans-serif;">Merchant mobile application</td></tr>
+            <tr><td><code>WEB</code></td><td style="font-family: 'Inter', sans-serif;">Web terminal</td></tr>
+            <tr><td><code>ATM</code></td><td style="font-family: 'Inter', sans-serif;">ATM terminal</td></tr>
+            <tr><td><code>PAYMENT_SERVICE_PROVIDER</code></td><td style="font-family: 'Inter', sans-serif;">Payment service provider</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ── IDEMPOTENCY ─────────────────────────────────────── -->
+    <section id="idempotency">
+      <h2>Idempotency, Safe Retries &amp; Deduplication</h2>
+      <p>PayPorter enforces safe retry behavior at every stage to prevent duplicate debits and ensure reliable integrations.</p>
+
+      <h3>Read Retry Behaviour</h3>
+      <p>Repeated <code>Read</code> calls on the same QR code return the <strong>current state</strong> of the transaction:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Scenario</th><th>transactionId across repeated Reads</th><th>Behaviour</th></tr></thead>
+          <tbody>
+            <tr><td style="font-family: 'Inter', sans-serif;">Payment — dynamic QR (amount in QR)</td><td style="font-family: 'Inter', sans-serif;">Same <code>transactionId</code> returned</td><td style="font-family: 'Inter', sans-serif;">Only one Confirm can succeed</td></tr>
+            <tr><td style="font-family: 'Inter', sans-serif;">Payment — static QR (user enters amount)</td><td style="font-family: 'Inter', sans-serif;">New <code>transactionId</code> per Read</td><td style="font-family: 'Inter', sans-serif;">Multiple Confirms may succeed (each is a distinct transaction)</td></tr>
+            <tr><td style="font-family: 'Inter', sans-serif;">Refund</td><td style="font-family: 'Inter', sans-serif;">Same <code>transactionId</code> returned</td><td style="font-family: 'Inter', sans-serif;">Only one Confirm can succeed</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mermaid-wrap">
+        <pre class="mermaid">
+flowchart LR
+    A["Read(qrCode)"] --> B{Status?}
+    B -->|READ_QR| C[Safe to Confirm]
+    B -->|IN_PROGRESS| D[Already confirmed]
+    B -->|COMPLETED / FAILED| E[Closed]
+        </pre>
+      </div>
+
+      <h3>Confirm Idempotency</h3>
+      <p>The first successful Confirm binds the transaction to the caller's identity. Subsequent retries are validated against the bound values.</p>
+      <p><strong>Idempotency keys</strong> (checked on retry):</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Transaction Type</th><th>Key fields</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Payment</strong></td><td><code>transactionId</code> + <code>tenantUserId</code> + <code>tenantReferenceId</code></td></tr>
+            <tr><td><strong>Refund</strong></td><td><code>transactionId</code> + <code>tenantUserId</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>If any key field does not match the original Confirm, the request is rejected with <code>QR_CODE_IDEMPOTENCY_MISMATCH</code>.</p>
+      <p><strong>Uniqueness constraint</strong> (checked on first Confirm):</p>
+      <p><code>tenantReferenceId</code> must be unique across all payment transactions. Reusing a previously consumed <code>tenantReferenceId</code> on a <em>different</em> transaction returns <code>TENANT_REFERENCE_ID_ALREADY_USED</code>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Scenario</th><th>Behaviour</th></tr></thead>
+          <tbody>
+            <tr><td style="font-family: 'Inter', sans-serif;">First Confirm</td><td style="font-family: 'Inter', sans-serif;">Binds <code>tenantUserId</code> and <code>tenantReferenceId</code> (if payment). Returns <code>IN_PROGRESS</code>.</td></tr>
+            <tr><td style="font-family: 'Inter', sans-serif;">Retry — all key fields match</td><td style="font-family: 'Inter', sans-serif;">Returns the <strong>current transaction state</strong>. No duplicate financial record is created.</td></tr>
+            <tr><td style="font-family: 'Inter', sans-serif;">Retry — <code>tenantUserId</code> differs</td><td style="font-family: 'Inter', sans-serif;">Returns <code>QR_CODE_IDEMPOTENCY_MISMATCH</code> (HTTP 409)</td></tr>
+            <tr><td style="font-family: 'Inter', sans-serif;">Retry — <code>tenantReferenceId</code> differs (payment only)</td><td style="font-family: 'Inter', sans-serif;">Returns <code>QR_CODE_IDEMPOTENCY_MISMATCH</code> (HTTP 409)</td></tr>
+            <tr><td style="font-family: 'Inter', sans-serif;">New transaction — <code>tenantReferenceId</code> already used</td><td style="font-family: 'Inter', sans-serif;">Returns <code>TENANT_REFERENCE_ID_ALREADY_USED</code> (HTTP 409)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mermaid-wrap">
+        <pre class="mermaid">
+flowchart LR
+    A[Confirm] --> B{First?}
+    B -->|Yes| C["Bind tenantUserId + tenantReferenceId"]
+    C --> D[Process]
+    B -->|No| E{"Keys match?"}
+    E -->|No| F[QR_CODE_IDEMPOTENCY_MISMATCH]
+    E -->|Yes| G[Current state]
+        </pre>
+      </div>
+
+      <h3>Query Idempotency</h3>
+      <p>Repeated queries with the same identifier always return consistent, up-to-date results.</p>
+    </section>
+
+
+    <!-- ── ERROR RESPONSE FORMAT ───────────────────────────── -->
+    <section id="error-format">
+      <h2>Error Response Format</h2>
+      <p>All errors use the same JSON envelope. The HTTP status code indicates the error category:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>HTTP Status</th><th>Category</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><td><code>422 Unprocessable Entity</code></td><td style="font-family: 'Inter', sans-serif;">Validation</td><td style="font-family: 'Inter', sans-serif;">Missing or invalid request fields</td></tr>
+            <tr><td><code>409 Conflict</code></td><td style="font-family: 'Inter', sans-serif;">Idempotency / Uniqueness</td><td style="font-family: 'Inter', sans-serif;">Key mismatch or duplicate reference</td></tr>
+            <tr><td><code>500 Internal Server Error</code></td><td style="font-family: 'Inter', sans-serif;">System</td><td style="font-family: 'Inter', sans-serif;">Unexpected internal failure</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>JSON · Error Envelope</span></div>
+        <pre>{
+  <span class="json-key">"status"</span>: <span class="json-str">"error"</span>,
+  <span class="json-key">"code"</span>: <span class="json-str">"&lt;ERROR_CODE&gt;"</span>,
+  <span class="json-key">"message"</span>: <span class="json-str">"&lt;Human-readable description&gt;"</span>
+}</pre>
+      </div>
+      <p>Endpoint-specific error codes are listed in each API section below.</p>
     </section>
 
 
@@ -911,187 +1182,140 @@
     <section id="flow">
       <h2>QR Code Payment Flow</h2>
 
+      <h3>Payment Flow (Dynamic QR)</h3>
+      <div class="mermaid-wrap">
+        <pre class="mermaid">
+sequenceDiagram
+    participant User
+    participant Partner
+    participant PayPorter
+    participant BKM_Switch as BKM Switch
 
+    rect rgb(40, 40, 60)
+    Note over User, PayPorter: Synchronous – Read & Confirm
+    User->>Partner: Scans merchant QR code
+    Partner->>PayPorter: POST /qrcode/payment/read<br/>{qrCode}
+    PayPorter->>BKM_Switch: Parse & validate QR
+    BKM_Switch-->>PayPorter: Transaction info
+    PayPorter-->>Partner: 200 OK<br/>{status: READ_QR}
 
-      <h3>Payment — Step by Step</h3>
+    alt amount is null (Static QR)
+        Partner->>User: Show amount input UI
+        User->>Partner: Enters amount
+    end
 
-      <div class="flow">
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">1</div>
-            <div class="flow-connector"></div>
-          </div>
-          <div class="flow-body">
-            <strong>Read</strong>
-            <p>Partner calls <code>/qrcode/payment/read</code>. Response type is <code>PAYMENT</code>.</p>
-          </div>
-        </div>
+    Partner->>Partner: Debit customer account
+    Partner->>PayPorter: POST /qrcode/payment/confirm<br/>{transactionId, tenantReferenceId, tenantUserId, amount}
+    PayPorter->>BKM_Switch: Initiate transaction
+    BKM_Switch-->>PayPorter: Accepted
+    PayPorter-->>Partner: 200 OK<br/>{status: IN_PROGRESS}
+    end
 
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">2</div>
-            <div class="flow-connector"></div>
-          </div>
-          <div class="flow-body">
-            <strong>Amount prompt</strong> <em>(open-amount only)</em>
-            <p>If the returned <code>amount</code> is <code>null</code>, the partner presents an amount entry UI to the
-              user before proceeding.</p>
-          </div>
-        </div>
-
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">3</div>
-            <div class="flow-connector"></div>
-          </div>
-          <div class="flow-body">
-            <strong>Debit</strong>
-            <p>Partner debits the resolved amount from the customer's account. This happens <strong>before</strong>
-              calling confirm.</p>
-          </div>
-        </div>
-
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">4</div>
-            <div class="flow-connector"></div>
-          </div>
-          <div class="flow-body">
-            <strong>Confirm</strong>
-            <p>Partner calls <code>/qrcode/payment/confirm</code>. If the QR was open-amount, the user-entered
-              <code>amount</code> <strong>must</strong> be included in the request body.
-            </p>
-          </div>
-        </div>
-
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">5</div>
-            <div class="flow-connector"></div>
-          </div>
-          <div class="flow-body">
-            <strong>Webhook — COMPLETED</strong>
-            <p>Partner notifies the user of success.</p>
-          </div>
-        </div>
-
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">6</div>
-          </div>
-          <div class="flow-body">
-            <strong>Webhook — FAILED</strong>
-            <p>Partner <strong>reverses</strong> the earlier debit and notifies the user of the failure.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flow-image" style="margin-top: 24px; margin-bottom: 32px; text-align: center;">
-        <img src="payment_seq_diagram.jpeg" alt="QR Code Payment Flow Diagram"
-          style="max-width: 800px; width: 100%; border: 1px solid var(--border); border-radius: var(--radius);">
+    rect rgb(50, 40, 40)
+    Note over Partner, BKM_Switch: Asynchronous – Authorization & Webhook
+    BKM_Switch->>PayPorter: Authorization request
+    PayPorter-->>BKM_Switch: Approved
+    PayPorter-->>Partner: Webhook POST<br/>{status: COMPLETED}
+    Partner-->>PayPorter: 200 OK
+    end
+        </pre>
       </div>
     </section>
 
 
     <!-- ── REFUND FLOW OVERVIEW ─────────────────────────────────────── -->
     <section id="refund-flow">
-      <h2>QR Code Refund Flow</h2>
+      <h2>QR Code Refund Flow (180s Window)</h2>
 
+      <div class="mermaid-wrap">
+        <pre class="mermaid">
+sequenceDiagram
+    participant User
+    participant Partner
+    participant PayPorter
+    participant BKM_Switch as BKM Switch
 
-      <h3>Refund — Step by Step</h3>
+    rect rgb(40, 40, 60)
+    Note over User, PayPorter: Synchronous – Read & Confirm
+    User->>Partner: Scans refund QR at merchant
+    Partner->>PayPorter: POST /qrcode/payment/read<br/>{qrCode}
+    PayPorter-->>Partner: 200 OK<br/>{transactionType: REFUND, status: READ_QR,<br/>parentTransactionId}
 
-      <div class="flow">
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">1</div>
-            <div class="flow-connector"></div>
-          </div>
-          <div class="flow-body">
-            <strong>Read</strong>
-            <p>Partner calls <code>/qrcode/payment/read</code>. Response type is <code>REFUND</code> and always
-              includes a non-null <code>parent_id</code> and a fixed <code>amount</code>.</p>
-          </div>
-        </div>
+    Partner->>PayPorter: POST /qrcode/payment/confirm<br/>{transactionId, amount, tenantUserId}
+    PayPorter->>BKM_Switch: Initiate refund transaction
+    BKM_Switch-->>PayPorter: Accepted
+    PayPorter-->>Partner: 200 OK<br/>{status: IN_PROGRESS}
+    end
 
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">2</div>
-            <div class="flow-connector"></div>
-          </div>
-          <div class="flow-body">
-            <strong>Confirm</strong>
-            <p>Partner calls <code>/qrcode/payment/confirm</code></p>
-          </div>
-        </div>
+    rect rgb(50, 40, 40)
+    Note over Partner, BKM_Switch: Asynchronous – Authorization & 180s Window
+    BKM_Switch->>PayPorter: Refund authorization request
+    PayPorter-->>BKM_Switch: Approved
+    PayPorter->>PayPorter: Credits settlement account
 
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">3</div>
-            <div class="flow-connector"></div>
-          </div>
-          <div class="flow-body">
-            <strong>Webhook — COMPLETED</strong>
-            <p>Partner <strong>credits</strong> the customer's account and notifies success. The credit <strong>must
-                not</strong> happen before this event.</p>
-          </div>
-        </div>
+    Note over PayPorter: 180-second window<br/>(POS technical cancel window)
 
-        <div class="flow-step">
-          <div class="flow-line">
-            <div class="flow-dot">4</div>
-          </div>
-          <div class="flow-body">
-            <strong>Webhook — FAILED</strong>
-            <p>No credit is issued. Partner notifies the user of the failure.</p>
-          </div>
-        </div>
+    alt No REVERSAL received within 180s
+        PayPorter-->>Partner: Webhook POST<br/>{status: COMPLETED}
+        Partner->>Partner: Credits user account
+    else REVERSAL OF REFUND received within 180s
+        BKM_Switch->>PayPorter: REVERSAL OF REFUND
+        PayPorter->>PayPorter: Cancels settlement credit
+        PayPorter-->>Partner: Webhook POST<br/>{status: FAILED}
+        Note over Partner: DO NOT credit user
+    end
+    end
+        </pre>
       </div>
+    </section>
 
-      <div class="flow-image" style="margin-top: 24px; margin-bottom: 32px; text-align: center;">
-        <img src="refund_seq_diagram.png" alt="QR Code Refund Flow Diagram"
-          style="max-width: 800px; width: 100%; border: 1px solid var(--border); border-radius: var(--radius);">
+
+    <!-- ── LATE REVERSAL / DISPUTE FLOW ────────────────────────────── -->
+    <section id="late-reversal-flow">
+      <h2>Late Reversal / Dispute / User-Not-Present Refund</h2>
+
+      <div class="mermaid-wrap">
+        <pre class="mermaid">
+sequenceDiagram
+    participant BKM_Switch as BKM Switch/Dispute
+    participant PayPorter
+    participant Partner
+
+    rect rgb(50, 40, 40)
+    Note over BKM_Switch, Partner: Asynchronous – Externally triggered
+    Note over BKM_Switch, PayPorter: Triggered externally<br/>(dispute, late reversal,<br/>merchant-initiated refund)
+
+    BKM_Switch->>PayPorter: Refund/reversal message
+    PayPorter->>PayPorter: Creates REFUND transaction<br/>linked to parentTransactionId
+
+    PayPorter-->>Partner: Webhook POST<br/>{status: COMPLETED,<br/>tenantReferenceId: null,<br/>transactionSource: DISPUTE |<br/>LATE_REVERSAL | USER_NOT_PRESENT_REFUND}
+    Partner->>Partner: Credits user account
+    end
+        </pre>
       </div>
-
     </section>
 
 
     <!-- ══════════════════════ ENDPOINT: READ ════════════════════ -->
     <section id="read">
-      <h2>QR Code Info</h2>
+      <h2>QR Code Info (READ)</h2>
 
       <div class="method-badge">
         <span class="method post">POST</span>
         /wallet/qrcode/payment/read
       </div>
 
-      <p>Returns the transaction details of the QR code scanned by the camera. The <code>transactionType</code> field
-        will be either <strong>PAYMENT</strong> or <strong>REFUND</strong>.</p>
+      <p>Returns transaction details for a scanned QR code. The <code>transactionType</code> field indicates whether this is a <code>PAYMENT</code> or <code>REFUND</code>.</p>
 
-      <h3>Read Request Parameters</h3>
+      <h3>Read Request Body</h3>
       <div class="table-wrap">
         <table class="param-table">
-          <thead>
-            <tr>
-              <th>Parameter</th>
-              <th>Type</th>
-              <th>Required</th>
-              <th>Length</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Length</th><th>Description</th></tr></thead>
           <tbody>
-            <tr>
-              <td>qrCode</td>
-              <td>String</td>
-              <td><span class="required">Required</span></td>
-              <td>500</td>
-              <td>The QR code string scanned by the camera.</td>
-            </tr>
+            <tr><td>qrCode</td><td>String</td><td><span class="required">Required</span></td><td>500</td><td style="font-family: 'Inter', sans-serif;">The QR code string scanned by the camera.</td></tr>
           </tbody>
         </table>
       </div>
-
-      <h3>Read Request Body</h3>
       <div class="code-block">
         <div class="code-block-header"><span>JSON</span></div>
         <pre>{
@@ -1099,24 +1323,39 @@
 }</pre>
       </div>
 
-      <h3>Read Response - Payment</h3>
+      <h3>Read Error Codes</h3>
+      <p>See <a href="#error-format" style="color: var(--accent);">Error Response Format</a>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Code</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>QR_CODE_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>qrCode</code> field is missing or blank.</td></tr>
+            <tr><td><code>QR_CODE_NOT_FOUND</code></td><td style="font-family: 'Inter', sans-serif;">No transaction found for the given QR code.</td></tr>
+            <tr><td><code>QR_CODE_EXPIRED</code></td><td style="font-family: 'Inter', sans-serif;">The QR code has expired.</td></tr>
+            <tr><td><code>QR_CODE_TRANSACTION_ERROR</code></td><td style="font-family: 'Inter', sans-serif;">A processing error occurred while reading the QR code.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Read Response — Payment</h3>
       <div class="alert warning">
         <span class="alert-icon">⚠️</span>
-        <div>
-          <code>If the returned amount is null, the partner presents an amount entry UI to the user before proceeding.</code>.
-        </div>
+        <div>If the returned <code>amount</code> is <code>null</code>, the partner presents an amount entry UI to the user before proceeding.</div>
       </div>
       <div class="code-block">
         <div class="code-block-header"><span>JSON · transactionType: PAYMENT</span></div>
         <pre>{
-  <span class="json-key">"transactionId"</span>:    <span class="json-str">"470023232"</span>,
+  <span class="json-key">"transactionId"</span>:    <span class="json-str">"47002323201"</span>,
   <span class="json-key">"transactionType"</span>:  <span class="json-str">"PAYMENT"</span>,
+  <span class="json-key">"transactionSource"</span>: <span class="json-str">"MERCHANT_QR_SCAN"</span>,
   <span class="json-key">"status"</span>:           <span class="json-str">"READ_QR"</span>,
-  <span class="json-key">"amount"</span>:           <span class="json-num">11.50</span>,
-  <span class="json-key">"qrGenerationDate"</span>: <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
-  <span class="json-key">"qrExpireDate"</span>:     <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
+  <span class="json-key">"amount"</span>:           <span class="json-str">"11.50"</span>,
+  <span class="json-key">"qrGenerationDate"</span>: <span class="json-str">"2025-07-14T15:53:21Z"</span>,
+  <span class="json-key">"qrExpireDate"</span>:     <span class="json-str">"2026-07-14T15:53:21Z"</span>,
   <span class="json-key">"currency"</span>:         <span class="json-str">"TRY"</span>,
-  <span class="json-key">"mcc"</span>:              <span class="json-num">5411</span>,
+  <span class="json-key">"merchantId"</span>:       <span class="json-str">"98765433210"</span>,
+  <span class="json-key">"acquirerId"</span>:       <span class="json-str">"0010"</span>,
+  <span class="json-key">"mcc"</span>:              <span class="json-str">"5411"</span>,
   <span class="json-key">"merchantName"</span>:     <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:      <span class="json-str">"TR"</span>,
   <span class="json-key">"merchantCity"</span>:     <span class="json-str">"ANTALYA"</span>,
@@ -1125,23 +1364,35 @@
 }</pre>
       </div>
 
-      <h3>Read Response - Refund</h3>
-
+      <h3>Read Response — Refund</h3>
+      <div class="alert info">
+        <span class="alert-icon">ℹ️</span>
+        <div><strong>Cancellation equivalence:</strong> BKM <code>transactionType = 3</code> (Cancellation) is treated identically to <code>transactionType = 4</code> (Refund). Both are returned as <code>transactionType: REFUND</code>.</div>
+      </div>
+      <div class="alert info">
+        <span class="alert-icon">ℹ️</span>
+        <div><strong>Partial &amp; multiple refunds:</strong> Partial refund amounts are supported. The same original payment may be refunded multiple times, each producing a separate REFUND transaction linked via <code>parentTransactionId</code>. The refund amount in the QR code is fixed by the merchant POS and cannot be modified during Confirm.</div>
+      </div>
       <div class="code-block">
         <div class="code-block-header"><span>JSON · transactionType: REFUND</span></div>
         <pre>{
-  <span class="json-key">"transactionId"</span>:    <span class="json-str">"470023233"</span>,
-  <span class="json-key">"parentTransactionId"</span> <span class="json-str">"470023232"</span>,
-  <span class="json-key">"transactionType"</span>:  <span class="json-str">"REFUND"</span>,
-  <span class="json-key">"status"</span>:           <span class="json-str">"READ_QR"</span>,
-  <span class="json-key">"amount"</span>:           <span class="json-num">11.50</span>,
-  <span class="json-key">"currency"</span>:         <span class="json-str">"TRY"</span>,
-  <span class="json-key">"mcc"</span>:              <span class="json-num">5411</span>,
-  <span class="json-key">"merchantName"</span>:     <span class="json-str">"Lezzet Lokantası"</span>,
-  <span class="json-key">"countryCode"</span>:      <span class="json-str">"TR"</span>,
-  <span class="json-key">"merchantCity"</span>:     <span class="json-str">"ANTALYA"</span>,
-  <span class="json-key">"terminalType"</span>:     <span class="json-str">"STATIC_QRCODE"</span>,
-  <span class="json-key">"terminalId"</span>:       <span class="json-str">"12345678901234567890ABC"</span>
+  <span class="json-key">"transactionId"</span>:       <span class="json-str">"47002323302"</span>,
+  <span class="json-key">"parentTransactionId"</span>: <span class="json-str">"47002323201"</span>,
+  <span class="json-key">"transactionType"</span>:     <span class="json-str">"REFUND"</span>,
+  <span class="json-key">"transactionSource"</span>:   <span class="json-str">"MERCHANT_QR_SCAN"</span>,
+  <span class="json-key">"status"</span>:              <span class="json-str">"READ_QR"</span>,
+  <span class="json-key">"amount"</span>:              <span class="json-str">"11.50"</span>,
+  <span class="json-key">"qrGenerationDate"</span>:    <span class="json-str">"2025-07-14T15:53:21Z"</span>,
+  <span class="json-key">"qrExpireDate"</span>:        <span class="json-str">"2026-07-14T15:53:21Z"</span>,
+  <span class="json-key">"currency"</span>:            <span class="json-str">"TRY"</span>,
+  <span class="json-key">"merchantId"</span>:          <span class="json-str">"98765433210"</span>,
+  <span class="json-key">"acquirerId"</span>:          <span class="json-str">"0010"</span>,
+  <span class="json-key">"mcc"</span>:                 <span class="json-str">"5411"</span>,
+  <span class="json-key">"merchantName"</span>:        <span class="json-str">"Lezzet Lokantası"</span>,
+  <span class="json-key">"countryCode"</span>:         <span class="json-str">"TR"</span>,
+  <span class="json-key">"merchantCity"</span>:        <span class="json-str">"ANTALYA"</span>,
+  <span class="json-key">"terminalType"</span>:        <span class="json-str">"STATIC_QRCODE"</span>,
+  <span class="json-key">"terminalId"</span>:          <span class="json-str">"12345678901234567890ABC"</span>
 }</pre>
       </div>
     </section>
@@ -1155,116 +1406,83 @@
         <span class="method post">POST</span>
         /wallet/qrcode/payment/confirm
       </div>
-      <div class="alert warning">
-        <span class="alert-icon">⚡</span>
-        <div>For payments, partner debits the resolved amount from the customer's account. This happens before calling
-          confirm. For refunds, partner must wait for the webhook to credit the amount to the customer's account.</div>
+
+      <p>For payments, the partner debits the resolved amount from the customer's account <strong>before</strong> calling Confirm. For refunds, the partner must <strong>wait for the webhook</strong> to credit the amount.</p>
+
+      <div class="alert danger">
+        <span class="alert-icon">⚠️</span>
+        <div><strong>Failure handling:</strong> If Confirm returns a synchronous error or the webhook delivers <code>status: FAILED</code>, the partner must <strong>reverse the debit</strong> and credit the amount back to the customer's account. Always treat <code>IN_PROGRESS</code> as pending — do not finalise until a <code>COMPLETED</code> or <code>FAILED</code> webhook is received.</div>
       </div>
 
-
-      <h3>Confirm Request Parameters</h3>
+      <h3>Confirm Request Body</h3>
       <div class="table-wrap">
         <table class="param-table">
-          <thead>
-            <tr>
-              <th>Parameter</th>
-              <th>Type</th>
-              <th>Required</th>
-              <th>Length</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Length</th><th>Description</th></tr></thead>
           <tbody>
-            <tr>
-              <td>transactionId</td>
-              <td>String</td>
-              <td><span class="required">Required</span></td>
-              <td>255</td>
-              <td>The unique identifier of the transaction.</td>
-            </tr>
-            <tr>
-              <td>tenantReferenceId</td>
-              <td>String</td>
-              <td><span class="required">Required</span></td>
-              <td>100</td>
-              <td>Tenant's unique reference ID for this transaction.</td>
-            </tr>
-            <tr>
-              <td>amount</td>
-              <td>BigDecimal</td>
-              <td><span class="required">Required</span></td>
-              <td>9 (int), 2 (dec)</td>
-              <td>Transaction amount. Left side is 9 digits, decimal part is 2 digits. Separator: <code>.</code></td>
-            </tr>
-            <tr>
-              <td>tenantUserId</td>
-              <td>String</td>
-              <td><span class="required">Required</span></td>
-              <td>50</td>
-              <td>The unique identifier of the tenant's user/customer.</td>
-            </tr>
-            <tr>
-              <td>tenantName</td>
-              <td>String</td>
-              <td><span class="optional">Optional</span></td>
-              <td>50</td>
-              <td>The name of the tenant user.</td>
-            </tr>
-            <tr>
-              <td>tenantSurname</td>
-              <td>String</td>
-              <td><span class="optional">Optional</span></td>
-              <td>50</td>
-              <td>The surname of the tenant user.</td>
-            </tr>
-            <tr>
-              <td>tenantNationality</td>
-              <td>String</td>
-              <td><span class="optional">Optional</span></td>
-              <td>50</td>
-              <td>The nationality of the tenant user.</td>
-            </tr>
-            <tr>
-              <td>tenantBirthDate</td>
-              <td>String</td>
-              <td><span class="optional">Optional</span></td>
-              <td>10</td>
-              <td>The birth date of the tenant user in ISO 8601 (<code>yyyy-MM-dd</code>) format.</td>
-            </tr>
+            <tr><td>transactionId</td><td>String</td><td><span class="required">Required</span></td><td>11</td><td style="font-family: 'Inter', sans-serif;">The unique identifier of the transaction.</td></tr>
+            <tr><td>tenantReferenceId</td><td>String</td><td><span class="required">Conditional</span></td><td>100</td><td style="font-family: 'Inter', sans-serif;">Required for PAYMENT. Optional for REFUND. <strong>Must be unique per payment</strong> — reuse across different transactions returns <code>TENANT_REFERENCE_ID_ALREADY_USED</code>.</td></tr>
+            <tr><td>amount</td><td>String</td><td><span class="required">Required</span></td><td>12</td><td style="font-family: 'Inter', sans-serif;">The transaction amount (pattern <code>999999999.99</code>).</td></tr>
+            <tr><td>tenantUserId</td><td>String</td><td><span class="required">Required</span></td><td>50</td><td style="font-family: 'Inter', sans-serif;">The unique identifier of the tenant's user/customer.</td></tr>
+            <tr><td>tenantName</td><td>String</td><td><span class="optional">Optional</span></td><td>50</td><td style="font-family: 'Inter', sans-serif;">The name of the tenant user.</td></tr>
+            <tr><td>tenantSurname</td><td>String</td><td><span class="optional">Optional</span></td><td>50</td><td style="font-family: 'Inter', sans-serif;">The surname of the tenant user.</td></tr>
+            <tr><td>tenantNationality</td><td>String</td><td><span class="optional">Optional</span></td><td>3</td><td style="font-family: 'Inter', sans-serif;">Nationality of the tenant user (ISO 3166-1 alpha-3, e.g. <code>TUR</code>).</td></tr>
+            <tr><td>tenantBirthDate</td><td>String</td><td><span class="optional">Optional</span></td><td>10</td><td style="font-family: 'Inter', sans-serif;">Birth date of the tenant user (ISO 8601 date, e.g. <code>1996-12-28</code>).</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h3>Confirm Request Body</h3>
       <div class="code-block">
-        <div class="code-block-header"><span>JSON · transactionType: PAYMENT</span></div>
+        <div class="code-block-header"><span>JSON · Example Request</span></div>
         <pre>{
-  <span class="json-key">"transactionId"</span>:      <span class="json-str">"470023232"</span>,
+  <span class="json-key">"transactionId"</span>:      <span class="json-str">"47002323201"</span>,
   <span class="json-key">"tenantReferenceId"</span>:  <span class="json-str">"08e6e4d3-7031-4f0a-bc90-3235aaa2600c"</span>,
-  <span class="json-key">"amount"</span>:             <span class="json-num">11.50</span>,
+  <span class="json-key">"amount"</span>:             <span class="json-str">"11.50"</span>,
   <span class="json-key">"tenantUserId"</span>:       <span class="json-str">"364"</span>,
   <span class="json-key">"tenantName"</span>:         <span class="json-str">"Tahir"</span>,
   <span class="json-key">"tenantSurname"</span>:      <span class="json-str">"incedere"</span>,
-  <span class="json-key">"tenantNationality"</span>:  <span class="json-str">"türkiye"</span>,
+  <span class="json-key">"tenantNationality"</span>:  <span class="json-str">"TUR"</span>,
   <span class="json-key">"tenantBirthDate"</span>:    <span class="json-str">"1996-12-28"</span>
 }</pre>
       </div>
 
-      <h3>Confirm Response - Payment</h3>
+      <h3>Confirm Error Codes</h3>
+      <p>See <a href="#error-format" style="color: var(--accent);">Error Response Format</a>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Code</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>QR_CODE_TRANSACTION_ID_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>transactionId</code> field is missing or blank.</td></tr>
+            <tr><td><code>QR_CODE_TENANT_USER_ID_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantUserId</code> field is missing.</td></tr>
+            <tr><td><code>QR_CODE_TENANT_REFERENCE_ID_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantReferenceId</code> field is missing (required for payments).</td></tr>
+            <tr><td><code>QR_CODE_AMOUNT_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>amount</code> field is missing.</td></tr>
+            <tr><td><code>QR_CODE_AMOUNT_INVALID</code></td><td style="font-family: 'Inter', sans-serif;">The <code>amount</code> field is invalid (e.g. 0 or negative).</td></tr>
+            <tr><td><code>QR_CODE_TRANSACTION_NOT_FOUND</code></td><td style="font-family: 'Inter', sans-serif;">No transaction found for the given identifier.</td></tr>
+            <tr><td><code>QR_CODE_AMOUNT_MISMATCH</code></td><td style="font-family: 'Inter', sans-serif;">The provided amount does not match the amount in the QR code (dynamic QR).</td></tr>
+            <tr><td><code>QR_CODE_EXPIRED</code></td><td style="font-family: 'Inter', sans-serif;">The QR code has expired.</td></tr>
+            <tr><td><code>QR_CODE_TRANSACTION_ERROR</code></td><td style="font-family: 'Inter', sans-serif;">A processing error occurred during BKM authorization.</td></tr>
+            <tr><td><code>QR_CODE_IDEMPOTENCY_MISMATCH</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantUserId</code> or <code>tenantReferenceId</code> does not match the original Confirm.</td></tr>
+            <tr><td><code>TENANT_REFERENCE_ID_ALREADY_USED</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantReferenceId</code> has already been used by a different transaction.</td></tr>
+          </tbody>
+        </table>
+      </div>
 
+      <h3>Confirm Response — Payment</h3>
       <div class="code-block">
         <div class="code-block-header"><span>JSON · transactionType: PAYMENT</span></div>
         <pre>{
-  <span class="json-key">"transactionId"</span>:    <span class="json-str">"470023232"</span>,
+  <span class="json-key">"transactionId"</span>:    <span class="json-str">"47002323201"</span>,
   <span class="json-key">"tenantReferenceId"</span>:<span class="json-str">"08e6e4d3-7031-4f0a-bc90-3235aaa2600c"</span>,
   <span class="json-key">"tenantUserId"</span>:       <span class="json-str">"364"</span>,
   <span class="json-key">"transactionType"</span>:  <span class="json-str">"PAYMENT"</span>,
+  <span class="json-key">"transactionSource"</span>: <span class="json-str">"MERCHANT_QR_SCAN"</span>,
   <span class="json-key">"status"</span>:           <span class="json-str">"IN_PROGRESS"</span>,
-  <span class="json-key">"amount"</span>:           <span class="json-num">11.50</span>,
-  <span class="json-key">"qrGenerationDate"</span>: <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
-  <span class="json-key">"qrExpireDate"</span>:     <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
+  <span class="json-key">"amount"</span>:           <span class="json-str">"11.50"</span>,
+  <span class="json-key">"qrGenerationDate"</span>: <span class="json-str">"2025-07-14T15:53:21Z"</span>,
+  <span class="json-key">"qrExpireDate"</span>:     <span class="json-str">"2026-07-14T15:53:21Z"</span>,
   <span class="json-key">"currency"</span>:         <span class="json-str">"TRY"</span>,
-  <span class="json-key">"mcc"</span>:              <span class="json-num">5411</span>,
+  <span class="json-key">"merchantId"</span>:       <span class="json-str">"98765433210"</span>,
+  <span class="json-key">"acquirerId"</span>:       <span class="json-str">"0010"</span>,
+  <span class="json-key">"mcc"</span>:              <span class="json-str">"5411"</span>,
   <span class="json-key">"merchantName"</span>:     <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:      <span class="json-str">"TR"</span>,
   <span class="json-key">"merchantCity"</span>:     <span class="json-str">"ANTALYA"</span>,
@@ -1272,27 +1490,30 @@
   <span class="json-key">"terminalId"</span>:       <span class="json-str">"12345678901234567890ABC"</span>
 }</pre>
       </div>
-
-
 
       <h3>Confirm Response — Refund</h3>
       <div class="code-block">
         <div class="code-block-header"><span>JSON · transactionType: REFUND</span></div>
         <pre>{
-  <span class="json-key">"transactionId"</span>:    <span class="json-str">"470023233"</span>,
-  <span class="json-key">"parentTransactionId"</span> <span class="json-str">"470023232"</span>,
-  <span class="json-key">"tenantReferenceId"</span>:<span class="json-str">"18f7e5d4-8142-5g1b-cd01-4346bbb3701d"</span>,
-  <span class="json-key">"tenantUserId"</span>:       <span class="json-str">"364"</span>,
-  <span class="json-key">"transactionType"</span>:  <span class="json-str">"REFUND"</span>,
-  <span class="json-key">"status"</span>:           <span class="json-str">"IN_PROGRESS"</span>,
-  <span class="json-key">"amount"</span>:           <span class="json-num">11.50</span>,
-  <span class="json-key">"currency"</span>:         <span class="json-str">"TRY"</span>,
-  <span class="json-key">"mcc"</span>:              <span class="json-num">5411</span>,
-  <span class="json-key">"merchantName"</span>:     <span class="json-str">"Lezzet Lokantası"</span>,
-  <span class="json-key">"countryCode"</span>:      <span class="json-str">"TR"</span>,
-  <span class="json-key">"merchantCity"</span>:     <span class="json-str">"ANTALYA"</span>,
-  <span class="json-key">"terminalType"</span>:     <span class="json-str">"STATIC_QRCODE"</span>,
-  <span class="json-key">"terminalId"</span>:       <span class="json-str">"12345678901234567890ABC"</span>
+  <span class="json-key">"transactionId"</span>:       <span class="json-str">"47002323302"</span>,
+  <span class="json-key">"parentTransactionId"</span>: <span class="json-str">"47002323201"</span>,
+  <span class="json-key">"tenantReferenceId"</span>:   <span class="json-str">"18f7e5d4-8142-5g1b-cd01-4346bbb3701d"</span>,
+  <span class="json-key">"tenantUserId"</span>:        <span class="json-str">"364"</span>,
+  <span class="json-key">"transactionType"</span>:     <span class="json-str">"REFUND"</span>,
+  <span class="json-key">"transactionSource"</span>:   <span class="json-str">"MERCHANT_QR_SCAN"</span>,
+  <span class="json-key">"status"</span>:              <span class="json-str">"IN_PROGRESS"</span>,
+  <span class="json-key">"amount"</span>:              <span class="json-str">"11.50"</span>,
+  <span class="json-key">"qrGenerationDate"</span>:    <span class="json-str">"2025-07-14T15:53:21Z"</span>,
+  <span class="json-key">"qrExpireDate"</span>:        <span class="json-str">"2026-07-14T15:53:21Z"</span>,
+  <span class="json-key">"currency"</span>:            <span class="json-str">"TRY"</span>,
+  <span class="json-key">"merchantId"</span>:          <span class="json-str">"98765433210"</span>,
+  <span class="json-key">"acquirerId"</span>:          <span class="json-str">"0010"</span>,
+  <span class="json-key">"mcc"</span>:                 <span class="json-str">"5411"</span>,
+  <span class="json-key">"merchantName"</span>:        <span class="json-str">"Lezzet Lokantası"</span>,
+  <span class="json-key">"countryCode"</span>:         <span class="json-str">"TR"</span>,
+  <span class="json-key">"merchantCity"</span>:        <span class="json-str">"ANTALYA"</span>,
+  <span class="json-key">"terminalType"</span>:        <span class="json-str">"STATIC_QRCODE"</span>,
+  <span class="json-key">"terminalId"</span>:          <span class="json-str">"12345678901234567890ABC"</span>
 }</pre>
       </div>
     </section>
@@ -1307,35 +1528,27 @@
         /wallet/qrcode/transactions
       </div>
 
-      <p>Finds and returns the details of a QR transaction by its <code>transactionId xor tenantReferenceId</code>.</p>
+      <p>Finds and returns the details of a QR transaction by either <code>transactionId</code> or <code>tenantReferenceId</code> (exactly one must be provided). This endpoint can also be used to query externally triggered refunds using the <code>transactionId</code> received via webhook.</p>
 
       <h3>Query Parameters</h3>
       <div class="table-wrap">
         <table class="param-table">
-          <thead>
-            <tr>
-              <th>Parameter</th>
-              <th>Type</th>
-              <th>Required</th>
-              <th>Length</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Length</th><th>Description</th></tr></thead>
           <tbody>
-            <tr>
-              <td>transactionId</td>
-              <td>String</td>
-              <td><span class="required">Required when tenantReferenceId is empty</span></td>
-              <td>255</td>
-              <td>The unique identifier of the transaction</td>
-            </tr>
-            <tr>
-              <td>tenantReferenceId</td>
-              <td>String</td>
-              <td><span class="required">Required when transactionId is empty</span></td>
-              <td>100</td>
-              <td>Tenant's reference id</td>
-            </tr>
+            <tr><td>transactionId</td><td>String</td><td><span class="required">If tenantReferenceId empty</span></td><td>11</td><td style="font-family: 'Inter', sans-serif;">PayPorter transaction ID.</td></tr>
+            <tr><td>tenantReferenceId</td><td>String</td><td><span class="required">If transactionId empty</span></td><td>100</td><td style="font-family: 'Inter', sans-serif;">Partner's unique reference ID.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Query Error Codes</h3>
+      <p>See <a href="#error-format" style="color: var(--accent);">Error Response Format</a>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Code</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>QR_CODE_TRANSACTION_NOT_FOUND</code></td><td style="font-family: 'Inter', sans-serif;">No transaction found for the given identifier.</td></tr>
+            <tr><td><code>QR_CODE_QUERY_IDENTIFIER_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>transactionId</code> and <code>tenantReferenceId</code> fields are both missing or blank.</td></tr>
           </tbody>
         </table>
       </div>
@@ -1344,16 +1557,19 @@
       <div class="code-block">
         <div class="code-block-header"><span>JSON</span></div>
         <pre>{
-  <span class="json-key">"transactionId"</span>:      <span class="json-str">"470023232"</span>,
+  <span class="json-key">"transactionId"</span>:      <span class="json-str">"47002323201"</span>,
   <span class="json-key">"tenantReferenceId"</span>:  <span class="json-str">"08e6e4d3-7031-4f0a-bc90-3235aaa2600c"</span>,
   <span class="json-key">"tenantUserId"</span>:       <span class="json-str">"364"</span>,
   <span class="json-key">"transactionType"</span>:    <span class="json-str">"PAYMENT"</span>,
+  <span class="json-key">"transactionSource"</span>:  <span class="json-str">"MERCHANT_QR_SCAN"</span>,
   <span class="json-key">"status"</span>:             <span class="json-str">"IN_PROGRESS"</span>,
-  <span class="json-key">"amount"</span>:             <span class="json-num">84</span>,
-  <span class="json-key">"qrGenerationDate"</span>:   <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
-  <span class="json-key">"qrExpireDate"</span>:       <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
+  <span class="json-key">"amount"</span>:             <span class="json-str">"84.00"</span>,
+  <span class="json-key">"qrGenerationDate"</span>:   <span class="json-str">"2025-07-14T15:53:21Z"</span>,
+  <span class="json-key">"qrExpireDate"</span>:       <span class="json-str">"2026-07-14T15:53:21Z"</span>,
   <span class="json-key">"currency"</span>:           <span class="json-str">"TRY"</span>,
-  <span class="json-key">"mcc"</span>:                <span class="json-num">5411</span>,
+  <span class="json-key">"merchantId"</span>:         <span class="json-str">"98765433210"</span>,
+  <span class="json-key">"acquirerId"</span>:         <span class="json-str">"0010"</span>,
+  <span class="json-key">"mcc"</span>:                <span class="json-str">"5411"</span>,
   <span class="json-key">"merchantName"</span>:       <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:        <span class="json-str">"TR"</span>,
   <span class="json-key">"merchantCity"</span>:       <span class="json-str">"ANTALYA"</span>,
@@ -1368,78 +1584,53 @@
     <section id="webhook">
       <h2>QR Code Webhook</h2>
 
-      <p>Once finalized, the system sends a <code>POST</code> request to the Partner webhook at
-        <code> /partner/qrcode/webhook</code>. The result of <strong>IN_PROGRESS</strong> operations will be
-        sent as <span class="pill green">COMPLETED</span> or <span class="pill red">FAILED</span>.
-      </p>
+      <p>PayPorter sends a <code>POST</code> request to the Partner webhook at <code>/partner/qrcode/webhook</code> whenever a transaction occurs. Once finalized, the result of <code>IN_PROGRESS</code> operations will be sent as <span class="pill green">COMPLETED</span> or <span class="pill red">FAILED</span>.</p>
+
+      <div class="alert danger">
+        <span class="alert-icon">⏱️</span>
+        <div><strong>Refund webhook delay:</strong> For credit-direction transactions (REFUND), the webhook with <code>COMPLETED</code> status is sent at minimum <strong>180 seconds</strong> after the authorization is approved. This allows the POS terminal's technical cancel window to close. If PayPorter receives a <code>REVERSAL OF REFUND</code> during this window, the webhook will be sent with <code>REFUND</code> / <code>FAILED</code> status. Partners must <strong>not</strong> credit the end user until the <code>REFUND</code> / <code>COMPLETED</code> webhook is received.</div>
+      </div>
 
       <h3>Retry Policy</h3>
       <ul style="font-size: 14px; color: var(--muted); margin-bottom: 20px; padding-left: 20px;">
-        <li>Expect <code>200 OK</code> response</li>
-        <li>Retry up to 3 times with 10-second delay</li>
+        <li>Any <strong>HTTP 2xx</strong> response is accepted as acknowledgement</li>
+        <li>Non-2xx or timeout → retry up to 3 times with 10-second delay</li>
         <li>Then retry every hour for up to 48 hours</li>
       </ul>
 
       <h3>Headers</h3>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>Header</th>
-              <th>Description</th>
-              <th>Example</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Header</th><th>Description</th><th>Example</th></tr></thead>
           <tbody>
-            <tr>
-              <td>request-sign</td>
-              <td style="font-family: 'Inter', sans-serif;">HmacSHA256 hash of the request body using your secret key
-              </td>
-              <td>5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8</td>
-            </tr>
+            <tr><td>request-sign</td><td style="font-family: 'Inter', sans-serif;">RSA-SHA256 signature of request body (verify with PayPorter public key)</td><td>Base64-encoded signature</td></tr>
+            <tr><td>request-timestamp</td><td style="font-family: 'Inter', sans-serif;">Unix epoch ms; reject if &gt; 5 minutes from server time</td><td>1714291200000</td></tr>
           </tbody>
         </table>
       </div>
 
       <h3>Webhook Signature Verification</h3>
-      <p>To ensure the security and integrity of the webhook, PayPorter signs the request body using a secret value.</p>
+      <p>To ensure the security and integrity of the webhook, PayPorter signs the request body using RSA-SHA256.</p>
+      <p><strong>Signing Algorithm</strong><br>RSA-SHA256 (2048-bit). PayPorter signs the request body with its RSA private key. Partners verify using the RSA public key provided during onboarding.</p>
+      <p><strong>Request Headers</strong><br>The resulting signature is included in the request under the <code>request-sign</code> header. The <code>request-timestamp</code> header contains the Unix epoch timestamp in milliseconds. Reject any webhook where <code>request-timestamp</code> differs from server time by more than 5 minutes.</p>
 
-      <p><strong>Secret Value</strong><br>
-        A secret value, which we will provide, is used during the hashing process. This secret value ensures the
-        security
-        and integrity of the webhook.</p>
-
-      <p><strong>Hashing Process</strong><br>
-        The hash value included in the request is generated by hashing the entire request body using the
-        <code>HmacSHA256</code> algorithm with the provided secret. This process ensures that the request has not been
-        tampered with.
-      </p>
-
-      <p><strong>Request Header</strong><br>
-        The resulting hashed value is included in the request under the <code>request-sign</code> header.</p>
-
-      <h4>Reference Implementations</h4>
-      <p>Complete examples for generating the webhook signature are available:</p>
-      <p>→ <a href="./webhook-example.java" style="color: var(--accent);">Java Implementation</a></p>
-      <p>→ <a href="./webhook-example.go" style="color: var(--accent);">Go Implementation</a></p>
-      <p>→ <a href="./webhook-example.php" style="color: var(--accent);">PHP Implementation</a></p>
-
-
-
-      <h3>Example Request - Payment</h3>
+      <h3>Example — Payment Webhook</h3>
       <div class="code-block">
         <div class="code-block-header"><span>JSON · transactionType: PAYMENT</span></div>
         <pre>{
-  <span class="json-key">"transactionId"</span>:      <span class="json-str">"470023232"</span>,
+  <span class="json-key">"transactionId"</span>:      <span class="json-str">"47002323201"</span>,
   <span class="json-key">"tenantReferenceId"</span>:  <span class="json-str">"08e6e4d3-7031-4f0a-bc90-3235aaa2600c"</span>,
   <span class="json-key">"tenantUserId"</span>:       <span class="json-str">"364"</span>,
   <span class="json-key">"transactionType"</span>:    <span class="json-str">"PAYMENT"</span>,
+  <span class="json-key">"transactionSource"</span>:  <span class="json-str">"MERCHANT_QR_SCAN"</span>,
   <span class="json-key">"status"</span>:             <span class="json-str">"COMPLETED"</span>,
-  <span class="json-key">"amount"</span>:             <span class="json-num">11.50</span>,
-  <span class="json-key">"qrGenerationDate"</span>:   <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
-  <span class="json-key">"qrExpireDate"</span>:       <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
+  <span class="json-key">"amount"</span>:             <span class="json-str">"11.50"</span>,
+  <span class="json-key">"qrGenerationDate"</span>:   <span class="json-str">"2025-07-14T15:53:21Z"</span>,
+  <span class="json-key">"qrExpireDate"</span>:       <span class="json-str">"2026-07-14T15:53:21Z"</span>,
   <span class="json-key">"currency"</span>:           <span class="json-str">"TRY"</span>,
-  <span class="json-key">"mcc"</span>:                <span class="json-num">5411</span>,
+  <span class="json-key">"merchantId"</span>:         <span class="json-str">"98765433210"</span>,
+  <span class="json-key">"acquirerId"</span>:         <span class="json-str">"0010"</span>,
+  <span class="json-key">"mcc"</span>:                <span class="json-str">"5411"</span>,
   <span class="json-key">"merchantName"</span>:       <span class="json-str">"Lezzet Lokantası"</span>,
   <span class="json-key">"countryCode"</span>:        <span class="json-str">"TR"</span>,
   <span class="json-key">"merchantCity"</span>:       <span class="json-str">"ANTALYA"</span>,
@@ -1448,35 +1639,33 @@
 }</pre>
       </div>
 
-      <h3>Example Request - Refund</h3>
+      <h3>Example — Refund Webhook</h3>
       <div class="code-block">
         <div class="code-block-header"><span>JSON · transactionType: REFUND</span></div>
         <pre>{
-  <span class="json-key">"transactionId"</span>:      <span class="json-str">"470023233"</span>,
-  <span class="json-key">"parentTransactionId"</span>:<span class="json-str">"470023232"</span>,
-  <span class="json-key">"tenantReferenceId"</span>:  <span class="json-str">"08e6e4d3-7031-4f0a-bc90-3235aaa2600c"</span>,
-  <span class="json-key">"tenantUserId"</span>:       <span class="json-str">"364"</span>,
-  <span class="json-key">"transactionType"</span>:    <span class="json-str">"REFUND"</span>,
-  <span class="json-key">"status"</span>:             <span class="json-str">"COMPLETED"</span>,
-  <span class="json-key">"amount"</span>:             <span class="json-num">11.50</span>,
-  <span class="json-key">"qrGenerationDate"</span>:   <span class="json-str">"2025-07-14T15:53:21.000+0300"</span>,
-  <span class="json-key">"qrExpireDate"</span>:       <span class="json-str">"2026-07-14T15:53:21.000+0300"</span>,
-  <span class="json-key">"currency"</span>:           <span class="json-str">"TRY"</span>,
-  <span class="json-key">"mcc"</span>:                <span class="json-num">5411</span>,
-  <span class="json-key">"merchantName"</span>:       <span class="json-str">"Lezzet Lokantası"</span>,
-  <span class="json-key">"countryCode"</span>:        <span class="json-str">"TR"</span>
+  <span class="json-key">"transactionId"</span>:       <span class="json-str">"47002323302"</span>,
+  <span class="json-key">"parentTransactionId"</span>: <span class="json-str">"47002323201"</span>,
+  <span class="json-key">"tenantReferenceId"</span>:   <span class="json-str">"29a8f6e5-9253-6h2c-de12-5457ccc4812e"</span>,
+  <span class="json-key">"tenantUserId"</span>:        <span class="json-str">"364"</span>,
+  <span class="json-key">"transactionType"</span>:     <span class="json-str">"REFUND"</span>,
+  <span class="json-key">"transactionSource"</span>:   <span class="json-str">"MERCHANT_QR_SCAN"</span>,
+  <span class="json-key">"status"</span>:              <span class="json-str">"COMPLETED"</span>,
+  <span class="json-key">"amount"</span>:              <span class="json-str">"11.50"</span>,
+  <span class="json-key">"qrGenerationDate"</span>:    <span class="json-str">"2025-07-14T15:53:21Z"</span>,
+  <span class="json-key">"qrExpireDate"</span>:        <span class="json-str">"2026-07-14T15:53:21Z"</span>,
+  <span class="json-key">"currency"</span>:            <span class="json-str">"TRY"</span>,
+  <span class="json-key">"merchantId"</span>:          <span class="json-str">"98765433210"</span>,
+  <span class="json-key">"acquirerId"</span>:          <span class="json-str">"0010"</span>,
+  <span class="json-key">"mcc"</span>:                 <span class="json-str">"5411"</span>,
+  <span class="json-key">"merchantName"</span>:        <span class="json-str">"Lezzet Lokantası"</span>,
+  <span class="json-key">"countryCode"</span>:         <span class="json-str">"TR"</span>,
+  <span class="json-key">"merchantCity"</span>:        <span class="json-str">"ANTALYA"</span>,
+  <span class="json-key">"terminalType"</span>:        <span class="json-str">"STATIC_QRCODE"</span>,
+  <span class="json-key">"terminalId"</span>:          <span class="json-str">"12345678901234567890ABC"</span>
 }</pre>
       </div>
 
-      <h3>Approved Response</h3>
-      <div class="code-block">
-        <div class="code-block-header"><span>JSON · Webhook Acknowledgement</span></div>
-        <pre>{
-  <span class="json-key">"response"</span>: {
-    <span class="json-key">"status"</span>: <span class="json-str">"true"</span>
-  }
-}</pre>
-      </div>
+      <p><strong>Expected Partner Response:</strong> Return any <strong>HTTP 2xx</strong> status code to acknowledge receipt. The response body is ignored.</p>
     </section>
 
 
@@ -1486,7 +1675,7 @@
 
       <div class="method-badge">
         <span class="method get">GET</span>
-        /external/whitelabel/qrcode/reconciliation
+        /wallet/qrcode/reconciliation
       </div>
 
       <p>Returns only <span class="pill green">COMPLETED</span> transaction records within the given UTC date range for
@@ -1538,6 +1727,7 @@
       <span class="json-key">"tenantReferenceId"</span>: <span class="json-str">"08e6e4d3-7031-4f0a-bc90-3235aaa2600c"</span>,
       <span class="json-key">"tenantUserId"</span>: <span class="json-str">"364"</span>,
       <span class="json-key">"transactionType"</span>: <span class="json-str">"PAYMENT"</span>,
+      <span class="json-key">"transactionSource"</span>: <span class="json-str">"MERCHANT_QR_SCAN"</span>,
       <span class="json-key">"status"</span>: <span class="json-str">"COMPLETED"</span>,
       <span class="json-key">"settlementAmount"</span>: <span class="json-num">84.00</span>,
       <span class="json-key">"settlementCurrency"</span>: <span class="json-str">"TRY"</span>,
@@ -1548,6 +1738,7 @@
       <span class="json-key">"tenantReferenceId"</span>: <span class="json-str">"08e6e4d3-7031-4f0a-bc90-3235aaa2600c"</span>,
       <span class="json-key">"tenantUserId"</span>: <span class="json-str">"364"</span>,
       <span class="json-key">"transactionType"</span>: <span class="json-str">"PAYMENT"</span>,
+      <span class="json-key">"transactionSource"</span>: <span class="json-str">"MERCHANT_QR_SCAN"</span>,
       <span class="json-key">"status"</span>: <span class="json-str">"COMPLETED"</span>,
       <span class="json-key">"settlementAmount"</span>: <span class="json-num">120.50</span>,
       <span class="json-key">"settlementCurrency"</span>: <span class="json-str">"TRY"</span>,
@@ -1559,6 +1750,7 @@
       <span class="json-key">"tenantUserId"</span>: <span class="json-str">"364"</span>,
       <span class="json-key">"parentTransactionId"</span>: <span class="json-str">"470023232"</span>,
       <span class="json-key">"transactionType"</span>: <span class="json-str">"REFUND"</span>,
+      <span class="json-key">"transactionSource"</span>: <span class="json-str">"MERCHANT_QR_SCAN"</span>,
       <span class="json-key">"status"</span>: <span class="json-str">"COMPLETED"</span>,
       <span class="json-key">"settlementAmount"</span>: <span class="json-num">84.00</span>,
       <span class="json-key">"settlementCurrency"</span>: <span class="json-str">"TRY"</span>,
@@ -1566,6 +1758,42 @@
     }
   ]
 }</pre>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════ BALANCE INQUIRY ═════════════════════ -->
+    <section id="balance">
+      <h2>Balance Inquiry</h2>
+
+      <div class="method-badge">
+        <span class="method get">GET</span>
+        /wallet/qrcode/balance
+      </div>
+
+      <p>Returns the current balance of the settlement wallet.</p>
+      <p><strong>Authentication:</strong> Same headers as all other endpoints (X-Api-Key, X-Api-Secret, X-Wallet-Id, X-Security-Key).</p>
+
+      <h3>Response</h3>
+      <div class="table-wrap">
+        <table class="param-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Length</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>balance</td><td>String</td><td><span class="required">Required</span></td><td>12</td><td style="font-family: 'Inter', sans-serif;">Current available balance.</td></tr>
+            <tr><td>currency</td><td>String</td><td><span class="required">Required</span></td><td>3</td><td style="font-family: 'Inter', sans-serif;">Currency code (e.g., <code>TRY</code>).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>JSON</span></div>
+        <pre>{
+  <span class="json-key">"balance"</span>: <span class="json-str">"15420.75"</span>,
+  <span class="json-key">"currency"</span>: <span class="json-str">"TRY"</span>
+}</pre>
+      </div>
+      <div class="alert info">
+        <span class="alert-icon">ℹ️</span>
+        <div>This endpoint is for periodic balance monitoring. Rate limits may apply. It should not be called before every transaction.</div>
       </div>
     </section>
 
