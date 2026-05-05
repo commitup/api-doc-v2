@@ -4,6 +4,8 @@
 
 | Version | Date | Changes |
 | :--- | :--- | :--- |
+| 1.3.1 | 2026-05-05 | Added `QR_CODE_USED` error code to Read and Confirm endpoints. |
+| 1.3.0 | 2026-05-05 | Clarified synchronous Confirm errors are terminal (no webhook follows). Added error handling guidance with recommended actions per error code. Updated webhook signature to sign `timestamp:body`. Added refund ETA guidance (~200s). Added safe retry policy for 5xx/timeout. |
 | 1.2.0 | 2026-04-28 | Added Idempotency & Deduplication section. Added Transaction State Machine with finality rules. Added Error Codes table. Documented amount format conventions. Documented partial/multiple refund and cancellation equivalence. Added `tenantReferenceId` uniqueness constraint. |
 | 1.1.0 | 2026-04-28 | Added `transactionSource`, `acquirerId` fields. Added Balance Inquiry endpoint. Added response field tables. Updated webhook signing to RSA-SHA256. Documented refund 180s webhook delay. |
 | 1.0.1 | 2026-04-08 | Updated field requirements and refined length constraints for Read and Confirm APIs. |
@@ -151,15 +153,15 @@ The QR Code Payment Object is the common response model returned by Read, Confir
 | `transactionSource` | String | Always | 30 | Source of the transaction. See [Transaction Source Types](#transaction-source-types). |
 | `status` | String | Always | 20 | Transaction status. See [QR Code Statuses](#qr-code-statuses--state-machine). |
 | `amount` | String | Always | 12 | Transaction amount (pattern `999999999.99`). `null` for static QR at Read phase. |
+| `currency` | String | Always | 3 | Currency code (e.g., `TRY`). |
 | `qrGenerationDate` | String | Always | 24 | QR generation timestamp (RFC 3339, e.g. `2024-05-15T14:30:00Z`). |
 | `qrExpireDate` | String | Always | 24 | QR expiration timestamp (RFC 3339). |
-| `currency` | String | Always | 3 | Currency code (e.g., `TRY`). |
 | `merchantId` | String | Always | 20 | Merchant's unique BKM identifier. |
-| `acquirerId` | String | Always | 20 | Acquirer identifier (BKM acquirer ID). |
-| `mcc` | String | Always | 4 | Merchant Category Code. |
 | `merchantName` | String | Always | 100 | Merchant name. |
-| `countryCode` | String | Always | 2 | Country code (ISO 3166-1 alpha-2). |
 | `merchantCity` | String | Always | 50 | Merchant city. |
+| `mcc` | String | Always | 4 | Merchant Category Code. |
+| `countryCode` | String | Always | 2 | Country code (ISO 3166-1 alpha-2). |
+| `acquirerId` | String | Always | 20 | Acquirer identifier (BKM acquirer ID). |
 | `terminalType` | String | Always | 30 | Terminal type. See [Terminal Types](#terminal-types). |
 | `terminalId` | String | Always | 50 | Terminal identifier. |
 
@@ -304,6 +306,9 @@ All errors use the same JSON envelope. The HTTP status code indicates the error 
 
 Endpoint-specific error codes are listed in each API section below.
 
+> [!TIP]
+> **Safe retry policy:** For `500 Internal Server Error` or network timeout, retry the request with **identical values**. The [Confirm Idempotency](#confirm-idempotency) mechanism guarantees no duplicate financial records will be created.
+
 ---
 
 ### QR Code Flow Diagrams
@@ -428,12 +433,13 @@ Example:
 ### Read Error Codes
 See [Error Response Format](#error-response-format).
 
-| Code | Description |
-|------|-------------|
-| `QR_CODE_EMPTY` | The `qrCode` field is missing or blank. |
-| `QR_CODE_NOT_FOUND` | No transaction found for the given QR code. |
-| `QR_CODE_EXPIRED` | The QR code has expired. |
-| `QR_CODE_TRANSACTION_ERROR` | A processing error occurred while reading the QR code. |
+| Code                | Description                                             |
+|---------------------|---------------------------------------------------------|
+| `QR_CODE_EMPTY`     | The `qrCode` field is missing or blank.                 |
+| `QR_CODE_NOT_FOUND` | No transaction found for the given QR code.             |
+| `QR_CODE_EXPIRED`   | The QR code has expired.                                |
+| `QR_CODE_USED`      | The QR code has been read by another application, not our API. |
+| `QR_CODE_TRANSACTION_ERROR` | A processing error occurred while reading the QR code.  |
 
 ### Read Response - Payment
 > [!WARNING]
@@ -535,7 +541,9 @@ See [Error Response Format](#error-response-format).
 - When the returned status is `IN_PROGRESS`, the final result will be notified asynchronously via the [Webhook](#qr-transaction-webhook).
 
 > [!IMPORTANT]
-> **Failure handling:** If Confirm returns a synchronous error or the webhook delivers `status: FAILED`, the partner must **reverse the debit** and credit the amount back to the customer's account. Always treat `IN_PROGRESS` as pending — do not finalise until a `COMPLETED` or `FAILED` webhook is received.
+> **Failure handling:** If Confirm returns a synchronous error (HTTP 422/409), the transaction is **rejected and no webhook will be sent**. The partner must immediately reverse the customer debit. If the webhook delivers `status: FAILED`, the partner must likewise **reverse the debit** and credit the amount back to the customer's account. Always treat `IN_PROGRESS` as pending — do not finalise until a `COMPLETED` or `FAILED` webhook is received.
+>
+> **Timeout / 5xx handling:** If the Confirm call times out or returns an HTTP 5xx error, retry the same request with **identical values**. The [idempotency mechanism](#confirm-idempotency) ensures no duplicate processing.
 
 ### Confirm Request Body
 | Field | Type | Required | Length | Description |
@@ -566,19 +574,29 @@ Example:
 ### Confirm Error Codes
 See [Error Response Format](#error-response-format).
 
-| Code | Description |
-|------|-------------|
-| `QR_CODE_TRANSACTION_ID_EMPTY` | The `transactionId` field is missing or blank. |
-| `QR_CODE_TENANT_USER_ID_EMPTY` | The `tenantUserId` field is missing. |
-| `QR_CODE_TENANT_REFERENCE_ID_EMPTY` | The `tenantReferenceId` field is missing (required for payments). |
-| `QR_CODE_AMOUNT_EMPTY` | The `amount` field is missing. |
-| `QR_CODE_AMOUNT_INVALID` | The `amount` field is invalid (for example, it is 0 or negative). |
-| `QR_CODE_TRANSACTION_NOT_FOUND` | No transaction found for the given identifier. |
-| `QR_CODE_AMOUNT_MISMATCH` | The provided amount does not match the amount in the QR code (dynamic QR). |
-| `QR_CODE_EXPIRED` | The QR code has expired. |
-| `QR_CODE_TRANSACTION_ERROR` | A processing error occurred during BKM authorization. |
-| `QR_CODE_IDEMPOTENCY_MISMATCH` | The `tenantUserId` or `tenantReferenceId` (if payment) does not match the values from the original Confirm. |
-| `TENANT_REFERENCE_ID_ALREADY_USED` | The `tenantReferenceId` has already been used by a different transaction. |
+| Code | Description | Category | In Production? |
+|------|-------------|----------|----------------|
+| `QR_CODE_TRANSACTION_ID_EMPTY` | The `transactionId` field is missing or blank. | Integration | No — indicates a request construction bug. |
+| `QR_CODE_TENANT_USER_ID_EMPTY` | The `tenantUserId` field is missing. | Integration | No — indicates a request construction bug. |
+| `QR_CODE_TENANT_REFERENCE_ID_EMPTY` | The `tenantReferenceId` field is missing (required for payments). | Integration | No — indicates a request construction bug. |
+| `QR_CODE_AMOUNT_EMPTY` | The `amount` field is missing. | Integration | No — indicates a request construction bug. |
+| `QR_CODE_AMOUNT_INVALID` | The `amount` field is invalid (for example, it is 0 or negative). | Integration | No — indicates a request construction bug. |
+| `QR_CODE_AMOUNT_MISMATCH` | The provided amount does not match the amount in the QR code (dynamic QR). | Orchestration | No — indicates a logic error between Read and Confirm. |
+| `QR_CODE_IDEMPOTENCY_MISMATCH` | The `tenantUserId` or `tenantReferenceId` (if payment) does not match the values from the original Confirm. | Orchestration | No — indicates a retry with inconsistent values. |
+| `TENANT_REFERENCE_ID_ALREADY_USED` | The `tenantReferenceId` has already been used by a different transaction. | Orchestration | No — indicates duplicate reference generation. |
+| `QR_CODE_TRANSACTION_NOT_FOUND` | No transaction found for the given identifier. Unexpected after a successful Read. | Orchestration | No — Should not occur after a successful Read. |
+| `QR_CODE_EXPIRED` | The QR code has expired (user delayed on confirmation page). | Business | **Yes** — expected in normal flows. |
+| `QR_CODE_USED` | The QR code has been read by another application, not our API. | Business | **Yes** — expected in normal flows. |
+| `QR_CODE_TRANSACTION_ERROR` | A processing error occurred during BKM Switch processing. | System | **Yes** — transient infrastructure failure. |
+
+#### Confirm Error Handling by Category
+
+| Category | Webhook Follows? | Recommended Action |
+|----------|-----------------|-------------------|
+| **Integration** | No | Monitor & alert. Reverse debit, await manual investigation. Should not reach production if integration is validated. |
+| **Orchestration** | No | Monitor & alert. Reverse debit, await manual investigation. Indicates a logic error in your integration. |
+| **Business** | No | **Reverse debit immediately.** |
+| **System** | No | **Reverse debit immediately.** Expected occasionally. Monitor & alert if frequently occurs. |
 
 ### Confirm Response - Payment
 
@@ -757,6 +775,9 @@ PayPorter sends a `POST` request to the Partner webhook at `/partner/qrcode/webh
 - Non-2xx or timeout → retry up to 3 times with 10-second delay
 - Then retry every hour for up to 48 hours
 
+> [!NOTE]
+> **Refund ETA guidance:** The estimated end-to-end time from Confirm returning `IN_PROGRESS` to receiving the refund webhook is approximately **200 seconds** (180s POS cancel window + ~20s authorization processing). This estimate will be refined as production data becomes available.
+
 ### Headers
 
 | Header | Description | Example |
@@ -767,13 +788,27 @@ PayPorter sends a `POST` request to the Partner webhook at `/partner/qrcode/webh
 
 ### Webhook Signature Verification
 
-To ensure the security and integrity of the webhook, PayPorter signs the request body using RSA-SHA256.
+To ensure the security and integrity of the webhook, PayPorter signs the request using RSA-SHA256 over the concatenation of the timestamp and the body.
 
 **Signing Algorithm**
-RSA-SHA256 (2048-bit). PayPorter signs the request body with its RSA private key. Partners verify using the RSA public key provided during onboarding.
+RSA-SHA256 (2048-bit). The signed content is constructed by concatenating the `request-timestamp` header value (Unix epoch ms) and the raw request body, separated by a colon:
+
+```
+signedContent = request-timestamp + ":" + request-body
+```
+
+PayPorter signs this concatenated value with its RSA private key. Partners verify using the RSA public key provided during onboarding.
 
 **Request Headers**
 The resulting signature is included in the request under the `request-sign` header. The `request-timestamp` header contains the Unix epoch timestamp in milliseconds. Reject any webhook where `request-timestamp` differs from server time by more than 5 minutes.
+
+**Verification pseudocode:**
+```
+timestamp  = headers["request-timestamp"]
+signature  = base64_decode(headers["request-sign"])
+signedContent = timestamp + ":" + body
+isValid    = RSA_SHA256_verify(payporterPublicKey, signedContent, signature)
+```
 
 
 ### Webhook Body Fields
