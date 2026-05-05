@@ -584,6 +584,16 @@
           </thead>
           <tbody>
             <tr>
+              <td>1.3.1</td>
+              <td>2026-05-05</td>
+              <td style="font-family: 'Inter', sans-serif;">Added <code>QR_CODE_USED</code> error code to Read and Confirm endpoints.</td>
+            </tr>
+            <tr>
+              <td>1.3.0</td>
+              <td>2026-05-05</td>
+              <td style="font-family: 'Inter', sans-serif;">Clarified synchronous Confirm errors are terminal (no webhook follows). Added error handling guidance with recommended actions per error code. Updated webhook signature to sign <code>timestamp:body</code>. Added refund ETA guidance (~200s). Added safe retry policy for 5xx/timeout.</td>
+            </tr>
+            <tr>
               <td>1.2.0</td>
               <td>2026-04-28</td>
               <td style="font-family: 'Inter', sans-serif;">Added Idempotency & Deduplication section. Added Transaction State Machine with finality rules. Added Error Codes table. Documented amount format conventions. Documented partial/multiple refund and cancellation equivalence. Added <code>tenantReferenceId</code> uniqueness constraint.</td>
@@ -876,6 +886,13 @@
               <td style="font-family: 'Inter', sans-serif;">Transaction amount (pattern <code>999999999.99</code>). <code>null</code> for static QR at Read phase.</td>
             </tr>
             <tr>
+              <td>currency</td>
+              <td>String</td>
+              <td>Always</td>
+              <td>3</td>
+              <td style="font-family: 'Inter', sans-serif;">Currency code (e.g., <code>TRY</code>).</td>
+            </tr>
+            <tr>
               <td>qrGenerationDate</td>
               <td>String</td>
               <td>Always</td>
@@ -890,32 +907,11 @@
               <td style="font-family: 'Inter', sans-serif;">QR expiration timestamp (RFC 3339).</td>
             </tr>
             <tr>
-              <td>currency</td>
-              <td>String</td>
-              <td>Always</td>
-              <td>3</td>
-              <td style="font-family: 'Inter', sans-serif;">Currency code (e.g., <code>TRY</code>).</td>
-            </tr>
-            <tr>
               <td>merchantId</td>
               <td>String</td>
               <td>Always</td>
               <td>20</td>
               <td style="font-family: 'Inter', sans-serif;">Merchant's unique BKM identifier.</td>
-            </tr>
-            <tr>
-              <td>acquirerId</td>
-              <td>String</td>
-              <td>Always</td>
-              <td>20</td>
-              <td style="font-family: 'Inter', sans-serif;">Acquirer identifier (BKM acquirer ID).</td>
-            </tr>
-            <tr>
-              <td>mcc</td>
-              <td>String</td>
-              <td>Always</td>
-              <td>4</td>
-              <td style="font-family: 'Inter', sans-serif;">Merchant Category Code.</td>
             </tr>
             <tr>
               <td>merchantName</td>
@@ -925,6 +921,20 @@
               <td style="font-family: 'Inter', sans-serif;">Merchant name.</td>
             </tr>
             <tr>
+              <td>merchantCity</td>
+              <td>String</td>
+              <td>Always</td>
+              <td>50</td>
+              <td style="font-family: 'Inter', sans-serif;">Merchant city.</td>
+            </tr>
+            <tr>
+              <td>mcc</td>
+              <td>String</td>
+              <td>Always</td>
+              <td>4</td>
+              <td style="font-family: 'Inter', sans-serif;">Merchant Category Code.</td>
+            </tr>
+            <tr>
               <td>countryCode</td>
               <td>String</td>
               <td>Always</td>
@@ -932,11 +942,11 @@
               <td style="font-family: 'Inter', sans-serif;">Country code (ISO 3166-1 alpha-2).</td>
             </tr>
             <tr>
-              <td>merchantCity</td>
+              <td>acquirerId</td>
               <td>String</td>
               <td>Always</td>
-              <td>50</td>
-              <td style="font-family: 'Inter', sans-serif;">Merchant city.</td>
+              <td>20</td>
+              <td style="font-family: 'Inter', sans-serif;">Acquirer identifier (BKM acquirer ID).</td>
             </tr>
             <tr>
               <td>terminalType</td>
@@ -1175,6 +1185,10 @@ flowchart LR
 }</pre>
       </div>
       <p>Endpoint-specific error codes are listed in each API section below.</p>
+      <div class="alert info">
+        <span class="alert-icon">💡</span>
+        <div><strong>Safe retry policy:</strong> For <code>500 Internal Server Error</code> or network timeout, retry the request with <strong>identical values</strong>. The <a href="#idempotency" style="color: var(--accent);">Confirm Idempotency</a> mechanism guarantees no duplicate financial records will be created.</div>
+      </div>
     </section>
 
 
@@ -1332,6 +1346,7 @@ sequenceDiagram
             <tr><td><code>QR_CODE_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>qrCode</code> field is missing or blank.</td></tr>
             <tr><td><code>QR_CODE_NOT_FOUND</code></td><td style="font-family: 'Inter', sans-serif;">No transaction found for the given QR code.</td></tr>
             <tr><td><code>QR_CODE_EXPIRED</code></td><td style="font-family: 'Inter', sans-serif;">The QR code has expired.</td></tr>
+            <tr><td><code>QR_CODE_USED</code></td><td style="font-family: 'Inter', sans-serif;">The QR code has been read by another application, not our API.</td></tr>
             <tr><td><code>QR_CODE_TRANSACTION_ERROR</code></td><td style="font-family: 'Inter', sans-serif;">A processing error occurred while reading the QR code.</td></tr>
           </tbody>
         </table>
@@ -1411,7 +1426,11 @@ sequenceDiagram
 
       <div class="alert danger">
         <span class="alert-icon">⚠️</span>
-        <div><strong>Failure handling:</strong> If Confirm returns a synchronous error or the webhook delivers <code>status: FAILED</code>, the partner must <strong>reverse the debit</strong> and credit the amount back to the customer's account. Always treat <code>IN_PROGRESS</code> as pending — do not finalise until a <code>COMPLETED</code> or <code>FAILED</code> webhook is received.</div>
+        <div><strong>Failure handling:</strong> If Confirm returns a synchronous error (HTTP 422/409), the transaction is <strong>rejected and no webhook will be sent</strong>. The partner must immediately reverse the customer debit. If the webhook delivers <code>status: FAILED</code>, the partner must likewise <strong>reverse the debit</strong> and credit the amount back to the customer's account. Always treat <code>IN_PROGRESS</code> as pending — do not finalise until a <code>COMPLETED</code> or <code>FAILED</code> webhook is received.</div>
+      </div>
+      <div class="alert info">
+        <span class="alert-icon">🔁</span>
+        <div><strong>Timeout / 5xx handling:</strong> If the Confirm call times out or returns an HTTP 5xx error, retry the same request with <strong>identical values</strong>. The <a href="#idempotency" style="color: var(--accent);">idempotency mechanism</a> ensures no duplicate processing.</div>
       </div>
 
       <h3>Confirm Request Body</h3>
@@ -1449,19 +1468,33 @@ sequenceDiagram
       <p>See <a href="#error-format" style="color: var(--accent);">Error Response Format</a>.</p>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Code</th><th>Description</th></tr></thead>
+          <thead><tr><th>Code</th><th>Description</th><th>Category</th><th>In Production?</th></tr></thead>
           <tbody>
-            <tr><td><code>QR_CODE_TRANSACTION_ID_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>transactionId</code> field is missing or blank.</td></tr>
-            <tr><td><code>QR_CODE_TENANT_USER_ID_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantUserId</code> field is missing.</td></tr>
-            <tr><td><code>QR_CODE_TENANT_REFERENCE_ID_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantReferenceId</code> field is missing (required for payments).</td></tr>
-            <tr><td><code>QR_CODE_AMOUNT_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>amount</code> field is missing.</td></tr>
-            <tr><td><code>QR_CODE_AMOUNT_INVALID</code></td><td style="font-family: 'Inter', sans-serif;">The <code>amount</code> field is invalid (e.g. 0 or negative).</td></tr>
-            <tr><td><code>QR_CODE_TRANSACTION_NOT_FOUND</code></td><td style="font-family: 'Inter', sans-serif;">No transaction found for the given identifier.</td></tr>
-            <tr><td><code>QR_CODE_AMOUNT_MISMATCH</code></td><td style="font-family: 'Inter', sans-serif;">The provided amount does not match the amount in the QR code (dynamic QR).</td></tr>
-            <tr><td><code>QR_CODE_EXPIRED</code></td><td style="font-family: 'Inter', sans-serif;">The QR code has expired.</td></tr>
-            <tr><td><code>QR_CODE_TRANSACTION_ERROR</code></td><td style="font-family: 'Inter', sans-serif;">A processing error occurred during BKM authorization.</td></tr>
-            <tr><td><code>QR_CODE_IDEMPOTENCY_MISMATCH</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantUserId</code> or <code>tenantReferenceId</code> does not match the original Confirm.</td></tr>
-            <tr><td><code>TENANT_REFERENCE_ID_ALREADY_USED</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantReferenceId</code> has already been used by a different transaction.</td></tr>
+            <tr><td><code>QR_CODE_TRANSACTION_ID_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>transactionId</code> field is missing or blank.</td><td>Integration</td><td>No — indicates a request construction bug.</td></tr>
+            <tr><td><code>QR_CODE_TENANT_USER_ID_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantUserId</code> field is missing.</td><td>Integration</td><td>No — indicates a request construction bug.</td></tr>
+            <tr><td><code>QR_CODE_TENANT_REFERENCE_ID_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantReferenceId</code> field is missing (required for payments).</td><td>Integration</td><td>No — indicates a request construction bug.</td></tr>
+            <tr><td><code>QR_CODE_AMOUNT_EMPTY</code></td><td style="font-family: 'Inter', sans-serif;">The <code>amount</code> field is missing.</td><td>Integration</td><td>No — indicates a request construction bug.</td></tr>
+            <tr><td><code>QR_CODE_AMOUNT_INVALID</code></td><td style="font-family: 'Inter', sans-serif;">The <code>amount</code> field is invalid (e.g. 0 or negative).</td><td>Integration</td><td>No — indicates a request construction bug.</td></tr>
+            <tr><td><code>QR_CODE_AMOUNT_MISMATCH</code></td><td style="font-family: 'Inter', sans-serif;">The provided amount does not match the amount in the QR code (dynamic QR).</td><td>Orchestration</td><td>No — indicates a logic error between Read and Confirm.</td></tr>
+            <tr><td><code>QR_CODE_IDEMPOTENCY_MISMATCH</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantUserId</code> or <code>tenantReferenceId</code> does not match the original Confirm.</td><td>Orchestration</td><td>No — indicates a retry with inconsistent values.</td></tr>
+            <tr><td><code>TENANT_REFERENCE_ID_ALREADY_USED</code></td><td style="font-family: 'Inter', sans-serif;">The <code>tenantReferenceId</code> has already been used by a different transaction.</td><td>Orchestration</td><td>No — indicates duplicate reference generation.</td></tr>
+            <tr><td><code>QR_CODE_TRANSACTION_NOT_FOUND</code></td><td style="font-family: 'Inter', sans-serif;">No transaction found for the given identifier. Unexpected after a successful Read.</td><td>Orchestration</td><td>No — Should not occur after a successful Read.</td></tr>
+            <tr><td><code>QR_CODE_EXPIRED</code></td><td style="font-family: 'Inter', sans-serif;">The QR code has expired (user delayed on confirmation page).</td><td>Business</td><td><strong>Yes</strong> — expected in normal flows.</td></tr>
+            <tr><td><code>QR_CODE_USED</code></td><td style="font-family: 'Inter', sans-serif;">The QR code has been read by another application, not our API.</td><td>Business</td><td><strong>Yes</strong> — expected in normal flows.</td></tr>
+            <tr><td><code>QR_CODE_TRANSACTION_ERROR</code></td><td style="font-family: 'Inter', sans-serif;">A processing error occurred during BKM Switch processing.</td><td>System</td><td><strong>Yes</strong> — transient infrastructure failure.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Confirm Error Handling by Category</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Category</th><th>Webhook Follows?</th><th>Recommended Action</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Integration</strong></td><td>No</td><td style="font-family: 'Inter', sans-serif;">Monitor &amp; alert. Reverse debit, await manual investigation. Should not reach production if integration is validated.</td></tr>
+            <tr><td><strong>Orchestration</strong></td><td>No</td><td style="font-family: 'Inter', sans-serif;">Monitor &amp; alert. Reverse debit, await manual investigation. Indicates a logic error in your integration.</td></tr>
+            <tr><td><strong>Business</strong></td><td>No</td><td style="font-family: 'Inter', sans-serif;"><strong>Reverse debit immediately.</strong></td></tr>
+            <tr><td><strong>System</strong></td><td>No</td><td style="font-family: 'Inter', sans-serif;"><strong>Reverse debit immediately.</strong> Expected occasionally. Monitor &amp; alert if frequently occurs.</td></tr>
           </tbody>
         </table>
       </div>
@@ -1591,6 +1624,11 @@ sequenceDiagram
         <div><strong>Refund webhook delay:</strong> For credit-direction transactions (REFUND), the webhook with <code>COMPLETED</code> status is sent at minimum <strong>180 seconds</strong> after the authorization is approved. This allows the POS terminal's technical cancel window to close. If PayPorter receives a <code>REVERSAL OF REFUND</code> during this window, the webhook will be sent with <code>REFUND</code> / <code>FAILED</code> status. Partners must <strong>not</strong> credit the end user until the <code>REFUND</code> / <code>COMPLETED</code> webhook is received.</div>
       </div>
 
+      <div class="alert info">
+        <span class="alert-icon">⏱️</span>
+        <div><strong>Refund ETA guidance:</strong> The estimated end-to-end time from Confirm returning <code>IN_PROGRESS</code> to receiving the refund webhook is approximately <strong>200 seconds</strong> (180s POS cancel window + ~20s authorization processing). This estimate will be refined as production data becomes available.</div>
+      </div>
+
       <h3>Retry Policy</h3>
       <ul style="font-size: 14px; color: var(--muted); margin-bottom: 20px; padding-left: 20px;">
         <li>Any <strong>HTTP 2xx</strong> response is accepted as acknowledgement</li>
@@ -1610,9 +1648,22 @@ sequenceDiagram
       </div>
 
       <h3>Webhook Signature Verification</h3>
-      <p>To ensure the security and integrity of the webhook, PayPorter signs the request body using RSA-SHA256.</p>
-      <p><strong>Signing Algorithm</strong><br>RSA-SHA256 (2048-bit). PayPorter signs the request body with its RSA private key. Partners verify using the RSA public key provided during onboarding.</p>
+      <p>To ensure the security and integrity of the webhook, PayPorter signs the request using RSA-SHA256 over the concatenation of the timestamp and the body.</p>
+      <p><strong>Signing Algorithm</strong><br>RSA-SHA256 (2048-bit). The signed content is constructed by concatenating the <code>request-timestamp</code> header value (Unix epoch ms) and the raw request body, separated by a colon:</p>
+      <div class="code-block">
+        <div class="code-block-header"><span>Signed Content</span></div>
+        <pre>signedContent = request-timestamp + ":" + request-body</pre>
+      </div>
+      <p>PayPorter signs this concatenated value with its RSA private key. Partners verify using the RSA public key provided during onboarding.</p>
       <p><strong>Request Headers</strong><br>The resulting signature is included in the request under the <code>request-sign</code> header. The <code>request-timestamp</code> header contains the Unix epoch timestamp in milliseconds. Reject any webhook where <code>request-timestamp</code> differs from server time by more than 5 minutes.</p>
+      <h3>Verification Pseudocode</h3>
+      <div class="code-block">
+        <div class="code-block-header"><span>Pseudocode</span></div>
+        <pre>timestamp     = headers["request-timestamp"]
+signature     = base64_decode(headers["request-sign"])
+signedContent = timestamp + ":" + body
+isValid       = RSA_SHA256_verify(payporterPublicKey, signedContent, signature)</pre>
+      </div>
 
       <h3>Example — Payment Webhook</h3>
       <div class="code-block">
