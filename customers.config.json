@@ -34,5 +34,9 @@
   "whitelabel": {
     "name": "Whitelabel Wallet",
     "allowedSidebars": ["introductionSidebar", "whitelabelWalletSidebar"]
+  },
+  "qr-api": {
+    "name": "QR API Documentation",
+    "allowedSidebars": ["qrPaymentsSidebar"]
   }
 }

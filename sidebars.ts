@@ -88,14 +88,30 @@ const sidebars: SidebarsConfig = {
   ],
   qrPaymentsSidebar: [
     'qr-payments/intro',
+    'qr-payments/flow-diagrams',
+    'qr-payments/safety-model',
+    'qr-payments/payment-object',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
     'qr-payments/read-qr',
     'qr-payments/confirm-payment',
+    'qr-payments/confirm-retry-fallback',
+    'qr-payments/query-transaction',
     'qr-payments/webhooks',
     {
       type: 'html',
       value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
     },
-    'qr-payments/mock-api',
+    'qr-payments/reconciliation',
+    'qr-payments/balance-inquiry',
+    'qr-payments/account-transactions',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'qr-payments/mock-apis',
   ],
   moneyTransfersSidebar: [
     'money-transfers/intro',

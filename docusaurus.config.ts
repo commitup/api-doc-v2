@@ -90,11 +90,12 @@ const config: Config = {
 
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'tr', 'ru'],
+    locales: ['en', 'tr', 'ru', 'zh'],
     localeConfigs: {
       en: { label: 'English' },
       tr: { label: 'Türkçe' },
       ru: { label: 'Русский' },
+      zh: { label: '中文' },
     },
   },
   
@@ -150,8 +151,8 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'Payporter API',
-      logo: {
+      title: CUSTOMER_ID === 'qr-api' ? undefined : 'Payporter API',
+      logo: CUSTOMER_ID === 'qr-api' ? undefined : {
         alt: 'Payporter Logo',
         src: 'img/pp-logo.png',
       },
@@ -164,14 +165,16 @@ const config: Config = {
         ...(hasAccess('qrPaymentsSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'qrPaymentsSidebar', position: 'left' as const, label: 'QR Payments' }] : []),
         ...(hasAccess('posApiSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'posApiSidebar', position: 'left' as const, label: 'POS API' }] : []),
         
-        {to: '/blog', label: 'Blog', position: 'left' as const},
+        ...(CUSTOMER_ID !== 'qr-api' ? [
+          {to: '/blog', label: 'Blog', position: 'left' as const},
+          {
+            href: 'https://github.com/commitup/api-doc-v2',
+            label: 'GitHub',
+            position: 'right' as const,
+          },
+        ] : []),
         {
           type: 'localeDropdown',
-          position: 'right' as const,
-        },
-        {
-          href: 'https://github.com/commitup/api-doc-v2',
-          label: 'GitHub',
           position: 'right' as const,
         },
       ],
@@ -193,7 +196,7 @@ const config: Config = {
             ...(hasAccess('posApiSidebar') ? [{ label: 'POS API', to: '/docs/pos-api/intro' }] : []),
           ],
         },
-        {
+        ...(CUSTOMER_ID !== 'qr-api' ? [{
           title: 'Resources',
           items: [
             {
@@ -201,7 +204,7 @@ const config: Config = {
               href: 'https://github.com/commitup/api-doc-v2',
             },
           ],
-        },
+        }] : []),
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Payporter. Built with Docusaurus.`,
     },
