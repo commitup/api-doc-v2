@@ -5,7 +5,7 @@
 | Version | Date | Changes |
 | :--- | :--- | :--- |
 | 1.3.1 | 2026-05-05 | Added `QR_CODE_USED` error code to Read and Confirm endpoints. |
-| 1.3.0 | 2026-05-05 | Clarified synchronous Confirm errors are terminal (no webhook follows). Added error handling guidance with recommended actions per error code. Updated webhook signature to sign `timestamp:body`. Added refund ETA guidance (~200s). Added safe retry policy for 5xx/timeout. |
+| 1.3.0 | 2026-05-05 | Clarified synchronous Confirm errors are final (no webhook follows). Added error handling guidance with recommended actions per error code. Updated webhook signature to sign `timestamp:body`. Added refund ETA guidance (~200s). Added safe retry policy for 5xx/timeout. |
 | 1.2.0 | 2026-04-28 | Added Idempotency & Deduplication section. Added Transaction State Machine with finality rules. Added Error Codes table. Documented amount format conventions. Documented partial/multiple refund and cancellation equivalence. Added `tenantReferenceId` uniqueness constraint. |
 | 1.1.0 | 2026-04-28 | Added `transactionSource`, `acquirerId` fields. Added Balance Inquiry endpoint. Added response field tables. Updated webhook signing to RSA-SHA256. Documented refund 180s webhook delay. |
 | 1.0.1 | 2026-04-08 | Updated field requirements and refined length constraints for Read and Confirm APIs. |
@@ -292,9 +292,10 @@ All errors use the same JSON envelope. The HTTP status code indicates the error 
 
 | HTTP Status | Category | When |
 |-------------|----------|------|
-| `422 Unprocessable Entity` | Validation | Missing or invalid request fields |
+| `406 Not Acceptable` | Validation | Missing or invalid request fields |
 | `409 Conflict` | Idempotency / Uniqueness | Key mismatch or duplicate reference |
-| `500 Internal Server Error` | System | Unexpected internal failure |
+| `429 Too Many Requests` | Rate Limit | Rate limiting policy exceeded |
+| `5XX Server Error` | System | Unexpected internal failure |
 
 ```json
 {
@@ -307,7 +308,7 @@ All errors use the same JSON envelope. The HTTP status code indicates the error 
 Endpoint-specific error codes are listed in each API section below.
 
 > [!TIP]
-> **Safe retry policy:** For `500 Internal Server Error` or network timeout, retry the request with **identical values**. The [Confirm Idempotency](#confirm-idempotency) mechanism guarantees no duplicate financial records will be created.
+> **Safe retry policy:** For 5XX or timeout, retry the request with **identical values**. The [Confirm Idempotency](#confirm-idempotency) mechanism guarantees no duplicate financial records will be created.
 
 ---
 
@@ -541,7 +542,7 @@ See [Error Response Format](#error-response-format).
 - When the returned status is `IN_PROGRESS`, the final result will be notified asynchronously via the [Webhook](#qr-transaction-webhook).
 
 > [!IMPORTANT]
-> **Failure handling:** If Confirm returns a synchronous error (HTTP 422/409), the transaction is **rejected and no webhook will be sent**. The partner must immediately reverse the customer debit. If the webhook delivers `status: FAILED`, the partner must likewise **reverse the debit** and credit the amount back to the customer's account. Always treat `IN_PROGRESS` as pending — do not finalise until a `COMPLETED` or `FAILED` webhook is received.
+> **Failure handling:** If Confirm returns a synchronous error (HTTP 406/409), the transaction is **rejected and no webhook will be sent**. The partner must immediately reverse the customer debit. If the webhook delivers `status: FAILED`, the partner must likewise **reverse the debit** and credit the amount back to the customer's account. Always treat `IN_PROGRESS` as pending — do not finalise until a `COMPLETED` or `FAILED` webhook is received.
 >
 > **Timeout / 5xx handling:** If the Confirm call times out or returns an HTTP 5xx error, retry the same request with **identical values**. The [idempotency mechanism](#confirm-idempotency) ensures no duplicate processing.
 
@@ -574,7 +575,7 @@ Example:
 ### Confirm Error Codes
 See [Error Response Format](#error-response-format).
 
-| Code | Description | Category | In Production? |
+| Code | Description | Category | Expected in Production? |
 |------|-------------|----------|----------------|
 | `QR_CODE_TRANSACTION_ID_EMPTY` | The `transactionId` field is missing or blank. | Integration | No — indicates a request construction bug. |
 | `QR_CODE_TENANT_USER_ID_EMPTY` | The `tenantUserId` field is missing. | Integration | No — indicates a request construction bug. |
@@ -587,7 +588,7 @@ See [Error Response Format](#error-response-format).
 | `QR_CODE_TRANSACTION_NOT_FOUND` | No transaction found for the given identifier. Unexpected after a successful Read. | Orchestration | No — Should not occur after a successful Read. |
 | `QR_CODE_EXPIRED` | The QR code has expired (user delayed on confirmation page). | Business | **Yes** — expected in normal flows. |
 | `QR_CODE_USED` | The QR code has been read by another application, not our API. | Business | **Yes** — expected in normal flows. |
-| `QR_CODE_TRANSACTION_ERROR` | A processing error occurred during BKM Switch processing. | System | **Yes** — transient infrastructure failure. |
+| `QR_CODE_TRANSACTION_ERROR` | A processing error occurred during BKM Switch processing. | BKM Processing | **Yes** — transient infrastructure failure. |
 
 #### Confirm Error Handling by Category
 
@@ -596,7 +597,8 @@ See [Error Response Format](#error-response-format).
 | **Integration** | No | Monitor & alert. Reverse debit, await manual investigation. Should not reach production if integration is validated. |
 | **Orchestration** | No | Monitor & alert. Reverse debit, await manual investigation. Indicates a logic error in your integration. |
 | **Business** | No | **Reverse debit immediately.** |
-| **System** | No | **Reverse debit immediately.** Expected occasionally. Monitor & alert if frequently occurs. |
+| **BKM Processing** | No | **Reverse debit immediately.** Expected occasionally. Monitor & alert if frequently occurs. |
+| **5XX or Network timeout** | Depends on result | **Retry the same request with identical values.** |
 
 ### Confirm Response - Payment
 
