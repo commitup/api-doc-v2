@@ -13,7 +13,7 @@
   },
   "payporter": {
     "name": "Payporter",
-    "allowedSidebars": ["introductionSidebar", "eftSidebar", "qrPaymentsSidebar", "moneyTransfersSidebar", "whitelabelWalletSidebar", "posApiSidebar"]
+    "allowedSidebars": ["introductionSidebar", "eftSidebar", "qrPaymentsSidebar", "moneyTransfersSidebar", "whitelabelWalletSidebar", "posApiSidebar", "accountingSidebar"]
   },
   "eft-only": {
     "name": "Eft Turkish Banks",
@@ -34,5 +34,9 @@
   "whitelabel": {
     "name": "Whitelabel Wallet",
     "allowedSidebars": ["introductionSidebar", "whitelabelWalletSidebar"]
+  },
+    "apilist": {
+    "name": "API List",
+    "allowedSidebars": ["introductionSidebar", "eftSidebar", "moneyTransfersSidebar", "accountingSidebar"]
   }
 }

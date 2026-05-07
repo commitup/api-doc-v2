@@ -24,6 +24,7 @@ const sidebarToPathMap: Record<string, string[]> = {
   moneyTransfersSidebar: ['money-transfers', 'payments', 'resources'],
   whitelabelWalletSidebar: ['whitelabel-wallet'],
   posApiSidebar: ['pos-api'],
+  accountingSidebar: ['accounting'],
 };
 
 const calculatedIgnorePaths: (string | RegExp)[] = [];
@@ -163,6 +164,7 @@ const config: Config = {
         ...(hasAccess('whitelabelWalletSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'whitelabelWalletSidebar', position: 'left' as const, label: 'Whitelabel Wallet' }] : []),
         ...(hasAccess('qrPaymentsSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'qrPaymentsSidebar', position: 'left' as const, label: 'QR Payments' }] : []),
         ...(hasAccess('posApiSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'posApiSidebar', position: 'left' as const, label: 'POS API' }] : []),
+        ...(hasAccess('accountingSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'accountingSidebar', position: 'left' as const, label: 'Accounting' }] : []),
         
         {to: '/blog', label: 'Blog', position: 'left' as const},
         {
@@ -191,6 +193,7 @@ const config: Config = {
             ] : []),
             ...(hasAccess('whitelabelWalletSidebar') ? [{ label: 'Whitelabel Wallet', to: '/docs/whitelabel-wallet/intro' }] : []),
             ...(hasAccess('posApiSidebar') ? [{ label: 'POS API', to: '/docs/pos-api/intro' }] : []),
+            ...(hasAccess('accountingSidebar') ? [{ label: 'Accounting', to: '/docs/accounting/account-info' }] : []),
           ],
         },
         {

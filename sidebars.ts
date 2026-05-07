@@ -69,6 +69,7 @@ const sidebars: SidebarsConfig = {
     'eft-turkish-banks/get-refund-list',
     'eft-turkish-banks/cancel-eft',
     'eft-turkish-banks/webhooks',
+    'eft-turkish-banks/settlement',
     {
       type: 'html',
       value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
@@ -207,6 +208,11 @@ const sidebars: SidebarsConfig = {
       value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
     },
     'money-transfers/fields-api',
+    'money-transfers/settlement',
+  ],
+  accountingSidebar: [
+    'accounting/account-info',
+    'accounting/account-transactions',
   ],
   posApiSidebar: [
     'pos-api/intro',
