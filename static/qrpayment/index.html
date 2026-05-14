@@ -549,7 +549,11 @@
       href="#terminal-types" style="padding-left: 36px; font-size: 12.5px;">Terminal Types</a><a
       href="#partner-fund-safety-model">Partner Fund Safety Model</a><a href="#idempotency"
       style="padding-left: 36px; font-size: 12.5px;">Idempotency &amp; Retries</a>
-    <div class="nav-section">Flow Diagrams</div><a href="#flow">Flow Diagrams</a>
+    <div class="nav-section">Flow Diagrams</div><a href="#flow">Flow Diagrams</a><a href="#payment-flow-dynamic-qr"
+      style="padding-left: 36px; font-size: 12.5px;">Payment Flow (Dynamic QR)</a><a
+      href="#refund-flow-qr-scan--180s-window" style="padding-left: 36px; font-size: 12.5px;">Refund Flow (QR Scan –
+      180s Window)</a><a href="#late-reversal--dispute--user-not-present-refund-flow"
+      style="padding-left: 36px; font-size: 12.5px;">Late Reversal / Dispute / User-Not-Present Refund Flow</a>
     <div class="nav-section">Endpoints</div><a href="#read">Read QR Info</a><a href="#confirm">Confirm Payment</a><a
       href="#confirm-retry-fallback-strategy">Confirm Retry &amp; Fallback Strategy</a><a href="#query">Query
       Transaction</a>
@@ -579,12 +583,22 @@
           </thead>
           <tbody>
             <tr>
+              <td align="left">1.5.0</td>
+              <td align="left">2026-05-14</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Added standard pagination envelope
+                (<code>data</code> array, <code>pagination</code> object, and optional <code>summary</code> object) to
+                Reconciliation and Account Transactions endpoints. Standardized input tables to <code>Required</code>
+                style and output tables to <code>Presence</code> style. Updated endpoint paths in flow diagrams to full
+                relative URLs. Added <code>X-Wallet-Id</code> to Authentication description.</td>
+            </tr>
+            <tr>
               <td align="left">1.4.2</td>
               <td align="left">2026-05-13</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Changed Balance Inquiry endpoint to
                 <code>GET /wallet/qrcode/account/balance</code>. Added HTTP status codes to all error code tables.
                 Clarified Mock Authorization sends approval only; <code>FAILED</code> path tested via insufficient
-                balance. Unified example amounts and transaction IDs across all sections.</td>
+                balance. Unified example amounts and transaction IDs across all sections.
+              </td>
             </tr>
             <tr>
               <td align="left">1.4.1</td>
@@ -600,7 +614,8 @@
                 debit/credit timing diagrams. Added Confirm Retry &amp; Fallback Strategy. Added webhook event envelope
                 headers (<code>x-event-id</code>, <code>x-event-type</code>, <code>x-request-timestamp</code>,
                 <code>x-request-signature</code>). Expanded Mock APIs: error code matrices, webhook event log query and
-                retry endpoints, authorization failure testing.</td>
+                retry endpoints, authorization failure testing.
+              </td>
             </tr>
             <tr>
               <td align="left">1.3.1</td>
@@ -622,14 +637,16 @@
               <td align="left" style="font-family: 'Inter', sans-serif;">Added Idempotency &amp; Deduplication section.
                 Added Transaction State Machine with finality rules. Added Error Codes table. Documented amount format
                 conventions. Documented partial/multiple refund and cancellation equivalence. Added
-                <code>tenantReferenceId</code> uniqueness constraint.</td>
+                <code>tenantReferenceId</code> uniqueness constraint.
+              </td>
             </tr>
             <tr>
               <td align="left">1.1.0</td>
               <td align="left">2026-04-28</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Added <code>transactionSource</code>,
                 <code>acquirerId</code> fields. Added Balance Inquiry endpoint. Added response field tables. Updated
-                webhook signing to RSA-SHA256. Documented refund 180s webhook delay.</td>
+                webhook signing to RSA-SHA256. Documented refund 180s webhook delay.
+              </td>
             </tr>
             <tr>
               <td align="left">1.0.1</td>
@@ -684,7 +701,8 @@
       </div>
       <p>All endpoint paths in this document are relative to this base URL. For example,
         <code>POST /wallet/qrcode/payment/read</code> resolves to
-        <code>https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/qrcode/payment/read</code>.</p>
+        <code>https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/qrcode/payment/read</code>.
+      </p>
       <p>All requests and responses use <code>Content-Type: application/json</code> unless noted otherwise.</p>
       <hr />
     </section>
@@ -779,7 +797,8 @@
               <td><code>timestamp</code></td>
               <td>String</td>
               <td style="font-family: 'Inter', sans-serif;">ISO 8601 format (e.g.,
-                <code>2023-10-27T10:00:00.123Z</code>)</td>
+                <code>2023-10-27T10:00:00.123Z</code>)
+              </td>
             </tr>
           </tbody>
         </table>
@@ -921,7 +940,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
             <tr>
               <td>Examples</td>
               <td style="font-family: 'Inter', sans-serif;"><code>"11.50"</code>, <code>"84.00"</code>,
-                <code>"0.01"</code></td>
+                <code>"0.01"</code>
+              </td>
             </tr>
             <tr>
               <td>Sign</td>
@@ -968,7 +988,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
               <td align="left">100</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Partner's unique reference ID.
                 <code>null</code> before Confirm. For refund transactions, this field is optional and may be
-                <code>null</code>.</td>
+                <code>null</code>.
+              </td>
             </tr>
             <tr>
               <td align="left"><code>tenantUserId</code></td>
@@ -993,7 +1014,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
               <td align="left">10</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">
                 <code><span class="pill blue">PAYMENT</span></code> or <code>REFUND</code>. See <a
-                  href="#transaction-types">Transaction Types</a>.</td>
+                  href="#transaction-types">Transaction Types</a>.
+              </td>
             </tr>
             <tr>
               <td align="left"><code>transactionSource</code></td>
@@ -1018,7 +1040,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
               <td align="left">12</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Transaction amount (pattern
                 <code>999999999.99</code>). <code>null</code> for static QR at Read phase; present in all other
-                contexts.</td>
+                contexts.
+              </td>
             </tr>
             <tr>
               <td align="left"><code>currency</code></td>
@@ -1033,7 +1056,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
               <td align="left"><span class="required">Always</span></td>
               <td align="left">24</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">QR generation timestamp (ISO 8601, e.g.
-                <code>2024-05-15T14:30:00Z</code>).</td>
+                <code>2024-05-15T14:30:00Z</code>).
+              </td>
             </tr>
             <tr>
               <td align="left"><code>qrExpireDate</code></td>
@@ -1253,7 +1277,7 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
     </section>
     <section id="flow">
       <h2>Flow Diagrams</h2>
-      <h4>Payment Flow (Dynamic QR)</h4>
+      <h3 id="payment-flow-dynamic-qr">Payment Flow (Dynamic QR)</h3>
       <div class="mermaid-wrap">
         <pre class="mermaid">sequenceDiagram
     participant User
@@ -1264,7 +1288,7 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
     rect rgb(40, 40, 60)
     Note over User, PayPorter: Synchronous – Read &amp; Confirm
     User-&gt;&gt;Partner: Scans merchant QR code
-    Partner-&gt;&gt;PayPorter: POST /qrcode/payment/read&lt;br/&gt;{qrCode}
+    Partner-&gt;&gt;PayPorter: POST /wallet/qrcode/payment/read&lt;br/&gt;{qrCode}
     PayPorter-&gt;&gt;BKM_Switch: Parse &amp; validate QR
     BKM_Switch--&gt;&gt;PayPorter: Transaction info
     PayPorter--&gt;&gt;Partner: 200 OK&lt;br/&gt;{status: READ_QR}
@@ -1275,7 +1299,7 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
     end
 
     Partner-&gt;&gt;Partner: Debit customer account
-    Partner-&gt;&gt;PayPorter: POST /qrcode/payment/confirm&lt;br/&gt;{transactionId, tenantReferenceId, tenantUserId, amount}
+    Partner-&gt;&gt;PayPorter: POST /wallet/qrcode/payment/confirm&lt;br/&gt;{transactionId, tenantReferenceId, tenantUserId, amount}
     PayPorter-&gt;&gt;BKM_Switch: Initiate transaction
     BKM_Switch--&gt;&gt;PayPorter: Accepted
     PayPorter--&gt;&gt;Partner: 200 OK&lt;br/&gt;{status: IN_PROGRESS}
@@ -1290,7 +1314,7 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
     end
 </pre>
       </div>
-      <h4>Refund Flow (QR Scan – 180s Window)</h4>
+      <h3 id="refund-flow-qr-scan--180s-window">Refund Flow (QR Scan – 180s Window)</h3>
       <div class="mermaid-wrap">
         <pre class="mermaid">sequenceDiagram
     participant User
@@ -1301,10 +1325,10 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
     rect rgb(40, 40, 60)
     Note over User, PayPorter: Synchronous – Read &amp; Confirm
     User-&gt;&gt;Partner: Scans refund QR at merchant
-    Partner-&gt;&gt;PayPorter: POST /qrcode/payment/read&lt;br/&gt;{qrCode}
+    Partner-&gt;&gt;PayPorter: POST /wallet/qrcode/payment/read&lt;br/&gt;{qrCode}
     PayPorter--&gt;&gt;Partner: 200 OK&lt;br/&gt;{transactionType: REFUND, status: READ_QR,&lt;br/&gt;parentTransactionId}
 
-    Partner-&gt;&gt;PayPorter: POST /qrcode/payment/confirm&lt;br/&gt;{transactionId, amount, tenantUserId}
+    Partner-&gt;&gt;PayPorter: POST /wallet/qrcode/payment/confirm&lt;br/&gt;{transactionId, amount, tenantUserId}
     PayPorter-&gt;&gt;BKM_Switch: Initiate refund transaction
     BKM_Switch--&gt;&gt;PayPorter: Accepted
     PayPorter--&gt;&gt;Partner: 200 OK&lt;br/&gt;{status: IN_PROGRESS}
@@ -1330,7 +1354,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
     end
 </pre>
       </div>
-      <h4>Late Reversal / Dispute / User-Not-Present Refund Flow</h4>
+      <h3 id="late-reversal--dispute--user-not-present-refund-flow">Late Reversal / Dispute / User-Not-Present Refund
+        Flow</h3>
       <div class="mermaid-wrap">
         <pre class="mermaid">sequenceDiagram
     participant BKM_Switch as BKM Switch/Dispute
@@ -1379,7 +1404,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
       <h3 id="refund-credit-timing">Refund: Credit Timing</h3>
       <p>For <strong>refund</strong> transactions, the partner does <strong>NOT</strong> debit or credit the customer
         before calling Confirm. The partner credits the customer <strong>only after</strong> receiving a
-        <code>COMPLETED</code> webhook.</p>
+        <code>COMPLETED</code> webhook.
+      </p>
       <div class="mermaid-wrap">
         <pre class="mermaid">flowchart TD
     A["1. POST /read"] --&gt; B{"transactionType?"}
@@ -1462,12 +1488,14 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
         </table>
       </div>
       <p>If any key field does not match the original Confirm, the request is rejected with
-        <code>QR_CODE_IDEMPOTENCY_MISMATCH</code>.</p>
+        <code>QR_CODE_IDEMPOTENCY_MISMATCH</code>.
+      </p>
       <p><strong>Uniqueness constraint</strong> (checked on first Confirm):</p>
       <p><code>tenantReferenceId</code> must be unique across all payment transactions. Reusing a previously consumed
         <code>tenantReferenceId</code> on a <em>different</em> transaction returns
         <code>TENANT_REFERENCE_ID_ALREADY_USED</code>. This is independent of idempotency — it prevents duplicate
-        payment references.</p>
+        payment references.
+      </p>
       <div class="table-wrap">
         <table>
           <thead>
@@ -1481,7 +1509,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
               <td>First Confirm</td>
               <td style="font-family: 'Inter', sans-serif;">Binds <code>tenantUserId</code> and
                 <code>tenantReferenceId</code> (if payment) to the transaction. Processes and returns
-                <code>IN_PROGRESS</code>.</td>
+                <code>IN_PROGRESS</code>.
+              </td>
             </tr>
             <tr>
               <td>Retry — all key fields match</td>
@@ -1603,7 +1632,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
         behaviour:</p>
       <ul>
         <li><strong><code>tenantReferenceId</code></strong> and <strong><code>tenantUserId</code></strong> are always
-          <code>null</code> at Read phase (no Confirm has occurred yet).</li>
+          <code>null</code> at Read phase (no Confirm has occurred yet).
+        </li>
         <li><strong><code>amount</code></strong>: For payment transactions, <code>null</code> when the QR is static (the
           partner must collect the amount from the user before Confirm). Always present for refund transactions.</li>
         <li><strong><code>parentTransactionId</code></strong>: Present only for <code>REFUND</code> transactions.</li>
@@ -1615,11 +1645,13 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
       </div>
       <p><strong>Cancellation equivalence:</strong> BKM <code>transactionType = 3</code> (Cancellation) is treated
         identically to <code>transactionType = 4</code> (Refund). Both are returned as
-        <code>transactionType: REFUND</code> in the API response.</p>
+        <code>transactionType: REFUND</code> in the API response.
+      </p>
       <p><strong>Partial &amp; multiple refunds:</strong> Partial refund amounts are supported. The same original
         payment may be refunded multiple times, each producing a separate REFUND transaction linked via
         <code>parentTransactionId</code>. The refund amount in the QR code is fixed by the merchant POS and cannot be
-        modified during Confirm. Sending a different amount returns <code>QR_CODE_AMOUNT_MISMATCH</code>.</p>
+        modified during Confirm. Sending a different amount returns <code>QR_CODE_AMOUNT_MISMATCH</code>.
+      </p>
       <h4>Example — Payment Read Response</h4>
       <div class="code-block">
         <div class="code-block-header"><span>JSON</span></div>
@@ -1678,7 +1710,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
         <li>For refunds, the partner must <strong>not</strong> credit the customer before Confirm. Credit the customer
           <strong>only after</strong> receiving a <code>COMPLETED</code> webhook. If the webhook delivers
           <code>FAILED</code>, do <strong>not</strong> credit. See <a href="#partner-fund-safety-model">Partner Fund
-            Safety Model</a>.</li>
+            Safety Model</a>.
+        </li>
         <li>When the returned status is <code>IN_PROGRESS</code>, the final result will be delivered asynchronously via
           the <a href="#webhook">Webhook</a>.</li>
       </ul>
@@ -1719,7 +1752,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
               <td align="left">100</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Required for PAYMENT. Optional for REFUND.
                 <strong>Must be unique per payment</strong> — reuse across different transactions returns
-                <code>TENANT_REFERENCE_ID_ALREADY_USED</code>.</td>
+                <code>TENANT_REFERENCE_ID_ALREADY_USED</code>.
+              </td>
             </tr>
             <tr>
               <td align="left"><code>amount</code></td>
@@ -1729,7 +1763,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
               <td align="left" style="font-family: 'Inter', sans-serif;">The transaction amount (pattern
                 <code>999999999.99</code>). For dynamic QR, must match the amount returned by Read. For refund QR, must
                 match the refund amount in the QR code — sending a different value returns
-                <code>QR_CODE_AMOUNT_MISMATCH</code>.</td>
+                <code>QR_CODE_AMOUNT_MISMATCH</code>.
+              </td>
             </tr>
             <tr>
               <td align="left"><code>tenantUserId</code></td>
@@ -1859,7 +1894,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
               <td><code>409</code></td>
               <td><code>QR_CODE_IDEMPOTENCY_MISMATCH</code></td>
               <td style="font-family: 'Inter', sans-serif;">The <code>tenantUserId</code> or
-                <code>tenantReferenceId</code> (if payment) does not match the values from the original Confirm.</td>
+                <code>tenantReferenceId</code> (if payment) does not match the values from the original Confirm.
+              </td>
               <td style="font-family: 'Inter', sans-serif;">Orchestration</td>
               <td>No — indicates a retry with inconsistent values.</td>
             </tr>
@@ -1948,9 +1984,11 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
       <ul>
         <li><strong><code>status</code></strong> is <code>IN_PROGRESS</code> on the first successful Confirm. On
           idempotent retries, the current status (<code>IN_PROGRESS</code>, <code>COMPLETED</code>, or
-          <code>FAILED</code>) is returned.</li>
+          <code>FAILED</code>) is returned.
+        </li>
         <li><strong><code>tenantReferenceId</code></strong>: Always present for payments. Optional for refunds (may be
-          <code>null</code>).</li>
+          <code>null</code>).
+        </li>
         <li><strong><code>tenantUserId</code></strong>: Always present.</li>
         <li><strong><code>parentTransactionId</code></strong>: Present only for <code>REFUND</code> transactions.</li>
       </ul>
@@ -2135,11 +2173,14 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
       <div class="method-badge"><span class="method get">GET</span> /wallet/qrcode/transactions</div>
       <ul>
         <li>Finds and returns the details of a transaction by either <code>transactionId</code> or
-          <code>tenantReferenceId</code> (exactly one must be provided).</li>
+          <code>tenantReferenceId</code> (exactly one must be provided).
+        </li>
         <li>If both parameters are provided, the request is treated as if neither was provided and returns
-          <code>QR_CODE_QUERY_IDENTIFIER_EMPTY</code>.</li>
+          <code>QR_CODE_QUERY_IDENTIFIER_EMPTY</code>.
+        </li>
         <li>This endpoint can also be used to query externally triggered refunds (disputes, late reversals) using the
-          <code>transactionId</code> received via webhook.</li>
+          <code>transactionId</code> received via webhook.
+        </li>
       </ul>
       <h3 id="query-parameters">Query Parameters</h3>
       <div class="table-wrap">
@@ -2192,7 +2233,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
               <td><code>406</code></td>
               <td><code>QR_CODE_QUERY_IDENTIFIER_EMPTY</code></td>
               <td style="font-family: 'Inter', sans-serif;">Neither <code>transactionId</code> nor
-                <code>tenantReferenceId</code> was provided (or both were provided).</td>
+                <code>tenantReferenceId</code> was provided (or both were provided).
+              </td>
             </tr>
           </tbody>
         </table>
@@ -2202,7 +2244,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
         behaviour:</p>
       <ul>
         <li><strong><code>tenantReferenceId</code></strong>: Optional for refund transactions (may be
-          <code>null</code>).</li>
+          <code>null</code>).
+        </li>
         <li><strong><code>tenantUserId</code></strong>: Always present (for transactions that have been confirmed).</li>
         <li><strong><code>parentTransactionId</code></strong>: Present only for <code>REFUND</code> transactions.</li>
       </ul>
@@ -2235,7 +2278,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
       <h2>Webhook</h2>
       <p>PayPorter sends a <code>POST</code> request to the Partner webhook endpoint whenever a transaction reaches a
         final state. The result of <code>IN_PROGRESS</code> operations will be sent as <code>COMPLETED</code> or
-        <code>FAILED</code>.</p>
+        <code>FAILED</code>.
+      </p>
       <h3 id="event-types">Event Types</h3>
       <div class="table-wrap">
         <table>
@@ -2261,7 +2305,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
       <p>Each webhook delivery includes a globally unique event identifier in the <code>x-event-id</code> header. The
         same event may be delivered <strong>more than once</strong> (at-least-once delivery). Partners must use
         <code>x-event-id</code> to deduplicate — if you have already processed an event with the same ID, acknowledge it
-        with HTTP 2xx and skip processing.</p>
+        with HTTP 2xx and skip processing.
+      </p>
       <div class="alert warning"><span class="alert-icon">⚠️</span>
         <div>
           Refund webhook delay: For credit-direction transactions (REFUND), the webhook with COMPLETED status is sent at
@@ -2308,34 +2353,49 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
         <table>
           <thead>
             <tr>
-              <th>Header</th>
-              <th>Description</th>
-              <th>Example</th>
+              <th align="left">Header</th>
+              <th align="left">Type</th>
+              <th align="left">Presence</th>
+              <th align="left">Length</th>
+              <th align="left">Description</th>
+              <th align="left">Example</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>x-event-id</code></td>
-              <td style="font-family: 'Inter', sans-serif;">Globally unique event identifier (UUID). Use for
-                idempotency.</td>
-              <td><code>a1b2c3d4-e5f6-7890-abcd-ef1234567890</code></td>
+              <td align="left"><code>x-event-id</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">36</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Globally unique event identifier (UUID). Use
+                for idempotency.</td>
+              <td align="left"><code>a1b2c3d4-e5f6-7890-abcd-ef1234567890</code></td>
             </tr>
             <tr>
-              <td><code>x-event-type</code></td>
-              <td style="font-family: 'Inter', sans-serif;">Event type. See <a href="#event-types">Event Types</a>.</td>
-              <td><code>qr_payment.completed</code></td>
+              <td align="left"><code>x-event-type</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">30</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Event type. See <a href="#event-types">Event
+                  Types</a>.</td>
+              <td align="left"><code>qr_payment.completed</code></td>
             </tr>
             <tr>
-              <td><code>x-request-timestamp</code></td>
-              <td style="font-family: 'Inter', sans-serif;">Unix epoch ms when the HTTP request was sent. Generated per
-                delivery attempt — the value changes on retries. Reject if &gt; 5 minutes from server time.</td>
-              <td><code>1714291200000</code></td>
+              <td align="left"><code>x-request-timestamp</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">13</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Unix epoch ms when the HTTP request was sent.
+                Generated per delivery attempt.</td>
+              <td align="left"><code>1714291200000</code></td>
             </tr>
             <tr>
-              <td><code>x-request-signature</code></td>
-              <td style="font-family: 'Inter', sans-serif;">RSA-SHA256 signature of the request body (verify with
-                PayPorter public key).</td>
-              <td><code>Base64-encoded signature</code></td>
+              <td align="left"><code>x-request-signature</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">RSA-SHA256 signature of the request body.</td>
+              <td align="left">Base64 signature</td>
             </tr>
           </tbody>
         </table>
@@ -2356,7 +2416,8 @@ const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
       <p><strong>Request Headers</strong>
         The resulting signature is included in the request under the <code>x-request-signature</code> header. The
         <code>x-request-timestamp</code> header contains the Unix epoch timestamp in milliseconds. Reject any webhook
-        where <code>x-request-timestamp</code> differs from server time by more than 5 minutes.</p>
+        where <code>x-request-timestamp</code> differs from server time by more than 5 minutes.
+      </p>
       <p><strong>Verification pseudocode:</strong></p>
       <div class="code-block code-text">
         <div class="code-block-header"><span>TEXT</span></div>
@@ -2369,17 +2430,19 @@ isValid    = RSA_SHA256_verify(payporterPublicKey, signedContent, signature)
       <h3 id="webhook-body">Webhook Body</h3>
       <p>The webhook body is a <a href="#payment-object">Payment Object</a>. Event metadata (<code>x-event-id</code>,
         <code>x-event-type</code>, <code>x-request-timestamp</code>) is provided in the <a href="#headers">Headers</a>
-        above.</p>
+        above.
+      </p>
       <p>Endpoint-specific behaviour:</p>
       <ul>
         <li><strong><code>status</code></strong>: Always <code>COMPLETED</code> or <code>FAILED</code> (webhooks are
           only sent for terminal states).</li>
         <li><strong><code>tenantReferenceId</code></strong>: Optional for refund transactions (may be
-          <code>null</code>).</li>
+          <code>null</code>).
+        </li>
         <li><strong><code>tenantUserId</code></strong>: Always present after Confirm.</li>
         <li><strong><code>parentTransactionId</code></strong>: Present only for <code>REFUND</code> transactions.</li>
       </ul>
-      <h3 id="example-payment-webhook">Example — Payment Webhook</h3>
+      <h4 id="example-payment-webhook">Example — Payment Webhook</h4>
       <p><strong>Headers:</strong></p>
       <div class="code-block code-text">
         <div class="code-block-header"><span>TEXT</span></div>
@@ -2414,7 +2477,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
 }
 </pre>
       </div>
-      <h3 id="example-refund-webhook">Example — Refund Webhook</h3>
+      <h4 id="example-refund-webhook">Example — Refund Webhook</h4>
       <p><strong>Headers:</strong></p>
       <div class="code-block code-text">
         <div class="code-block-header"><span>TEXT</span></div>
@@ -2473,6 +2536,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
               <th align="left">Parameter</th>
               <th align="left">Type</th>
               <th align="left">Required</th>
+              <th align="left">Length</th>
               <th align="left">Description</th>
             </tr>
           </thead>
@@ -2481,6 +2545,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
               <td align="left"><code>startDate</code></td>
               <td align="left">String</td>
               <td align="left"><span class="required">Yes</span></td>
+              <td align="left">24</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Start of date range, inclusive (ISO 8601, e.g.
                 <code>2025-07-14T00:00:00Z</code>).</td>
             </tr>
@@ -2488,6 +2553,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
               <td align="left"><code>endDate</code></td>
               <td align="left">String</td>
               <td align="left"><span class="required">Yes</span></td>
+              <td align="left">24</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">End of date range, exclusive (ISO 8601, e.g.
                 <code>2025-07-15T00:00:00Z</code>).</td>
             </tr>
@@ -2495,6 +2561,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
               <td align="left"><code>page</code></td>
               <td align="left">Integer</td>
               <td align="left"><span class="optional">No</span></td>
+              <td align="left">-</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Page number (0-indexed, default
                 <code>0</code>).</td>
             </tr>
@@ -2502,6 +2569,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
               <td align="left"><code>size</code></td>
               <td align="left">Integer</td>
               <td align="left"><span class="optional">No</span></td>
+              <td align="left">-</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Page size (default <code>100</code>, max
                 <code>1000</code>).</td>
             </tr>
@@ -2513,63 +2581,114 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
           Use a maximum date range of 1 day per request for optimal performance. For larger ranges, paginate by day.
         </div>
       </div>
-      <h3 id="response-summary-fields">Response Summary Fields</h3>
+      <h3 id="response-fields">Response Fields</h3>
       <div class="table-wrap">
         <table class="param-table">
           <thead>
             <tr>
               <th align="left">Field</th>
               <th align="left">Type</th>
-              <th align="left">Required</th>
+              <th align="left">Presence</th>
               <th align="left">Length</th>
               <th align="left">Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td align="left"><code>count</code></td>
-              <td align="left">Integer</td>
-              <td align="left"><span class="required">Yes</span></td>
-              <td align="left">-</td>
-              <td align="left" style="font-family: 'Inter', sans-serif;">Total number of records in the current page.
-              </td>
-            </tr>
-            <tr>
-              <td align="left"><code>paymentCount</code></td>
-              <td align="left">Integer</td>
-              <td align="left"><span class="required">Yes</span></td>
-              <td align="left">-</td>
-              <td align="left" style="font-family: 'Inter', sans-serif;">Number of payment records in the current page.
-              </td>
-            </tr>
-            <tr>
-              <td align="left"><code>paymentTotalAmount</code></td>
-              <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
-              <td align="left">12</td>
-              <td align="left" style="font-family: 'Inter', sans-serif;">Total payment amount in the current page.</td>
-            </tr>
-            <tr>
-              <td align="left"><code>refundCount</code></td>
-              <td align="left">Integer</td>
-              <td align="left"><span class="required">Yes</span></td>
-              <td align="left">-</td>
-              <td align="left" style="font-family: 'Inter', sans-serif;">Number of refund records in the current page.
-              </td>
-            </tr>
-            <tr>
-              <td align="left"><code>refundTotalAmount</code></td>
-              <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
-              <td align="left">12</td>
-              <td align="left" style="font-family: 'Inter', sans-serif;">Total refund amount in the current page.</td>
-            </tr>
-            <tr>
               <td align="left"><code>data</code></td>
               <td align="left">Array</td>
-              <td align="left"><span class="required">Yes</span></td>
+              <td align="left"><span class="required">Always</span></td>
               <td align="left">-</td>
-              <td align="left" style="font-family: 'Inter', sans-serif;">List of reconciliation records.</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">List of reconciliation records. See <a
+                  href="#reconciliation-record-fields">Reconciliation Record Fields</a>.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>summary</code></td>
+              <td align="left">Object</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Summary of business related fields for the
+                entire input date range.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>summary.totalPaymentCount</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Total number of payment records across the date
+                range.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>summary.totalPaymentAmount</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">12</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Total payment amount across the date range.
+              </td>
+            </tr>
+            <tr>
+              <td align="left"><code>summary.totalRefundCount</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Total number of refund records across the date
+                range.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>summary.totalRefundAmount</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">12</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Total refund amount across the date range.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination</code></td>
+              <td align="left">Object</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Standard pagination metadata.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.page</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Current page number.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.pageSize</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Number of records per page.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.totalItems</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Total number of items across all pages.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.totalPages</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Total number of pages available.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.hasNext</code></td>
+              <td align="left">Boolean</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Indicates if there is a subsequent page.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.hasPrevious</code></td>
+              <td align="left">Boolean</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Indicates if there is a preceding page.</td>
             </tr>
           </tbody>
         </table>
@@ -2581,7 +2700,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <th align="left">Field</th>
               <th align="left">Type</th>
-              <th align="left">Required</th>
+              <th align="left">Presence</th>
               <th align="left">Length</th>
               <th align="left">Description</th>
             </tr>
@@ -2590,14 +2709,14 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>transactionId</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
+              <td align="left"><span class="required">Always</span></td>
               <td align="left">11</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Unique transaction identifier.</td>
             </tr>
             <tr>
               <td align="left"><code>tenantReferenceId</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="optional">No</span></td>
+              <td align="left"><span class="optional">Conditional</span></td>
               <td align="left">100</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Partner's unique reference ID. Optional for
                 refund transactions (may be <code>null</code>).</td>
@@ -2605,14 +2724,14 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>tenantUserId</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
+              <td align="left"><span class="required">Always</span></td>
               <td align="left">50</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">The tenant's user identifier.</td>
             </tr>
             <tr>
               <td align="left"><code>parentTransactionId</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="optional">No</span></td>
+              <td align="left"><span class="optional">Conditional</span></td>
               <td align="left">11</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Original payment transaction ID (for refunds).
               </td>
@@ -2620,7 +2739,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>transactionType</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
+              <td align="left"><span class="required">Always</span></td>
               <td align="left">10</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">
                 <code><span class="pill blue">PAYMENT</span></code> or <code>REFUND</code>.</td>
@@ -2628,7 +2747,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>transactionSource</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
+              <td align="left"><span class="required">Always</span></td>
               <td align="left">30</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Source of the transaction. See <a
                   href="#transaction-source-types">Transaction Source Types</a>.</td>
@@ -2636,7 +2755,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>status</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
+              <td align="left"><span class="required">Always</span></td>
               <td align="left">20</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">
                 <code><span class="pill green">COMPLETED</span></code>.</td>
@@ -2644,21 +2763,21 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>settlementAmount</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
+              <td align="left"><span class="required">Always</span></td>
               <td align="left">12</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Settlement amount.</td>
             </tr>
             <tr>
               <td align="left"><code>settlementCurrency</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
+              <td align="left"><span class="required">Always</span></td>
               <td align="left">3</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Settlement currency code.</td>
             </tr>
             <tr>
               <td align="left"><code>transactionDate</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Yes</span></td>
+              <td align="left"><span class="required">Always</span></td>
               <td align="left">24</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Transaction completion date (ISO 8601, e.g.
                 <code>2025-07-14T15:53:21Z</code>).</td>
@@ -2666,15 +2785,10 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
           </tbody>
         </table>
       </div>
-      <h3 id="example-response">Example Response</h3>
+      <h4 id="example-reconciliation-response">Example — Reconciliation Response</h4>
       <div class="code-block">
         <div class="code-block-header"><span>JSON</span></div>
         <pre>{
-  <span class="json-key">"count"</span>: <span class="json-num">3</span>,
-  <span class="json-key">"paymentCount"</span>: <span class="json-num">2</span>,
-  <span class="json-key">"paymentTotalAmount"</span>: <span class="json-str">"204.50"</span>,
-  <span class="json-key">"refundCount"</span>: <span class="json-num">1</span>,
-  <span class="json-key">"refundTotalAmount"</span>: <span class="json-str">"84.00"</span>,
   <span class="json-key">"data"</span>: [
     {
       <span class="json-key">"transactionId"</span>: <span class="json-str">"47002323201"</span>,
@@ -2710,7 +2824,21 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
       <span class="json-key">"settlementCurrency"</span>: <span class="json-str">"TRY"</span>,
       <span class="json-key">"transactionDate"</span>: <span class="json-str">"2025-07-14T16:15:05Z"</span>
     }
-  ]
+  ],
+  <span class="json-key">"summary"</span>: {
+    <span class="json-key">"totalPaymentCount"</span>: <span class="json-num">2</span>,
+    <span class="json-key">"totalPaymentAmount"</span>: <span class="json-str">"204.50"</span>,
+    <span class="json-key">"totalRefundCount"</span>: <span class="json-num">1</span>,
+    <span class="json-key">"totalRefundAmount"</span>: <span class="json-str">"84.00"</span>
+  },
+  <span class="json-key">"pagination"</span>: {
+    <span class="json-key">"page"</span>: <span class="json-num">1</span>,
+    <span class="json-key">"pageSize"</span>: <span class="json-num">100</span>,
+    <span class="json-key">"totalItems"</span>: <span class="json-num">3</span>,
+    <span class="json-key">"totalPages"</span>: <span class="json-num">1</span>,
+    <span class="json-key">"hasNext"</span>: <span class="json-bool">false</span>,
+    <span class="json-key">"hasPrevious"</span>: <span class="json-bool">false</span>
+  }
 }
 </pre>
       </div>
@@ -2771,7 +2899,8 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
       <div class="method-badge"><span class="method get">GET</span> /wallet/qrcode/account/transactions</div>
       <p>Returns the transaction history for the authenticated client for the given date range. Results are sorted by
         <code>transactionDate</code> ascending (oldest first). Optionally filter by a specific
-        <code>transactionId</code>.</p>
+        <code>transactionId</code>.
+      </p>
       <h3 id="parameters">Parameters</h3>
       <div class="table-wrap">
         <table class="param-table">
@@ -2791,7 +2920,8 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
               <td align="left"><span class="required">Yes</span></td>
               <td align="left">24</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Start of date range, inclusive (ISO 8601, e.g.
-                <code>2025-07-14T00:00:00Z</code>).</td>
+                <code>2025-07-14T00:00:00Z</code>).
+              </td>
             </tr>
             <tr>
               <td align="left"><code>endDate</code></td>
@@ -2799,7 +2929,8 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
               <td align="left"><span class="required">Yes</span></td>
               <td align="left">24</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">End of date range, exclusive (ISO 8601, e.g.
-                <code>2025-07-15T00:00:00Z</code>).</td>
+                <code>2025-07-15T00:00:00Z</code>).
+              </td>
             </tr>
             <tr>
               <td align="left"><code>transactionId</code></td>
@@ -2808,6 +2939,95 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
               <td align="left">11</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Filter by transaction ID (11-digit numeric).
               </td>
+            </tr>
+            <tr>
+              <td align="left"><code>page</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="optional">No</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Page number (0-indexed, default
+                <code>0</code>).</td>
+            </tr>
+            <tr>
+              <td align="left"><code>size</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="optional">No</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Page size (default <code>100</code>, max
+                <code>1000</code>).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 id="response-fields">Response Fields</h3>
+      <div class="table-wrap">
+        <table class="param-table">
+          <thead>
+            <tr>
+              <th align="left">Field</th>
+              <th align="left">Type</th>
+              <th align="left">Presence</th>
+              <th align="left">Length</th>
+              <th align="left">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="left"><code>data</code></td>
+              <td align="left">Array</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">List of account transaction records. See <a
+                  href="#transaction-record-fields">Transaction Record Fields</a>.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination</code></td>
+              <td align="left">Object</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Standard pagination metadata.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.page</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Current page number.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.pageSize</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Number of records per page.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.totalItems</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Total number of items across all pages.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.totalPages</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Total number of pages available.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.hasNext</code></td>
+              <td align="left">Boolean</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Indicates if there is a subsequent page.</td>
+            </tr>
+            <tr>
+              <td align="left"><code>pagination.hasPrevious</code></td>
+              <td align="left">Boolean</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Indicates if there is a preceding page.</td>
             </tr>
           </tbody>
         </table>
@@ -2837,7 +3057,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>tenantReferenceId</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Conditional</span></td>
+              <td align="left"><span class="optional">Conditional</span></td>
               <td align="left">100</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Partner's unique reference ID. Present for
                 API-initiated transactions where the partner provided a reference.</td>
@@ -2845,7 +3065,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>tenantUserId</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Conditional</span></td>
+              <td align="left"><span class="optional">Conditional</span></td>
               <td align="left">50</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">The tenant's user identifier. Present for
                 API-initiated transactions (QR payment).</td>
@@ -2871,7 +3091,8 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
               <td align="left"><span class="required">Always</span></td>
               <td align="left">12</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Transaction amount (pattern
-                <code>999999999.99</code>).</td>
+                <code>999999999.99</code>).
+              </td>
             </tr>
             <tr>
               <td align="left"><code>currency</code></td>
@@ -2926,7 +3147,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>merchantName</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Conditional</span></td>
+              <td align="left"><span class="optional">Conditional</span></td>
               <td align="left">100</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Merchant name. Present for card and payment
                 transactions.</td>
@@ -2934,7 +3155,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>cardId</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Conditional</span></td>
+              <td align="left"><span class="optional">Conditional</span></td>
               <td align="left">20</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Card identifier. Present for card transactions.
               </td>
@@ -2942,7 +3163,7 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td align="left"><code>reason</code></td>
               <td align="left">String</td>
-              <td align="left"><span class="required">Conditional</span></td>
+              <td align="left"><span class="optional">Conditional</span></td>
               <td align="left">200</td>
               <td align="left" style="font-family: 'Inter', sans-serif;">Transaction description or reason.</td>
             </tr>
@@ -3002,65 +3223,75 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
           </tbody>
         </table>
       </div>
-      <h3 id="example-response">Example Response</h3>
+      <h4 id="example-account-transactions-response">Example — Account Transactions Response</h4>
       <div class="code-block">
         <div class="code-block-header"><span>JSON</span></div>
-        <pre>[
-  {
-    <span class="json-key">"transactionId"</span>: <span class="json-str">"47002323201"</span>,
-    <span class="json-key">"tenantReferenceId"</span>: <span class="json-str">"08e6e4d3-7031-4f0a-bc90-3235aaa2600c"</span>,
-    <span class="json-key">"tenantUserId"</span>: <span class="json-str">"364"</span>,
-    <span class="json-key">"transactionType"</span>: <span class="json-str">"CARD_SALE"</span>,
-    <span class="json-key">"transactionDate"</span>: <span class="json-str">"2025-07-14T15:53:21Z"</span>,
-    <span class="json-key">"amount"</span>: <span class="json-str">"84.00"</span>,
-    <span class="json-key">"currency"</span>: <span class="json-str">"TRY"</span>,
-    <span class="json-key">"feeAmount"</span>: <span class="json-str">"0.00"</span>,
-    <span class="json-key">"feeCurrency"</span>: <span class="json-str">"TRY"</span>,
-    <span class="json-key">"totalAmount"</span>: <span class="json-str">"84.00"</span>,
-    <span class="json-key">"totalBalance"</span>: <span class="json-str">"15420.75"</span>,
-    <span class="json-key">"cashBalance"</span>: <span class="json-str">"15420.75"</span>,
-    <span class="json-key">"debtCredit"</span>: <span class="json-str">"C"</span>,
-    <span class="json-key">"merchantName"</span>: <span class="json-str">"Lezzet Lokantası"</span>,
-    <span class="json-key">"cardId"</span>: <span class="json-null">null</span>,
-    <span class="json-key">"reason"</span>: <span class="json-null">null</span>
-  },
-  {
-    <span class="json-key">"transactionId"</span>: <span class="json-str">"47002323302"</span>,
-    <span class="json-key">"tenantReferenceId"</span>: <span class="json-null">null</span>,
-    <span class="json-key">"tenantUserId"</span>: <span class="json-str">"364"</span>,
-    <span class="json-key">"transactionType"</span>: <span class="json-str">"CARD_REFUND"</span>,
-    <span class="json-key">"transactionDate"</span>: <span class="json-str">"2025-07-14T16:15:05Z"</span>,
-    <span class="json-key">"amount"</span>: <span class="json-str">"84.00"</span>,
-    <span class="json-key">"currency"</span>: <span class="json-str">"TRY"</span>,
-    <span class="json-key">"feeAmount"</span>: <span class="json-str">"0.00"</span>,
-    <span class="json-key">"feeCurrency"</span>: <span class="json-str">"TRY"</span>,
-    <span class="json-key">"totalAmount"</span>: <span class="json-str">"84.00"</span>,
-    <span class="json-key">"totalBalance"</span>: <span class="json-str">"15336.75"</span>,
-    <span class="json-key">"cashBalance"</span>: <span class="json-str">"15336.75"</span>,
-    <span class="json-key">"debtCredit"</span>: <span class="json-str">"D"</span>,
-    <span class="json-key">"merchantName"</span>: <span class="json-str">"Lezzet Lokantası"</span>,
-    <span class="json-key">"cardId"</span>: <span class="json-null">null</span>,
-    <span class="json-key">"reason"</span>: <span class="json-null">null</span>
-  },
-  {
-    <span class="json-key">"transactionId"</span>: <span class="json-str">"47002324001"</span>,
-    <span class="json-key">"tenantReferenceId"</span>: <span class="json-null">null</span>,
-    <span class="json-key">"tenantUserId"</span>: <span class="json-null">null</span>,
-    <span class="json-key">"transactionType"</span>: <span class="json-str">"PAYMENT"</span>,
-    <span class="json-key">"transactionDate"</span>: <span class="json-str">"2025-07-14T17:30:00Z"</span>,
-    <span class="json-key">"amount"</span>: <span class="json-str">"500.00"</span>,
-    <span class="json-key">"currency"</span>: <span class="json-str">"TRY"</span>,
-    <span class="json-key">"feeAmount"</span>: <span class="json-str">"0.00"</span>,
-    <span class="json-key">"feeCurrency"</span>: <span class="json-str">"TRY"</span>,
-    <span class="json-key">"totalAmount"</span>: <span class="json-str">"500.00"</span>,
-    <span class="json-key">"totalBalance"</span>: <span class="json-str">"15836.75"</span>,
-    <span class="json-key">"cashBalance"</span>: <span class="json-str">"15836.75"</span>,
-    <span class="json-key">"debtCredit"</span>: <span class="json-str">"C"</span>,
-    <span class="json-key">"merchantName"</span>: <span class="json-null">null</span>,
-    <span class="json-key">"cardId"</span>: <span class="json-null">null</span>,
-    <span class="json-key">"reason"</span>: <span class="json-str">"IBAN deposit"</span>
+        <pre>{
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"transactionId"</span>: <span class="json-str">"47002323201"</span>,
+      <span class="json-key">"tenantReferenceId"</span>: <span class="json-str">"08e6e4d3-7031-4f0a-bc90-3235aaa2600c"</span>,
+      <span class="json-key">"tenantUserId"</span>: <span class="json-str">"364"</span>,
+      <span class="json-key">"transactionType"</span>: <span class="json-str">"CARD_SALE"</span>,
+      <span class="json-key">"transactionDate"</span>: <span class="json-str">"2025-07-14T15:53:21Z"</span>,
+      <span class="json-key">"amount"</span>: <span class="json-str">"84.00"</span>,
+      <span class="json-key">"currency"</span>: <span class="json-str">"TRY"</span>,
+      <span class="json-key">"feeAmount"</span>: <span class="json-str">"0.00"</span>,
+      <span class="json-key">"feeCurrency"</span>: <span class="json-str">"TRY"</span>,
+      <span class="json-key">"totalAmount"</span>: <span class="json-str">"84.00"</span>,
+      <span class="json-key">"totalBalance"</span>: <span class="json-str">"15420.75"</span>,
+      <span class="json-key">"cashBalance"</span>: <span class="json-str">"15420.75"</span>,
+      <span class="json-key">"debtCredit"</span>: <span class="json-str">"C"</span>,
+      <span class="json-key">"merchantName"</span>: <span class="json-str">"Lezzet Lokantası"</span>,
+      <span class="json-key">"cardId"</span>: <span class="json-null">null</span>,
+      <span class="json-key">"reason"</span>: <span class="json-null">null</span>
+    },
+    {
+      <span class="json-key">"transactionId"</span>: <span class="json-str">"47002323302"</span>,
+      <span class="json-key">"tenantReferenceId"</span>: <span class="json-null">null</span>,
+      <span class="json-key">"tenantUserId"</span>: <span class="json-str">"364"</span>,
+      <span class="json-key">"transactionType"</span>: <span class="json-str">"CARD_REFUND"</span>,
+      <span class="json-key">"transactionDate"</span>: <span class="json-str">"2025-07-14T16:15:05Z"</span>,
+      <span class="json-key">"amount"</span>: <span class="json-str">"84.00"</span>,
+      <span class="json-key">"currency"</span>: <span class="json-str">"TRY"</span>,
+      <span class="json-key">"feeAmount"</span>: <span class="json-str">"0.00"</span>,
+      <span class="json-key">"feeCurrency"</span>: <span class="json-str">"TRY"</span>,
+      <span class="json-key">"totalAmount"</span>: <span class="json-str">"84.00"</span>,
+      <span class="json-key">"totalBalance"</span>: <span class="json-str">"15336.75"</span>,
+      <span class="json-key">"cashBalance"</span>: <span class="json-str">"15336.75"</span>,
+      <span class="json-key">"debtCredit"</span>: <span class="json-str">"D"</span>,
+      <span class="json-key">"merchantName"</span>: <span class="json-str">"Lezzet Lokantası"</span>,
+      <span class="json-key">"cardId"</span>: <span class="json-null">null</span>,
+      <span class="json-key">"reason"</span>: <span class="json-null">null</span>
+    },
+    {
+      <span class="json-key">"transactionId"</span>: <span class="json-str">"47002324001"</span>,
+      <span class="json-key">"tenantReferenceId"</span>: <span class="json-null">null</span>,
+      <span class="json-key">"tenantUserId"</span>: <span class="json-null">null</span>,
+      <span class="json-key">"transactionType"</span>: <span class="json-str">"PAYMENT"</span>,
+      <span class="json-key">"transactionDate"</span>: <span class="json-str">"2025-07-14T17:30:00Z"</span>,
+      <span class="json-key">"amount"</span>: <span class="json-str">"500.00"</span>,
+      <span class="json-key">"currency"</span>: <span class="json-str">"TRY"</span>,
+      <span class="json-key">"feeAmount"</span>: <span class="json-str">"0.00"</span>,
+      <span class="json-key">"feeCurrency"</span>: <span class="json-str">"TRY"</span>,
+      <span class="json-key">"totalAmount"</span>: <span class="json-str">"500.00"</span>,
+      <span class="json-key">"totalBalance"</span>: <span class="json-str">"15836.75"</span>,
+      <span class="json-key">"cashBalance"</span>: <span class="json-str">"15836.75"</span>,
+      <span class="json-key">"debtCredit"</span>: <span class="json-str">"C"</span>,
+      <span class="json-key">"merchantName"</span>: <span class="json-null">null</span>,
+      <span class="json-key">"cardId"</span>: <span class="json-null">null</span>,
+      <span class="json-key">"reason"</span>: <span class="json-str">"IBAN deposit"</span>
+    }
+  ],
+  <span class="json-key">"pagination"</span>: {
+    <span class="json-key">"page"</span>: <span class="json-num">1</span>,
+    <span class="json-key">"pageSize"</span>: <span class="json-num">100</span>,
+    <span class="json-key">"totalItems"</span>: <span class="json-num">3</span>,
+    <span class="json-key">"totalPages"</span>: <span class="json-num">1</span>,
+    <span class="json-key">"hasNext"</span>: <span class="json-bool">false</span>,
+    <span class="json-key">"hasPrevious"</span>: <span class="json-bool">false</span>
   }
-]
+}
 </pre>
       </div>
     </section>
@@ -3081,52 +3312,60 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
       <p>Generates a BKM-format QR code with configurable transaction type, amount, and error behaviour. Use
         <code>errorCode</code> to force a failure at the <strong>Read</strong> stage, or <code>confirmErrorCode</code>
         to force a failure at the <strong>Confirm</strong> stage. Both can be combined to test sequential error
-        handling.</p>
+        handling.
+      </p>
       <h4>Query Parameters</h4>
       <div class="table-wrap">
         <table class="param-table">
           <thead>
             <tr>
-              <th>Parameter</th>
-              <th>Type</th>
-              <th>Required</th>
-              <th>Description</th>
+              <th align="left">Parameter</th>
+              <th align="left">Type</th>
+              <th align="left">Required</th>
+              <th align="left">Length</th>
+              <th align="left">Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>qrCodeTransactionType</code></td>
-              <td>String</td>
-              <td><span class="required">Yes</span></td>
-              <td style="font-family: 'Inter', sans-serif;"><code><span class="pill blue">PAYMENT</span></code> or
-                <code>REFUND</code></td>
+              <td align="left"><code>qrCodeTransactionType</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Yes</span></td>
+              <td align="left">10</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">
+                <code><span class="pill blue">PAYMENT</span></code> or <code>REFUND</code></td>
             </tr>
             <tr>
-              <td><code>amount</code></td>
-              <td>BigDecimal</td>
-              <td><span class="required">Yes</span></td>
-              <td style="font-family: 'Inter', sans-serif;">Transaction amount (e.g., <code>40.00</code>). Use
-                <code>0</code> for static QR.</td>
+              <td align="left"><code>amount</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Yes</span></td>
+              <td align="left">12</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Transaction amount (pattern
+                <code>999999999.99</code>). Use <code>"0.00"</code> or <code>"0"</code> for static QR.</td>
             </tr>
             <tr>
-              <td><code>errorCode</code></td>
-              <td>String</td>
-              <td><span class="optional">No</span></td>
-              <td style="font-family: 'Inter', sans-serif;">Forces a specific error at <strong>Read</strong> stage. See
-                <a href="#read-error-code-matrix">Read Error Code Matrix</a>.</td>
+              <td align="left"><code>errorCode</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="optional">No</span></td>
+              <td align="left">50</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Forces a specific error at
+                <strong>Read</strong> stage. See <a href="#read-error-code-matrix">Read Error Code Matrix</a>.</td>
             </tr>
             <tr>
-              <td><code>confirmErrorCode</code></td>
-              <td>String</td>
-              <td><span class="optional">No</span></td>
-              <td style="font-family: 'Inter', sans-serif;">Forces a specific error at <strong>Confirm</strong> stage.
-                See <a href="#confirm-error-code-matrix">Confirm Error Code Matrix</a>.</td>
+              <td align="left"><code>confirmErrorCode</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="optional">No</span></td>
+              <td align="left">50</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Forces a specific error at
+                <strong>Confirm</strong> stage. See <a href="#confirm-error-code-matrix">Confirm Error Code Matrix</a>.
+              </td>
             </tr>
             <tr>
-              <td><code>parentTransactionId</code></td>
-              <td>String</td>
-              <td><span class="required">Conditional</span></td>
-              <td style="font-family: 'Inter', sans-serif;">Required for
+              <td align="left"><code>parentTransactionId</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="optional">Conditional</span></td>
+              <td align="left">11</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Required for
                 <code><span class="pill purple">REFUND</span></code>. The original payment's <code>transactionId</code>.
               </td>
             </tr>
@@ -3245,7 +3484,8 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
             <tr>
               <td>Duplicate reference</td>
               <td>Confirm <em>different</em> <code>transactionId</code> with a <em>previously used</em>
-                <code>tenantReferenceId</code></td>
+                <code>tenantReferenceId</code>
+              </td>
               <td>409</td>
               <td><code>TENANT_REFERENCE_ID_ALREADY_USED</code></td>
             </tr>
@@ -3330,18 +3570,20 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
         <table class="param-table">
           <thead>
             <tr>
-              <th>Parameter</th>
-              <th>Type</th>
-              <th>Required</th>
-              <th>Description</th>
+              <th align="left">Parameter</th>
+              <th align="left">Type</th>
+              <th align="left">Required</th>
+              <th align="left">Length</th>
+              <th align="left">Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>transactionId</code></td>
-              <td>String</td>
-              <td><span class="required">Yes</span></td>
-              <td style="font-family: 'Inter', sans-serif;">Transaction ID (must be in
+              <td align="left"><code>transactionId</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Yes</span></td>
+              <td align="left">11</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Transaction ID (must be in
                 <code><span class="pill orange">IN_PROGRESS</span></code> status)</td>
             </tr>
           </tbody>
@@ -3364,18 +3606,20 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
         <table class="param-table">
           <thead>
             <tr>
-              <th>Parameter</th>
-              <th>Type</th>
-              <th>Required</th>
-              <th>Description</th>
+              <th align="left">Parameter</th>
+              <th align="left">Type</th>
+              <th align="left">Required</th>
+              <th align="left">Length</th>
+              <th align="left">Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>transactionId</code></td>
-              <td>String</td>
-              <td><span class="required">Yes</span></td>
-              <td style="font-family: 'Inter', sans-serif;">The transaction ID to look up</td>
+              <td align="left"><code>transactionId</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Yes</span></td>
+              <td align="left">11</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">The transaction ID to look up</td>
             </tr>
           </tbody>
         </table>
@@ -3398,67 +3642,90 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
 </pre>
       </div>
       <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead>
             <tr>
-              <th>Field</th>
-              <th>Type</th>
-              <th>Description</th>
+              <th align="left">Field</th>
+              <th align="left">Type</th>
+              <th align="left">Presence</th>
+              <th align="left">Length</th>
+              <th align="left">Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>eventId</code></td>
-              <td>String</td>
-              <td style="font-family: 'Inter', sans-serif;">UUID of the webhook event</td>
+              <td align="left"><code>eventId</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">36</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">UUID of the webhook event</td>
             </tr>
             <tr>
-              <td><code>eventType</code></td>
-              <td>String</td>
-              <td style="font-family: 'Inter', sans-serif;"><code>qr_payment.completed</code> or
+              <td align="left"><code>eventType</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">30</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;"><code>qr_payment.completed</code> or
                 <code>qr_payment.failed</code></td>
             </tr>
             <tr>
-              <td><code>status</code></td>
-              <td>String</td>
-              <td style="font-family: 'Inter', sans-serif;"><code>PENDING</code>, <code>DELIVERED</code>,
+              <td align="left"><code>status</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">20</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;"><code>PENDING</code>, <code>DELIVERED</code>,
                 <code>FAILED</code>, or <code>EXHAUSTED</code></td>
             </tr>
             <tr>
-              <td><code>attemptCount</code></td>
-              <td>Integer</td>
-              <td style="font-family: 'Inter', sans-serif;">Number of delivery attempts so far</td>
+              <td align="left"><code>attemptCount</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Number of delivery attempts so far</td>
             </tr>
             <tr>
-              <td><code>webhookUrl</code></td>
-              <td>String</td>
-              <td style="font-family: 'Inter', sans-serif;">Target URL (or <code>mock-success-webhook</code> for mock)
-              </td>
+              <td align="left"><code>webhookUrl</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">500</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Target URL (or
+                <code>mock-success-webhook</code> for mock)</td>
             </tr>
             <tr>
-              <td><code>httpStatusCode</code></td>
-              <td>Integer</td>
-              <td style="font-family: 'Inter', sans-serif;">Last HTTP response status (200 for mock)</td>
+              <td align="left"><code>httpStatusCode</code></td>
+              <td align="left">Integer</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">-</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Last HTTP response status (200 for mock)</td>
             </tr>
             <tr>
-              <td><code>createdAt</code></td>
-              <td>String</td>
-              <td style="font-family: 'Inter', sans-serif;">Event creation timestamp (ISO 8601)</td>
+              <td align="left"><code>createdAt</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">24</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Event creation timestamp (ISO 8601)</td>
             </tr>
             <tr>
-              <td><code>deliveredAt</code></td>
-              <td>String</td>
-              <td style="font-family: 'Inter', sans-serif;">Successful delivery timestamp, or <code>null</code></td>
+              <td align="left"><code>deliveredAt</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="optional">Conditional</span></td>
+              <td align="left">24</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Successful delivery timestamp, or
+                <code>null</code></td>
             </tr>
             <tr>
-              <td><code>lastAttemptAt</code></td>
-              <td>String</td>
-              <td style="font-family: 'Inter', sans-serif;">Most recent attempt timestamp</td>
+              <td align="left"><code>lastAttemptAt</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Always</span></td>
+              <td align="left">24</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Most recent attempt timestamp</td>
             </tr>
             <tr>
-              <td><code>errorMessage</code></td>
-              <td>String</td>
-              <td style="font-family: 'Inter', sans-serif;">Last error message, or <code>null</code></td>
+              <td align="left"><code>errorMessage</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="optional">Conditional</span></td>
+              <td align="left">500</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">Last error message, or <code>null</code></td>
             </tr>
           </tbody>
         </table>
@@ -3474,18 +3741,20 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
         <table class="param-table">
           <thead>
             <tr>
-              <th>Parameter</th>
-              <th>Type</th>
-              <th>Required</th>
-              <th>Description</th>
+              <th align="left">Parameter</th>
+              <th align="left">Type</th>
+              <th align="left">Required</th>
+              <th align="left">Length</th>
+              <th align="left">Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>transactionId</code></td>
-              <td>String</td>
-              <td><span class="required">Yes</span></td>
-              <td style="font-family: 'Inter', sans-serif;">The transaction ID to retry</td>
+              <td align="left"><code>transactionId</code></td>
+              <td align="left">String</td>
+              <td align="left"><span class="required">Yes</span></td>
+              <td align="left">11</td>
+              <td align="left" style="font-family: 'Inter', sans-serif;">The transaction ID to retry</td>
             </tr>
           </tbody>
         </table>

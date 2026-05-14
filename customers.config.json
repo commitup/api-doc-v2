@@ -1,11 +1,19 @@
 {
   "payermax": {
     "name": "Payermax",
-    "allowedSidebars": ["introductionSidebar", "eftSidebar"]
+    "allowedSidebars": [
+      "introductionSidebar",
+      "eftSidebar"
+    ]
   },
   "commitup": {
     "name": "commitup",
-    "allowedSidebars": ["introductionSidebar", "moneyTransfersSidebar", "qrPaymentsSidebar", "posApiSidebar"],
+    "allowedSidebars": [
+      "introductionSidebar",
+      "moneyTransfersSidebar",
+      "qrPaymentsSidebar",
+      "posApiSidebar"
+    ],
     "excludedDocs": [
       "money-transfers/to-card",
       "money-transfers/to-wallet/get-holder"
@@ -13,30 +21,64 @@
   },
   "payporter": {
     "name": "Payporter",
-    "allowedSidebars": ["introductionSidebar", "eftSidebar", "qrPaymentsSidebar", "moneyTransfersSidebar", "whitelabelWalletSidebar", "posApiSidebar", "accountingSidebar"]
+    "allowedSidebars": [
+      "introductionSidebar",
+      "eftSidebar",
+      "qrPaymentsSidebar",
+      "moneyTransfersSidebar",
+      "whitelabelWalletSidebar",
+      "posApiSidebar",
+      "accountingSidebar"
+    ]
   },
   "eft-only": {
     "name": "Eft Turkish Banks",
-    "allowedSidebars": ["introductionSidebar", "eftSidebar"]
+    "allowedSidebars": [
+      "introductionSidebar",
+      "eftSidebar"
+    ]
   },
   "mt": {
     "name": "Money Transfer Only",
-    "allowedSidebars": ["introductionSidebar", "moneyTransfersSidebar"]
+    "allowedSidebars": [
+      "introductionSidebar",
+      "moneyTransfersSidebar"
+    ]
   },
   "pos": {
     "name": "POS API",
-    "allowedSidebars": ["introductionSidebar", "posApiSidebar"]
+    "allowedSidebars": [
+      "introductionSidebar",
+      "posApiSidebar"
+    ]
   },
   "qr": {
     "name": "QR Payments",
-    "allowedSidebars": ["introductionSidebar", "qrPaymentsSidebar"]
+    "allowedSidebars": [
+      "introductionSidebar",
+      "qrPaymentsSidebar"
+    ]
   },
   "whitelabel": {
     "name": "Whitelabel Wallet",
-    "allowedSidebars": ["introductionSidebar", "whitelabelWalletSidebar"]
+    "allowedSidebars": [
+      "introductionSidebar",
+      "whitelabelWalletSidebar"
+    ]
   },
-    "apilist": {
+  "apilist": {
     "name": "API List",
-    "allowedSidebars": ["introductionSidebar", "eftSidebar", "moneyTransfersSidebar", "accountingSidebar"]
+    "allowedSidebars": [
+      "introductionSidebar",
+      "eftSidebar",
+      "moneyTransfersSidebar",
+      "accountingSidebar"
+    ]
+  },
+  "qr-api": {
+    "name": "QR API Documentation",
+    "allowedSidebars": [
+      "qrPaymentsSidebar"
+    ]
   }
 }
