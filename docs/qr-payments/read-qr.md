@@ -63,7 +63,7 @@ If the returned `amount` is `null`, the partner presents an amount entry UI to t
 **Partial & multiple refunds:** Partial refund amounts are supported. The same original payment may be refunded multiple times, each producing a separate REFUND transaction linked via `parentTransactionId`. The refund amount in the QR code is fixed by the merchant POS and cannot be modified during Confirm. Sending a different amount returns `QR_CODE_AMOUNT_MISMATCH`.
 
 <Tabs>
-  <TabItem value="response_example" label="Example Responses" default>
+  <TabItem value="payment" label="Payment" default>
 <ApiResponseSelector>
 
 ```json status="200" title="Payment Read Response"
@@ -88,6 +88,35 @@ If the returned `amount` is `null`, the partner presents an amount entry UI to t
   "terminalId": "12345678901234567890ABC"
 }
 ```
+
+```json status="406" title="QR Code Not Found"
+{
+  "status": "error",
+  "code": "QR_CODE_NOT_FOUND",
+  "message": "No transaction found for the given QR code."
+}
+```
+
+```json status="406" title="QR Code Expired"
+{
+  "status": "error",
+  "code": "QR_CODE_EXPIRED",
+  "message": "The QR code has expired."
+}
+```
+
+```json status="406" title="QR Code Used"
+{
+  "status": "error",
+  "code": "QR_CODE_USED",
+  "message": "The QR code has been read by another application."
+}
+```
+
+</ApiResponseSelector>
+  </TabItem>
+  <TabItem value="refund" label="Refund">
+<ApiResponseSelector>
 
 ```json status="200" title="Refund Read Response"
 {

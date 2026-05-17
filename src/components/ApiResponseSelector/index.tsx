@@ -73,6 +73,7 @@ export default function ApiResponseSelector({ children, examples: propExamples }
             if (ex.status.includes('200')) colorClass = 'badge--success';
             else if (ex.status === '400') colorClass = 'badge--warning';
             else if (ex.status === '406') colorClass = 'badge--warning';
+            else if (ex.status === '409') colorClass = 'badge--warning';
             else if (ex.status === '500') colorClass = 'badge--danger';
 
             return (

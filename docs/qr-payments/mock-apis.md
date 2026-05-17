@@ -12,14 +12,18 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 :::important
 These endpoints are available **only in sandbox/test environments**. They are completely absent from production. All mock endpoints require the same authentication headers as production endpoints.
 
-In sandbox, webhooks are automatically delivered as mock if no real webhook is configured for your wallet — no real HTTP call is made. Webhook event logs are still created normally, enabling verification via the [webhook-event-log](#query-webhook-event-log) endpoint. To configure a real webhook URL for sandbox, contact PayPorter via email.
+In sandbox, webhooks are automatically delivered as mock if no real webhook is configured for your wallet — no real HTTP call is made. Webhook event logs are still created normally, enabling verification via the [webhook-event-log](#query-webhook-event-log) endpoint. To configure a real webhook URL for sandbox, use the [Update Webhook URL](#update-webhook-url) endpoint or contact PayPorter via email.
 :::
 
 ## Generate Mock QR Code
 
 Generates a BKM-format QR code with configurable transaction type, amount, and error behaviour. Use `errorCode` to force a failure at the **Read** stage, or `confirmErrorCode` to force a failure at the **Confirm** stage. Both can be combined to test sequential error handling.
 
-<ApiEndpoint method="GET" url="/wallet/qrcode/generate-mock-qr-code" />
+<ApiEndpoint method="POST" url="/wallet/qrcode/mock/generate-mock-qr-code" />
+
+:::warning Deprecated path
+`GET /wallet/qrcode/generate-mock-qr-code` is deprecated and will be removed before production. Use `POST /wallet/qrcode/mock/generate-mock-qr-code` instead.
+:::
 
 **Request**
 
@@ -91,7 +95,11 @@ Returns the raw QR code string as plain text (not JSON).
 
 Sends an authorization approval request for an `IN_PROGRESS` transaction. The request goes through the real prepaid auth service — the final outcome depends on whether the wallet has sufficient balance to cover the transaction amount.
 
-<ApiEndpoint method="GET" url="/wallet/qrcode/start-mock-authorization" />
+<ApiEndpoint method="POST" url="/wallet/qrcode/mock/start-mock-authorization" />
+
+:::warning Deprecated path
+`GET /wallet/qrcode/start-mock-authorization` is deprecated and will be removed before production. Use `POST /wallet/qrcode/mock/start-mock-authorization` instead.
+:::
 
 | Outcome | Condition | Webhook Event Type |
 |---------|-----------|-------------------|
@@ -126,9 +134,9 @@ After calling this endpoint, use [Query Webhook Event Log](#query-webhook-event-
 
 ## Query Webhook Event Log
 
-Returns the webhook delivery status for a given transaction. Enables self-service verification without database access.
+Returns the webhook delivery history for a given transaction. Returns an array of all webhook events associated with the transaction. Enables self-service verification without database access.
 
-<ApiEndpoint method="GET" url="/wallet/qrcode/mock/webhook-event-log" />
+<ApiEndpoint method="POST" url="/wallet/qrcode/mock/webhook-event-log" />
 
 **Request**
 
@@ -144,19 +152,23 @@ Returns the webhook delivery status for a given transaction. Enables self-servic
 
 ### Response (200)
 
+Returns an **array** of webhook event log entries.
+
 ```json
-{
-  "eventId": "a3f2b1c4-5678-9abc-def0-123456789abc",
-  "eventType": "qr_payment.completed",
-  "status": "DELIVERED",
-  "attemptCount": 1,
-  "webhookUrl": "mock-success-webhook",
-  "httpStatusCode": 200,
-  "createdAt": "2026-05-10T01:15:00Z",
-  "deliveredAt": "2026-05-10T01:15:01Z",
-  "lastAttemptAt": "2026-05-10T01:15:01Z",
-  "errorMessage": null
-}
+[
+  {
+    "eventId": "a3f2b1c4-5678-9abc-def0-123456789abc",
+    "eventType": "qr_payment.completed",
+    "status": "DELIVERED",
+    "attemptCount": 1,
+    "webhookUrl": "mock-success-webhook",
+    "httpStatusCode": 200,
+    "createdAt": "2026-05-10T01:15:00Z",
+    "deliveredAt": "2026-05-10T01:15:01Z",
+    "lastAttemptAt": "2026-05-10T01:15:01Z",
+    "errorMessage": null
+  }
+]
 ```
 
 | Field | Type | Presence | Length | Description |
@@ -180,9 +192,9 @@ No webhook event found for the given transaction.
 
 ## Retry Webhook Delivery
 
-Manually re-triggers webhook delivery for a transaction. Useful for testing the retry flow without waiting for the scheduled retry job.
+Manually re-triggers webhook delivery for a transaction. Uses the most recent webhook event log entry for the retry. Useful for testing the retry flow without waiting for the scheduled retry job.
 
-<ApiEndpoint method="GET" url="/wallet/qrcode/mock/retry-webhook" />
+<ApiEndpoint method="POST" url="/wallet/qrcode/mock/retry-webhook" />
 
 **Request**
 
@@ -210,3 +222,79 @@ Manually re-triggers webhook delivery for a transaction. Useful for testing the 
 ### Response (406)
 
 No eligible webhook event found for retry.
+
+---
+
+## Rotate Webhook Signing Key
+
+Generates a new RSA-2048 keypair for webhook signature verification. The private key is stored server-side; the public key PEM is returned for the partner to verify `x-request-signature` headers on incoming webhooks.
+
+<ApiEndpoint method="POST" url="/wallet/qrcode/mock/rotate-webhook-key" />
+
+### Response (200)
+
+```json
+{
+  "publicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqh...\n-----END PUBLIC KEY-----",
+  "algorithm": "SHA256withRSA",
+  "header": "x-request-signature",
+  "message": "Key rotated. Use this public key to verify x-request-signature header."
+}
+```
+
+| Field | Type | Presence | Description |
+| :--- | :--- | :--- | :--- |
+| `publicKey` | String | Always | RSA public key in PEM format. Use to verify `x-request-signature`. |
+| `algorithm` | String | Always | Signature algorithm (`SHA256withRSA`). |
+| `header` | String | Always | HTTP header name containing the signature. |
+| `message` | String | Always | Human-readable confirmation message. |
+
+---
+
+## Update Webhook URL
+
+Updates the webhook delivery URL for the authenticated wallet. If `webhookUrl` is omitted or empty, resets to mock delivery mode (no real HTTP call is made).
+
+<ApiEndpoint method="POST" url="/wallet/qrcode/mock/update-webhook-url" />
+
+**Request**
+
+<Tabs>
+  <TabItem value="table" label="Query Parameters" default>
+
+| Parameter | Type | Required | Length | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `webhookUrl` | String | No | 500 | The webhook URL to receive notifications. If empty, resets to mock delivery. |
+
+  </TabItem>
+</Tabs>
+
+### Response (200)
+
+<Tabs>
+  <TabItem value="set" label="URL Set" default>
+
+```json
+{
+  "webhookUrl": "https://partner.example.com/webhook",
+  "message": "Webhook URL updated. Notifications will POST to this URL."
+}
+```
+
+  </TabItem>
+  <TabItem value="reset" label="URL Reset">
+
+```json
+{
+  "webhookUrl": "mock-success-webhook",
+  "message": "Webhook URL reset to mock (no HTTP delivery)."
+}
+```
+
+  </TabItem>
+</Tabs>
+
+| Field | Type | Presence | Description |
+| :--- | :--- | :--- | :--- |
+| `webhookUrl` | String | Always | The effective webhook URL after the update. |
+| `message` | String | Always | Human-readable result description. |

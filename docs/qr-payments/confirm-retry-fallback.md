@@ -18,7 +18,7 @@ flowchart TD
     A["Confirm timeout / 5XX"] --> B["Retry Confirm with identical body<br/>(up to 3 times)"]
     B --> C{"Received response?"}
     C -->|Yes| D["Handle response status"]
-    C -->|No| E["GET /wallet/qrcode/transactions?transactionId=..."]
+    C -->|No| E["POST /wallet/qrcode/query\n{transactionId: ...}"]
     E --> F["Handle response status"]
 ```
 

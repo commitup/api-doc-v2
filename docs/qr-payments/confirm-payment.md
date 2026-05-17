@@ -95,10 +95,10 @@ The response body is a [Payment Object](./payment-object) with the following end
 - **`parentTransactionId`**: Present only for `REFUND` transactions.
 
 <Tabs>
-  <TabItem value="response_example" label="Example Responses" default>
+  <TabItem value="payment" label="Payment" default>
 <ApiResponseSelector>
 
-```json status="200" title="Payment Confirm Response"
+```json status="200" title="Payment Confirm — IN_PROGRESS"
 {
   "transactionId": "47002323201",
   "tenantReferenceId": "08e6e4d3-7031-4f0a-bc90-3235aaa2600c",
@@ -121,7 +121,44 @@ The response body is a [Payment Object](./payment-object) with the following end
 }
 ```
 
-```json status="200" title="Refund Confirm Response"
+```json status="406" title="QR Code Expired"
+{
+  "status": "error",
+  "code": "QR_CODE_EXPIRED",
+  "message": "The QR code has expired."
+}
+```
+
+```json status="406" title="Amount Mismatch"
+{
+  "status": "error",
+  "code": "QR_CODE_AMOUNT_MISMATCH",
+  "message": "The provided amount does not match the amount in the QR code."
+}
+```
+
+```json status="409" title="Idempotency Mismatch"
+{
+  "status": "error",
+  "code": "QR_CODE_IDEMPOTENCY_MISMATCH",
+  "message": "The tenantUserId or tenantReferenceId does not match the original Confirm."
+}
+```
+
+```json status="409" title="Duplicate Reference"
+{
+  "status": "error",
+  "code": "TENANT_REFERENCE_ID_ALREADY_USED",
+  "message": "The tenantReferenceId has already been used by a different transaction."
+}
+```
+
+</ApiResponseSelector>
+  </TabItem>
+  <TabItem value="refund" label="Refund">
+<ApiResponseSelector>
+
+```json status="200" title="Refund Confirm — IN_PROGRESS"
 {
   "transactionId": "47002323302",
   "parentTransactionId": "47002323201",
@@ -142,6 +179,14 @@ The response body is a [Payment Object](./payment-object) with the following end
   "merchantCity": "ANTALYA",
   "terminalType": "STATIC_QRCODE",
   "terminalId": "12345678901234567890ABC"
+}
+```
+
+```json status="406" title="QR Code Expired"
+{
+  "status": "error",
+  "code": "QR_CODE_EXPIRED",
+  "message": "The QR code has expired."
 }
 ```
 

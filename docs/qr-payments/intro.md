@@ -2,12 +2,16 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # QR Code API Documentation
 
 ## Version History
 
 | Version | Date       | Changes |
 | :------ | :--------- | :------ |
+| 1.6.0   | 2026-05-17 | Added `POST /wallet/qrcode/query` endpoint (replaces deprecated `GET /wallet/qrcode/transactions`). Added mock sandbox endpoints: Rotate Webhook Signing Key (`POST /mock/rotate-webhook-key`) and Update Webhook URL (`POST /mock/update-webhook-url`). Migrated mock endpoints to `/mock/` path prefix — old paths are deprecated and will be removed before production. Changed mock `webhook-event-log` and `retry-webhook` to `POST`; `webhook-event-log` now returns an array. Added inline authentication code examples (Java, Go, PHP). |
 | 1.5.0   | 2026-05-14 | Added standard pagination envelope (`data` array, `pagination` object, and optional `summary` object) to Reconciliation and Account Transactions endpoints. Standardized input tables to `Required` style and output tables to `Presence` style. Updated endpoint paths in flow diagrams to full relative URLs. Added `X-Wallet-Id` to Authentication description. |
 | 1.4.2   | 2026-05-13 | Changed Balance Inquiry endpoint to `GET /wallet/qrcode/account/balance`. Added HTTP status codes to all error code tables. Clarified Mock Authorization sends approval only; `FAILED` path tested via insufficient balance. Unified example amounts and transaction IDs across all sections. |
 | 1.4.1   | 2026-05-12 | Added Account Transactions endpoint (`GET /wallet/qrcode/account/transactions`) with Account Transaction Types. Added Base URL section.  Added pagination to Reconciliation. Heading and ToC cleanup. |
@@ -96,24 +100,184 @@ Encrypt the JSON string using RSA:
 
 Base64 encode the encrypted byte array.
 
-#### Example (JavaScript)
-
-```javascript
-const publicKeyPEM = "RSA PUBLIC KEY of walletId 1234567890";
-const payload = {
-  walletId: "1234567890",
-  timestamp: "2026-01-07T09:40:16.524Z"
-};
-const secureData = await RSA.encrypt(JSON.stringify(payload), publicKeyPEM);
-```
-
 #### Reference Implementations
 
-Complete examples are available in the `secure-data-generation/` folder:
+<Tabs>
+  <TabItem value="java" label="Java" default>
 
-- [Java](./example.java)
-- [Go](./example.go)
-- [PHP](./example.php)
+```java
+package commitup.pf;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
+import java.util.Date;
+import javax.crypto.Cipher;
+
+class WalletSecureDataTest {
+    record WhitelabelSecureData(
+            String deviceId,
+            @JsonFormat(shape = JsonFormat.Shape.STRING,
+                        pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            Date timestamp) {
+    }
+
+    public String generateSecureDataJson(String walletId)
+            throws JsonProcessingException {
+        var secureData = new WhitelabelSecureData(walletId, new Date());
+        var om = new ObjectMapper();
+        return om.writeValueAsString(secureData);
+    }
+
+    public String encryptSecureDataJson(
+            String secureDataJson, String publicKeyString)
+            throws JsonProcessingException {
+        try {
+            byte[] publicKeyBytes =
+                Base64.getDecoder().decode(publicKeyString);
+            X509EncodedKeySpec keySpec =
+                new X509EncodedKeySpec(publicKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PublicKey publicKey = keyFactory.generatePublic(keySpec);
+
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+
+            byte[] encrypted =
+                cipher.doFinal(secureDataJson.getBytes());
+            return Base64.getEncoder().encodeToString(encrypted);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+}
+```
+
+  </TabItem>
+  <TabItem value="go" label="Go">
+
+```go
+package main
+
+import (
+    "crypto/rand"
+    "crypto/rsa"
+    "crypto/x509"
+    "encoding/base64"
+    "encoding/json"
+    "fmt"
+    "time"
+)
+
+type WhitelabelSecureData struct {
+    DeviceId  string `json:"deviceId"`
+    Timestamp string `json:"timestamp"`
+}
+
+func generateSecureDataJSON(walletId string) (string, error) {
+    timestamp := time.Now().UTC().Format(
+        "2006-01-02T15:04:05.000Z")
+    secureData := WhitelabelSecureData{
+        DeviceId:  walletId,
+        Timestamp: timestamp,
+    }
+    b, err := json.Marshal(secureData)
+    if err != nil {
+        return "", err
+    }
+    return string(b), nil
+}
+
+// RSA/ECB/PKCS1Padding == Go: rsa.EncryptPKCS1v15
+func encryptSecureDataJSON(
+    secureDataJSON string, publicKeyBase64 string,
+) (string, error) {
+    pubDer, err := base64.StdEncoding.DecodeString(
+        publicKeyBase64)
+    if err != nil {
+        return "", fmt.Errorf(
+            "invalid public key base64: %w", err)
+    }
+    pubAny, err := x509.ParsePKIXPublicKey(pubDer)
+    if err != nil {
+        return "", fmt.Errorf(
+            "invalid public key DER (PKIX): %w", err)
+    }
+    pub, ok := pubAny.(*rsa.PublicKey)
+    if !ok {
+        return "", fmt.Errorf("public key is not RSA")
+    }
+    encrypted, err := rsa.EncryptPKCS1v15(
+        rand.Reader, pub, []byte(secureDataJSON))
+    if err != nil {
+        return "", fmt.Errorf(
+            "rsa encrypt failed: %w", err)
+    }
+    return base64.StdEncoding.EncodeToString(encrypted), nil
+}
+```
+
+  </TabItem>
+  <TabItem value="php" label="PHP">
+
+```php
+<?php
+
+function generateSecureDataJson(string $walletId): string
+{
+    $secureData = [
+        "deviceId" => $walletId,
+        "timestamp" => (new DateTimeImmutable(
+            "now", new DateTimeZone("UTC")
+        ))->format("Y-m-d\TH:i:s.v\Z"),
+    ];
+    $json = json_encode(
+        $secureData, JSON_UNESCAPED_SLASHES);
+    if ($json === false) {
+        throw new RuntimeException(
+            "json_encode failed: " . json_last_error_msg());
+    }
+    return $json;
+}
+
+/**
+ * RSA/ECB/PKCS1Padding == OpenSSL: OPENSSL_PKCS1_PADDING
+ * $publicKeyBase64: X.509 SubjectPublicKeyInfo (DER)
+ */
+function encryptSecureDataJson(
+    string $secureDataJson, string $publicKeyBase64
+): string {
+    $der = base64_decode($publicKeyBase64, true);
+    if ($der === false) {
+        throw new InvalidArgumentException(
+            "Invalid publicKeyBase64");
+    }
+    $pem = "-----BEGIN PUBLIC KEY-----\n"
+        . chunk_split(base64_encode($der), 64, "\n")
+        . "-----END PUBLIC KEY-----\n";
+    $pubKey = openssl_pkey_get_public($pem);
+    if ($pubKey === false) {
+        throw new RuntimeException(
+            "openssl_pkey_get_public failed");
+    }
+    $encrypted = "";
+    $ok = openssl_public_encrypt(
+        $secureDataJson, $encrypted,
+        $pubKey, OPENSSL_PKCS1_PADDING);
+    if (!$ok) {
+        throw new RuntimeException(
+            "openssl_public_encrypt failed");
+    }
+    return base64_encode($encrypted);
+}
+```
+
+  </TabItem>
+</Tabs>
 
 ---
 
