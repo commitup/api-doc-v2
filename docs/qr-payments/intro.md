@@ -120,7 +120,7 @@ import javax.crypto.Cipher;
 
 class WalletSecureDataTest {
     record WhitelabelSecureData(
-            String deviceId,
+            String walletId,
             @JsonFormat(shape = JsonFormat.Shape.STRING,
                         pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             Date timestamp) {
@@ -174,7 +174,7 @@ import (
 )
 
 type WhitelabelSecureData struct {
-    DeviceId  string `json:"deviceId"`
+    WalletId  string `json:"walletId"`
     Timestamp string `json:"timestamp"`
 }
 
@@ -182,7 +182,7 @@ func generateSecureDataJSON(walletId string) (string, error) {
     timestamp := time.Now().UTC().Format(
         "2006-01-02T15:04:05.000Z")
     secureData := WhitelabelSecureData{
-        DeviceId:  walletId,
+        WalletId:  walletId,
         Timestamp: timestamp,
     }
     b, err := json.Marshal(secureData)
@@ -230,7 +230,7 @@ func encryptSecureDataJSON(
 function generateSecureDataJson(string $walletId): string
 {
     $secureData = [
-        "deviceId" => $walletId,
+        "walletId" => $walletId,
         "timestamp" => (new DateTimeImmutable(
             "now", new DateTimeZone("UTC")
         ))->format("Y-m-d\TH:i:s.v\Z"),
