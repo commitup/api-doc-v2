@@ -12,6 +12,14 @@ import styles from './index.module.css';
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   const isQrApi = siteConfig.baseUrl.includes('/qr-api/');
+  const isPosApi = siteConfig.baseUrl.includes('/pos/');
+
+  const getDocLink = () => {
+    if (isQrApi) return '/docs/qr-payments/intro';
+    if (isPosApi) return '/docs/pos-api/intro';
+    return '/docs/introduction/intro';
+  };
+
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
@@ -28,7 +36,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to={isQrApi ? "/docs/qr-payments/intro" : "/docs/introduction/intro"}>
+            to={getDocLink()}>
             <Translate id="homepage.visitButton" description="The label for the main call to action button">
               View API Documentation
             </Translate>
