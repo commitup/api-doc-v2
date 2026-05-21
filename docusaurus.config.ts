@@ -167,7 +167,7 @@ const config: Config = {
         ...(hasAccess('posApiSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'posApiSidebar', position: 'left' as const, label: 'POS API' }] : []),
         ...(hasAccess('accountingSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'accountingSidebar', position: 'left' as const, label: 'Accounting' }] : []),
         
-        ...(CUSTOMER_ID !== 'qr-api' ? [
+        ...(!['qr-api', 'pos'].includes(CUSTOMER_ID) ? [
           {to: '/blog', label: 'Blog', position: 'left' as const},
           {
             href: 'https://github.com/commitup/api-doc-v2',

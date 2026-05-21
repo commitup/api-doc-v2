@@ -238,6 +238,18 @@ const sidebars: SidebarsConfig = {
     'pos-api/capture-auth',
     'pos-api/3ds',
     'pos-api/checkout',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'pos-api/payment-status',
+    'pos-api/cancel-payment',
+    'pos-api/refund-payment',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'pos-api/webhooks',
   ],
   whitelabelWalletSidebar: [
     'whitelabel-wallet/intro',

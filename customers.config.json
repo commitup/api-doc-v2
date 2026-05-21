@@ -48,7 +48,6 @@
   "pos": {
     "name": "POS API",
     "allowedSidebars": [
-      "introductionSidebar",
       "posApiSidebar"
     ]
   },
