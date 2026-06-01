@@ -147,7 +147,14 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/pp-logo.png',
+    metadata: [
+      {name: 'keywords', content: 'payporter, api, documentation, money transfer, eft, payment'},
+      {name: 'twitter:card', content: 'summary_large_image'},
+      {name: 'twitter:site', content: '@payporter'},
+      {property: 'og:site_name', content: 'Payporter API Platform'},
+      {property: 'og:type', content: 'website'},
+    ],
     colorMode: {
       respectPrefersColorScheme: true,
     },
