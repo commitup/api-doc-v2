@@ -147,7 +147,7 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/pp-logo.png',
+    image: 'img/og-social-card.png',
     metadata: [
       {name: 'keywords', content: 'payporter, api, documentation, money transfer, eft, payment'},
       {name: 'twitter:card', content: 'summary_large_image'},
