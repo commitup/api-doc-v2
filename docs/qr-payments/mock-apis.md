@@ -93,7 +93,9 @@ Returns the raw QR code string as plain text (not JSON).
 
 ## Start Mock Authorization
 
-Sends an authorization approval request for an `IN_PROGRESS` transaction. The request goes through the real prepaid auth service — the final outcome depends on whether the wallet has sufficient balance to cover the transaction amount.
+Sends an authorization request for an `IN_PROGRESS` QR transaction (normal payment path), or simulates an externally-originated clearing message for headless refund scenarios (`LATE_REVERSAL`, `USER_NOT_PRESENT_REFUND`).
+
+The request goes through the real prepaid auth service — the final outcome depends on the wallet's available balance.
 
 <ApiEndpoint method="POST" url="/wallet/qrcode/mock/start-mock-authorization" />
 
@@ -101,33 +103,72 @@ Sends an authorization approval request for an `IN_PROGRESS` transaction. The re
 `GET /wallet/qrcode/start-mock-authorization` is deprecated and will be removed before production. Use `POST /wallet/qrcode/mock/start-mock-authorization` instead.
 :::
 
-| Outcome | Condition | Webhook Event Type |
-|---------|-----------|-------------------|
-| `COMPLETED` | Wallet has sufficient balance | `qr_payment.completed` |
-| `FAILED` | Insufficient balance or authorization rejection | `qr_payment.failed` |
-
-:::tip Testing the FAILED webhook path
-**Testing the `FAILED` webhook path:** Generate a mock QR code with an `amount` larger than the wallet's current balance (check via [Balance Inquiry](./balance-inquiry)). After Read → Confirm → Start Mock Authorization, the auth service will reject the transaction due to insufficient funds, producing a `qr_payment.failed` webhook.
-:::
-
 **Request**
 
 <Tabs>
   <TabItem value="table" label="Query Parameters" default>
 
-| Parameter | Type | Required | Length | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| `transactionId` | String | Yes | 11 | Transaction ID (must be in `IN_PROGRESS` status) |
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `transactionId` | String | Yes | Transaction ID (must be in `IN_PROGRESS` status for payment, or `COMPLETED` for external refund paths) |
+| `externalSource` | String | No | `LATE_REVERSAL` or `USER_NOT_PRESENT_REFUND`. Omit for the normal payment authorization path. |
+| `amount` | String | Conditional | Required only when `externalSource=USER_NOT_PRESENT_REFUND`. The refund amount (must not exceed the original payment amount). |
 
   </TabItem>
 </Tabs>
 
-### Response
+### Normal Payment Path
 
-`200 OK` (No Content)
+When `externalSource` is omitted, simulates BKM Switch sending a clearing message for a payment that is `IN_PROGRESS`. Outcome depends on wallet balance:
+
+| Outcome | Condition | Webhook Event |
+|---------|-----------|-------------------|
+| `COMPLETED` | Sufficient balance | `qr_payment.completed` |
+| `FAILED` | Insufficient balance or auth rejection | `qr_payment.failed` |
+
+:::tip Testing the FAILED webhook path
+Generate a mock QR with an `amount` larger than the wallet's current balance (check via [Balance Inquiry](./balance-inquiry)). After Read → Confirm → Start Mock Authorization, the auth service rejects the transaction and fires a `qr_payment.failed` webhook.
+:::
+
+### External Refund Paths
+
+When `externalSource` is provided, simulates a clearing message arriving directly from BKM Switch without a prior Read/Confirm step. The target `transactionId` must be a `COMPLETED` payment.
+
+| `externalSource` | Auth Type | Description | Expected Timing |
+|---|---|---|---|
+| `LATE_REVERSAL` | SALE/R (reversal) | Reverses a completed payment. No `amount` needed — the full original amount is reversed. Only one reversal per payment is allowed. | Near real-time (~10 s) |
+| `USER_NOT_PRESENT_REFUND` | REFUND/N (delayed refund) | Refunds a partial or full amount back to the wallet. `amount` is required and must not exceed the total payment amount. | **30 s in UAT**, 3 min in production |
+
+:::important UAT refund delay
+The `USER_NOT_PRESENT_REFUND` clearing message is queued with a delay before the auth service processes it:
+- **UAT / MIG environment:** 30 seconds
+- **Production:** 3 minutes
+
+Do not query the transaction or webhook event log until the respective window has elapsed.
+:::
+
+:::note Duplicate guard — LATE_REVERSAL
+Submitting a second `LATE_REVERSAL` for the same `transactionId` will be rejected with an error. Each completed payment can only be reversed once.
+:::
+
+### Response (200)
+
+Returns a JSON object with the IDs of the resulting child transaction and the original parent:
+
+```json
+{
+  "transactionId": "47003662389",
+  "parentTransactionId": "47002978001"
+}
+```
+
+| Field | Description |
+|---|---|
+| `transactionId` | ID of the **child** transaction (the authorization / reversal / refund record). Use this to query status and webhook events. |
+| `parentTransactionId` | ID of the **parent** (original payment) transaction. |
 
 :::note
-After calling this endpoint, use [Query Webhook Event Log](#query-webhook-event-log) to verify the webhook delivery result.
+After receiving the response, use `transactionId` (the child) with [Query Transaction](./query-transaction) and [Query Webhook Event Log](#query-webhook-event-log) to verify the outcome. For `USER_NOT_PRESENT_REFUND` wait for the applicable delay before querying (30 s in UAT, 3 min in production).
 :::
 
 ---
@@ -298,3 +339,9 @@ Updates the webhook delivery URL for the authenticated wallet. If `webhookUrl` i
 | :--- | :--- | :--- | :--- |
 | `webhookUrl` | String | Always | The effective webhook URL after the update. |
 | `message` | String | Always | Human-readable result description. |
+
+---
+
+## UAT Testing Guide
+
+For a step-by-step walkthrough of all test scenarios, timing expectations, and a pre-production acceptance checklist, see the dedicated **[UAT Testing Guide](./uat-testing-guide)**.
