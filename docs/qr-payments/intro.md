@@ -11,6 +11,7 @@ import TabItem from '@theme/TabItem';
 
 | Version | Date       | Changes |
 | :------ | :--------- | :------ |
+| 1.7.0   | 2026-06-03 | Added UAT Testing Guide with step-by-step test flows and acceptance checklist. Expanded mock authorization capabilities for refund scenarios: `LATE_REVERSAL` and `USER_NOT_PRESENT_REFUND`. |
 | 1.6.0   | 2026-05-17 | Added `POST /wallet/qrcode/query` endpoint (replaces deprecated `GET /wallet/qrcode/transactions`). Added mock sandbox endpoints: Rotate Webhook Signing Key (`POST /mock/rotate-webhook-key`) and Update Webhook URL (`POST /mock/update-webhook-url`). Migrated mock endpoints to `/mock/` path prefix — old paths are deprecated and will be removed before production. Changed mock `webhook-event-log` and `retry-webhook` to `POST`; `webhook-event-log` now returns an array. Added inline authentication code examples (Java, Go, PHP). |
 | 1.5.0   | 2026-05-14 | Added standard pagination envelope (`data` array, `pagination` object, and optional `summary` object) to Reconciliation and Account Transactions endpoints. Standardized input tables to `Required` style and output tables to `Presence` style. Updated endpoint paths in flow diagrams to full relative URLs. Added `X-Wallet-Id` to Authentication description. |
 | 1.4.2   | 2026-05-13 | Changed Balance Inquiry endpoint to `GET /wallet/qrcode/account/balance`. Added HTTP status codes to all error code tables. Clarified Mock Authorization sends approval only; `FAILED` path tested via insufficient balance. Unified example amounts and transaction IDs across all sections. |
