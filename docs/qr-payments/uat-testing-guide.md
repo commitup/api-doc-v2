@@ -32,9 +32,12 @@ Run cases one by one. For cases that produce a transaction, record the `transact
 | TC-UAT-012 | Late reversal | Completed payment exists | Child tx `transactionSource=LATE_REVERSAL`; Query → `COMPLETED` in ~10 s; webhook delivered | ⬜ | payment_id + child_tx_id | |
 | TC-UAT-013 | User-not-present refund (partial) | Completed payment exists, refund amount = 15.00 | Child tx `transactionSource=USER_NOT_PRESENT_REFUND`, amount = 15.00, `COMPLETED` after 30 s; webhook delivered | ⬜ | payment_id + child_tx_id | |
 | TC-UAT-014 | User-not-present refund (full) | Completed payment exists, refund amount = full original | Child tx `transactionSource=USER_NOT_PRESENT_REFUND`, amount = original, `COMPLETED` after 30 s; webhook delivered | ⬜ | payment_id + child_tx_id | |
+| TC-UAT-015 | Static QR successful payment | Wallet balance ≥ 25.00 | Read → `READ_QR` (amount is null, terminalType is `STATIC_QRCODE`); Confirm with amount = 25.00 → `IN_PROGRESS`; webhook `qr_payment.completed` delivered; Query → `COMPLETED` | ⬜ | | |
+| TC-UAT-016 | Static QR rejected — invalid amount | Static QR read (`READ_QR`) | Confirm with amount = 0.00 or negative → HTTP 406 `QR_CODE_AMOUNT_INVALID` | ⬜ | — | |
+| TC-UAT-017 | Static QR — multiple scan transaction IDs | Static QR code generated | Scan QR code twice; each scan/read returns status `READ_QR` with a different `transactionId` | ⬜ | txA ID + txB ID | |
 
 > **Result values:** ✅ Pass · ❌ Fail · 🔶 Blocked · ⬜ Not Run  
-> **Transaction ID(s):** Pre-filled labels are placeholders — replace with actual IDs. TC-004 through TC-007 produce no transaction (read rejected before any record is created), hence —.
+> **Transaction ID(s):** Pre-filled labels are placeholders — replace with actual IDs. TC-004 through TC-007 and TC-016 produce no successful transaction, hence —.
 
 ---
 
@@ -275,11 +278,90 @@ POST /wallet/qrcode/mock/webhook-event-log
 
 ---
 
+### 9 — Static QR Successful Payment (TC-UAT-015)
+
+In static QR payments, the QR code does not encode a specific amount. The partner reads the QR code first (which returns `amount: null` and `terminalType: STATIC_QRCODE`), prompts the user for the amount, and then supplies the collected amount during the Confirm step.
+
+```
+1. POST /wallet/qrcode/mock/generate-mock-qr-code
+   qrCodeTransactionType=PAYMENT
+   (Note: Do not pass the amount query parameter)
+   → returns static qrCode string
+
+2. POST /wallet/qrcode/payment/read
+   body: { qrCode }
+   → status: READ_QR, transactionId: <id>
+     transactionType: PAYMENT, amount: null, terminalType: STATIC_QRCODE
+
+3. POST /wallet/qrcode/payment/confirm
+   body: { transactionId, tenantReferenceId, amount: "25.00", tenantUserId }
+   (Note: Amount must be supplied by the partner)
+   → status: IN_PROGRESS
+
+4. POST /wallet/qrcode/mock/start-mock-authorization
+   transactionId=<id>
+   → { transactionId }
+
+5. POST /wallet/qrcode/mock/webhook-event-log
+   transactionId=<id>          (wait ~5 s after step 4)
+   → eventType: qr_payment.completed, status: DELIVERED
+
+6. POST /wallet/qrcode/query
+   transactionId=<id>
+   → status: COMPLETED, amount: "25.00"
+```
+
+---
+
+### 10 — Static QR Invalid Amount (TC-UAT-016)
+
+For static QR payments, validating the amount occurs during the Confirm request. Zero or negative amounts are rejected with `QR_CODE_AMOUNT_INVALID`.
+
+```
+1. POST /wallet/qrcode/mock/generate-mock-qr-code
+   qrCodeTransactionType=PAYMENT
+   (Note: Do not pass the amount query parameter)
+   → returns static qrCode string
+
+2. POST /wallet/qrcode/payment/read
+   body: { qrCode }
+   → status: READ_QR, transactionId: <id>
+
+3. POST /wallet/qrcode/payment/confirm
+   body: { transactionId, tenantReferenceId, amount: "0.00", tenantUserId }
+   (or amount: "-5.00")
+   → HTTP 406, errorCode: QR_CODE_AMOUNT_INVALID
+```
+
+---
+
+### 11 — Static QR Multiple Scan IDs (TC-UAT-017)
+
+Since a static QR code is persistent and can be scanned multiple times, each scan creates a new independent transaction entity with its own unique `transactionId`.
+
+```
+1. POST /wallet/qrcode/mock/generate-mock-qr-code
+   qrCodeTransactionType=PAYMENT
+   (Note: Do not pass the amount query parameter)
+   → returns static qrCode string
+
+2. POST /wallet/qrcode/payment/read (Scan A)
+   body: { qrCode }
+   → status: READ_QR, transactionId: <txA_id>
+
+3. POST /wallet/qrcode/payment/read (Scan B)
+   body: { qrCode }
+   → status: READ_QR, transactionId: <txB_id>
+     (Verify that <txB_id> is different from <txA_id>)
+```
+
+---
+
 ## Timing Reference
 
 | Flow | Test Cases | Wait before querying |
 |---|---|---|
-| Payment authorization (normal) | TC-UAT-001, TC-UAT-002 | ~5 s for webhook to appear |
+| Payment authorization (normal & static) | TC-UAT-001, TC-UAT-002, TC-UAT-015 | ~5 s for webhook to appear |
 | QR Scan Refund (after mock auth) | TC-UAT-003 | **30 s** (UAT) · 3 min (prod) |
 | LATE_REVERSAL | TC-UAT-012 | ~10 s |
 | USER_NOT_PRESENT_REFUND | TC-UAT-013, TC-UAT-014 | **30 s** (UAT) · 3 min (prod) |
