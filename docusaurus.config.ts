@@ -23,6 +23,7 @@ const sidebarToPathMap: Record<string, string[]> = {
   qrPaymentsSidebar: ['qr-payments'],
   moneyTransfersSidebar: ['money-transfers', 'payments', 'resources'],
   whitelabelWalletSidebar: ['whitelabel-wallet'],
+  whitelabelWalletV2Sidebar: ['whitelabel-wallet-v2'],
   posApiSidebar: ['pos-api'],
   accountingSidebar: ['accounting'],
 };
@@ -170,11 +171,12 @@ const config: Config = {
         ...(hasAccess('moneyTransfersSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'moneyTransfersSidebar', position: 'left' as const, label: 'Money Transfers' }] : []),
         ...(hasAccess('eftSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'eftSidebar', position: 'left' as const, label: 'EFT to Turkish Banks' }] : []),
         ...(hasAccess('whitelabelWalletSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'whitelabelWalletSidebar', position: 'left' as const, label: 'Whitelabel Wallet' }] : []),
+        ...(hasAccess('whitelabelWalletV2Sidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'whitelabelWalletV2Sidebar', position: 'left' as const, label: 'Whitelabel Wallet v2' }] : []),
         ...(hasAccess('qrPaymentsSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'qrPaymentsSidebar', position: 'left' as const, label: 'QR Payments' }] : []),
         ...(hasAccess('posApiSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'posApiSidebar', position: 'left' as const, label: 'POS API' }] : []),
         ...(hasAccess('accountingSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'accountingSidebar', position: 'left' as const, label: 'Accounting' }] : []),
         
-        ...(!['qr-api', 'pos'].includes(CUSTOMER_ID) ? [
+        ...(!['qr-api', 'pos', 'whitelabel-v2'].includes(CUSTOMER_ID) ? [
           {to: '/blog', label: 'Blog', position: 'left' as const},
           {
             href: 'https://github.com/commitup/api-doc-v2',
@@ -202,11 +204,12 @@ const config: Config = {
               { label: 'Payments', to: '/docs/payments/overview' }
             ] : []),
             ...(hasAccess('whitelabelWalletSidebar') ? [{ label: 'Whitelabel Wallet', to: '/docs/whitelabel-wallet/intro' }] : []),
+            ...(hasAccess('whitelabelWalletV2Sidebar') ? [{ label: 'Whitelabel Wallet v2', to: '/docs/whitelabel-wallet-v2/intro' }] : []),
             ...(hasAccess('posApiSidebar') ? [{ label: 'POS API', to: '/docs/pos-api/intro' }] : []),
             ...(hasAccess('accountingSidebar') ? [{ label: 'Accounting', to: '/docs/accounting/account-info' }] : []),
           ],
         },
-        ...(CUSTOMER_ID !== 'qr-api' ? [{
+        ...(!['qr-api', 'pos', 'whitelabel-v2'].includes(CUSTOMER_ID) ? [{
           title: 'Resources',
           items: [
             {

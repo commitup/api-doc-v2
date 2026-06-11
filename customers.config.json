@@ -27,6 +27,7 @@
       "qrPaymentsSidebar",
       "moneyTransfersSidebar",
       "whitelabelWalletSidebar",
+      "whitelabelWalletV2Sidebar",
       "posApiSidebar",
       "accountingSidebar"
     ]
@@ -62,7 +63,14 @@
     "name": "Whitelabel Wallet",
     "allowedSidebars": [
       "introductionSidebar",
-      "whitelabelWalletSidebar"
+      "whitelabelWalletSidebar",
+      "whitelabelWalletV2Sidebar"
+    ]
+  },
+  "whitelabel-v2": {
+    "name": "Whitelabel Wallet v2",
+    "allowedSidebars": [
+      "whitelabelWalletV2Sidebar"
     ]
   },
   "apilist": {

@@ -252,6 +252,22 @@ const sidebars: SidebarsConfig = {
     },
     'pos-api/webhooks',
   ],
+
+  whitelabelWalletV2Sidebar: [
+    'whitelabel-wallet-v2/intro',
+    'whitelabel-wallet-v2/flow-diagrams',
+    'whitelabel-wallet-v2/safety-model',
+    'whitelabel-wallet-v2/transaction-object',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'whitelabel-wallet-v2/card-validate',
+    'whitelabel-wallet-v2/card-confirm',
+    'whitelabel-wallet-v2/confirm-retry-fallback',
+    'whitelabel-wallet-v2/card-query',
+  ],
+
   whitelabelWalletSidebar: [
     'whitelabel-wallet/intro',
     'whitelabel-wallet/authentication',
@@ -264,6 +280,30 @@ const sidebars: SidebarsConfig = {
       items: [
         'whitelabel-wallet/transfers',
         'whitelabel-wallet/eft',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Individual Transactions',
+      items: [
+        'whitelabel-wallet/individual-transactions/intro',
+        'whitelabel-wallet/individual-transactions/transaction-object',
+        'whitelabel-wallet/individual-transactions/flow-diagrams',
+        'whitelabel-wallet/individual-transactions/safety-model',
+        'whitelabel-wallet/individual-transactions/confirm-retry-fallback',
+        {
+          type: 'html',
+          value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+        },
+        {
+          type: 'category',
+          label: 'P2P Transfer',
+          items: [
+            'whitelabel-wallet/individual-transactions/p2p-validate',
+            'whitelabel-wallet/individual-transactions/p2p-confirm',
+            'whitelabel-wallet/individual-transactions/p2p-query',
+          ],
+        },
       ],
     },
     {
