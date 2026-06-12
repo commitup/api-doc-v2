@@ -17,7 +17,7 @@ Returns the current balance of the settlement wallet. Errors: authentication err
 
 | Field | Type | Presence | Length | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `balance` | String | Always | 12 | Current available balance. |
+| `balance` | String | Always | 12 | Current available balance — the sum of all completed wallet transactions. See [Balance Semantics](#balance-semantics) below. |
 | `currency` | String | Always | 3 | Currency code (e.g., `TRY`). |
 
 <Tabs>
@@ -35,6 +35,14 @@ Returns the current balance of the settlement wallet. Errors: authentication err
   </TabItem>
 </Tabs>
 
+## Balance Semantics
+
+The `balance` field represents the sum of all **completed** wallet transactions:
+
+- Only **completed** QR transactions (`CARD_SALE`, `CARD_REFUND`, `CARD_CANCEL`) are reflected in the balance.
+- **Commission rebates** (`COMMISSION_REBATE`, `COMMISSION_REBATE_REVERSAL`) are **not** included until the settlement with the Card Scheme is completed and the rebate transaction is finalised.
+- In-flight amounts — such as confirmed payments awaiting authorization, or commission rebates awaiting settlement processing — are **not** reflected in this balance.
+
 :::note
-This endpoint is for periodic balance monitoring. It should not be called before every transaction.
+This endpoint is for periodic balance monitoring — it should not be called before every transaction. See [API Rate Limits](./intro#api-rate-limits) for per-endpoint limits.
 :::

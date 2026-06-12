@@ -11,6 +11,7 @@ import TabItem from '@theme/TabItem';
 
 | Version | Date       | Changes |
 | :------ | :--------- | :------ |
+| 1.8.0   | 2026-06-12 | Added Account Transaction Types: `BANK_ACCOUNT_TOPUP`, `BANK_ACCOUNT_TOPUP_CANCEL`, `COMMISSION_REBATE`, `COMMISSION_REBATE_REVERSAL`. Added QR-to-Account Transaction mapping table, identifier semantics (`walletTransactionId` vs `transactionId`), and commission rebate linking documentation. Added Account Transactions query constraints (permanent retention, 31-day max range, 60 req/min rate limit, immutability rules). Clarified Balance Inquiry semantics (completed transactions only, pending rebates excluded). Added UAT test case TC-UAT-018: QR refund exceeds original payment (FAILED webhook). |
 | 1.7.1   | 2026-06-08 | Added static QR payment verification scenarios (happy path, insufficient balance, and multiple scan transaction IDs) to the UAT Testing Guide. |
 | 1.7.0   | 2026-06-03 | Added UAT Testing Guide with step-by-step test flows and acceptance checklist. Expanded mock authorization capabilities for refund scenarios: `LATE_REVERSAL` and `USER_NOT_PRESENT_REFUND`. |
 | 1.6.0   | 2026-05-17 | Added `POST /wallet/qrcode/query` endpoint (replaces deprecated `GET /wallet/qrcode/transactions`). Added mock sandbox endpoints: Rotate Webhook Signing Key (`POST /mock/rotate-webhook-key`) and Update Webhook URL (`POST /mock/update-webhook-url`). Migrated mock endpoints to `/mock/` path prefix — old paths are deprecated and will be removed before production. Changed mock `webhook-event-log` and `retry-webhook` to `POST`; `webhook-event-log` now returns an array. Added inline authentication code examples (Java, Go, PHP). |
@@ -321,3 +322,28 @@ All monetary values are represented as **strings** with a fixed decimal pattern.
 :::note
 All amounts are denominated in TRY. No FX conversion is applied.
 :::
+
+---
+
+## API Rate Limits
+
+All endpoints enforce per-client rate limits. Exceeding the limit returns **HTTP 429 Too Many Requests** with a standard [error response](#error-response-format) and error code `RATE_LIMIT_EXCEEDED`.
+
+### Rate Limits by Endpoint
+
+| Endpoint | Method | Rate Limit | Notes |
+|---|---|---|---|
+| `/wallet/qrcode/payment/read` | POST | 300 / min | User-facing, time-sensitive — allow for peak hour bursts. |
+| `/wallet/qrcode/payment/confirm` | POST | 300 / min | Paired with Read; same limit. |
+| `/wallet/qrcode/query` | POST | 1500 / min | May be polled for status; 5× transactional limit to support retries. |
+| `/wallet/qrcode/reconciliation` | GET | 60 / min | Bulk data retrieval — heavier queries. |
+| `/wallet/qrcode/account/transactions` | GET | 60 / min | Bulk data retrieval — heavier queries. |
+| `/wallet/qrcode/account/balance` | GET | 60 / min | Informational — should not be called per-transaction. |
+
+:::tip Best practices for staying within limits
+- **Do not poll Query in tight loops.** Use webhooks as the primary notification mechanism; use Query only as a fallback or for reconciliation.
+- **Reconciliation and Account Transactions** are designed for periodic batch pulls (e.g., hourly or daily), not real-time monitoring.
+- **Balance Inquiry** is for periodic monitoring — do not call it before every payment.
+- **Implement exponential backoff** when you receive HTTP 429. The rate limit window resets every 60 seconds.
+:::
+

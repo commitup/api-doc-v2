@@ -35,6 +35,7 @@ Run cases one by one. For cases that produce a transaction, record the `transact
 | TC-UAT-015 | Static QR successful payment | Wallet balance ≥ 25.00 | Read → `READ_QR` (amount is null, terminalType is `STATIC_QRCODE`); Confirm with amount = 25.00 → `IN_PROGRESS`; webhook `qr_payment.completed` delivered; Query → `COMPLETED` | ⬜ | | |
 | TC-UAT-016 | Static QR failed payment — insufficient balance | Payment amount > wallet balance | Read → `READ_QR` (amount is null); Confirm with exceeding amount → `IN_PROGRESS`; webhook `qr_payment.failed` delivered; Query → `FAILED` | ⬜ | | |
 | TC-UAT-017 | Static QR — multiple scan transaction IDs | Static QR code generated | Scan QR code twice; each scan/read returns status `READ_QR` with a different `transactionId` | ⬜ | txA ID + txB ID | |
+| TC-UAT-018 | QR refund exceeds original payment — FAILED | Completed payment (30.00) exists | Refund QR with amount 31.00; Read → `REFUND`; Confirm → `IN_PROGRESS`; webhook `qr_payment.failed` delivered after 30 s; Query → `FAILED` | ⬜ | payment_id + refund_tx_id | |
 
 > **Result values:** ✅ Pass · ❌ Fail · 🔶 Blocked · ⬜ Not Run  
 > **Transaction ID(s):** Pre-filled labels are placeholders — replace with actual IDs. TC-004 through TC-007 produce no transaction (read rejected before any record is created), hence —.
@@ -368,11 +369,50 @@ Since a static QR code is persistent and can be scanned multiple times, each sca
 
 ---
 
+### 12 — QR Refund Exceeds Original Payment (TC-UAT-018)
+
+Generates a refund QR with an amount **greater than** the original payment. The refund is accepted at the Confirm stage (`IN_PROGRESS`) but the authorization is declined because the refund amount exceeds the original transaction amount, resulting in a `FAILED` webhook.
+
+```
+# First complete a payment for 30.00 (steps 1–6 of TC-UAT-001)
+# Save the transactionId as <payment_id>
+
+1. POST /wallet/qrcode/mock/generate-mock-qr-code
+   qrCodeTransactionType=REFUND  amount=31  parentTransactionId=<payment_id>
+   → returns refund qrCode string
+
+2. POST /wallet/qrcode/payment/read
+   body: { qrCode }
+   → status: READ_QR
+     transactionType: REFUND, parentTransactionId: <payment_id>
+
+3. POST /wallet/qrcode/payment/confirm
+   body: { transactionId, amount: "31.00", tenantUserId }
+   → status: IN_PROGRESS
+
+4. POST /wallet/qrcode/mock/start-mock-authorization
+   transactionId=<refund_transactionId>
+
+# Wait for refund clearing delay:
+#   UAT / MIG: 30 seconds
+#   Production: 3 minutes
+
+5. POST /wallet/qrcode/mock/webhook-event-log
+   transactionId=<refund_transactionId>
+   → eventType: qr_payment.failed, status: DELIVERED
+
+6. POST /wallet/qrcode/query
+   transactionId=<refund_transactionId>
+   → status: FAILED
+```
+
+---
+
 ## Timing Reference
 
 | Flow | Test Cases | Wait before querying |
 |---|---|---|
 | Payment authorization (normal & static) | TC-UAT-001, TC-UAT-002, TC-UAT-015, TC-UAT-016 | ~5 s for webhook to appear |
-| QR Scan Refund (after mock auth) | TC-UAT-003 | **30 s** (UAT) · 3 min (prod) |
+| QR Scan Refund (after mock auth) | TC-UAT-003, TC-UAT-018 | **30 s** (UAT) · 3 min (prod) |
 | LATE_REVERSAL | TC-UAT-012 | ~10 s |
 | USER_NOT_PRESENT_REFUND | TC-UAT-013, TC-UAT-014 | **30 s** (UAT) · 3 min (prod) |
