@@ -79,7 +79,7 @@ The transition from `READY` to `SENT` happens asynchronously after confirm. The 
 | `birthPlace` | String | No | Place of birth. |
 | `birthCountry` | String | No | Country of birth (ISO 3166-1 alpha-3). |
 | `identityNo` | String | No | Identity document number. |
-| `identityType` | String | No | Identity document type. |
+| `identityType` | Enum | No | Identity document type. Valid values: `PASSPORT`, `DRIVING_LICENCE`, `IDENTITY`, `FOREIGN_IDENTITY_CARD`, `NEW_IDENTITY_CARD`, `TEMPORARY_PROTECTION_DOCUMENT`, `TRNC_IDENTITY_CARD`, `BLUE_IDENTITY_CARD`, `SEAMAN_CERTIFICATE`. See [Identity Types](#identity-types). |
 | `identityIssueCountry` | String | No | Identity document issue country. |
 | `identityValidThru` | String | No | Identity document expiry date. |
 | `identityIssueDate` | String | No | Identity document issue date. |
@@ -94,6 +94,22 @@ The transition from `READY` to `SENT` happens asynchronously after confirm. The 
 :::note Dynamic Required Fields
 The required status of `ReceiverInfo` fields is evaluated dynamically based on the destination country, transfer type, and partner routing rules. If a required field is missing, the validate endpoint will return a `406 Not Acceptable` error with the code `WHITELABEL_MANDATORY_FIELD_MISSING`.
 :::
+
+---
+
+## Identity Types
+
+| Enum Value | ID | Description |
+| :--- | :--- | :--- |
+| `PASSPORT` | 1 | Passport |
+| `DRIVING_LICENCE` | 2 | Driving Licence |
+| `IDENTITY` | 3 | Identity |
+| `FOREIGN_IDENTITY_CARD` | 4 | Foreign Identity Card |
+| `NEW_IDENTITY_CARD` | 5 | New Identity Card |
+| `TEMPORARY_PROTECTION_DOCUMENT` | 62 | Temporary Protection Document (Geçici Koruma Belgesi) |
+| `TRNC_IDENTITY_CARD` | 61 | TRNC Identity Card (KKTC Kimlik Kartı) |
+| `BLUE_IDENTITY_CARD` | 33 | Blue Identity Card (Mavi Kimlik Kartı) |
+| `SEAMAN_CERTIFICATE` | 63 | Seaman Certificate (Gemi Adamı Belgesi) |
 
 ---
 
