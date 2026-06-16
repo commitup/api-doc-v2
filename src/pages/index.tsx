@@ -17,7 +17,7 @@ function HomepageHeader() {
   const getDocLink = () => {
     if (isQrApi) return '/docs/qr-payments/intro';
     if (isPosApi) return '/docs/pos-api/intro';
-    return '/docs/introduction/intro';
+    return '/docs/';
   };
 
   return (
