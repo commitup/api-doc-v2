@@ -327,6 +327,26 @@ const sidebars: SidebarsConfig = {
   ],
 
   // But you can create a sidebar manually
+  collectionOrderSidebar: [
+    'collection-order/intro',
+    'collection-order/flow-diagrams',
+    'collection-order/order-object',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'collection-order/create-collection-order',
+    'collection-order/create-sell-order',
+    'collection-order/query-order',
+    'collection-order/cancel-order',
+    'collection-order/refund-order',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'collection-order/webhooks',
+  ],
+
   /*
   tutorialSidebar: [
     'intro',

@@ -26,6 +26,7 @@ const sidebarToPathMap: Record<string, string[]> = {
   whitelabelWalletV2Sidebar: ['whitelabel-wallet-v2'],
   posApiSidebar: ['pos-api'],
   accountingSidebar: ['accounting'],
+  collectionOrderSidebar: ['collection-order'],
 };
 
 const calculatedIgnorePaths: (string | RegExp)[] = [];
@@ -54,7 +55,7 @@ if (activeCustomer && Array.isArray(activeCustomer.excludedDocs)) {
 }
 
 // Docs plugin için hariç tutulacak dosyalar (glob pattern)
-const docsExclude: string[] = [];
+const docsExclude: string[] = ['superpowers/**'];
 Object.keys(sidebarToPathMap).forEach(sidebarId => {
   if (!hasAccess(sidebarId)) {
     sidebarToPathMap[sidebarId].forEach(path => {
@@ -160,8 +161,8 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: CUSTOMER_ID === 'qr-api' ? undefined : 'Payporter API',
-      logo: CUSTOMER_ID === 'qr-api' ? undefined : {
+      title: ['qr-api', 'order'].includes(CUSTOMER_ID) ? undefined : 'Payporter API',
+      logo: ['qr-api', 'order'].includes(CUSTOMER_ID) ? undefined : {
         alt: 'Payporter Logo',
         src: 'img/pp-logo.png',
       },
@@ -175,8 +176,9 @@ const config: Config = {
         ...(hasAccess('qrPaymentsSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'qrPaymentsSidebar', position: 'left' as const, label: 'QR Payments' }] : []),
         ...(hasAccess('posApiSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'posApiSidebar', position: 'left' as const, label: 'POS API' }] : []),
         ...(hasAccess('accountingSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'accountingSidebar', position: 'left' as const, label: 'Accounting' }] : []),
+        ...(hasAccess('collectionOrderSidebar') ? [{ type: 'docSidebar' as const, sidebarId: 'collectionOrderSidebar', position: 'left' as const, label: 'Collection Order' }] : []),
         
-        ...(!['qr-api', 'pos', 'whitelabel-v2'].includes(CUSTOMER_ID) ? [
+        ...(!['qr-api', 'pos', 'whitelabel-v2', 'order'].includes(CUSTOMER_ID) ? [
           {to: '/blog', label: 'Blog', position: 'left' as const},
           {
             href: 'https://github.com/commitup/api-doc-v2',
@@ -207,9 +209,10 @@ const config: Config = {
             ...(hasAccess('whitelabelWalletV2Sidebar') ? [{ label: 'Whitelabel Wallet v2', to: '/docs/whitelabel-wallet-v2/intro' }] : []),
             ...(hasAccess('posApiSidebar') ? [{ label: 'POS API', to: '/docs/pos-api/intro' }] : []),
             ...(hasAccess('accountingSidebar') ? [{ label: 'Accounting', to: '/docs/accounting/account-info' }] : []),
+            ...(hasAccess('collectionOrderSidebar') ? [{ label: 'Collection Order', to: '/docs/collection-order/intro' }] : []),
           ],
         },
-        ...(!['qr-api', 'pos', 'whitelabel-v2'].includes(CUSTOMER_ID) ? [{
+        ...(!['qr-api', 'pos', 'whitelabel-v2', 'order'].includes(CUSTOMER_ID) ? [{
           title: 'Resources',
           items: [
             {

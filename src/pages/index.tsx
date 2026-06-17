@@ -13,10 +13,12 @@ function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   const isQrApi = siteConfig.baseUrl.includes('/qr-api/');
   const isPosApi = siteConfig.baseUrl.includes('/pos/');
+  const isOrderApi = siteConfig.baseUrl.includes('/order/');
 
   const getDocLink = () => {
     if (isQrApi) return '/docs/qr-payments/intro';
     if (isPosApi) return '/docs/pos-api/intro';
+    if (isOrderApi) return '/docs/collection-order/intro';
     return '/docs/';
   };
 

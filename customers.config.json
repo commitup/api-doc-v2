@@ -29,7 +29,8 @@
       "whitelabelWalletSidebar",
       "whitelabelWalletV2Sidebar",
       "posApiSidebar",
-      "accountingSidebar"
+      "accountingSidebar",
+      "collectionOrderSidebar"
     ]
   },
   "eft-only": {
@@ -86,6 +87,12 @@
     "name": "QR API Documentation",
     "allowedSidebars": [
       "qrPaymentsSidebar"
+    ]
+  },
+  "order": {
+    "name": "Collection Order",
+    "allowedSidebars": [
+      "collectionOrderSidebar"
     ]
   }
 }
