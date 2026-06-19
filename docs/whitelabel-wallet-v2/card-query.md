@@ -11,23 +11,54 @@ Retrieve the current state of a P2P card transfer transaction. This endpoint is 
 
 <ApiEndpoint method="GET" url="/wallet/p2p/query/{transactionId}" />
 
-## Path Parameters
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-| Parameter | Type | Required | Description |
+## Request
+
+<Tabs>
+  <TabItem value="fields" label="Path Parameters" default>
+
+| Parameter | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `transactionId` | String | **Yes** | The transaction ID from the [validate](./card-validate) or [confirm](./card-confirm) response. |
+| `transactionId` | String | Format: UUID | The transaction ID from the [validate](./card-validate) or [confirm](./card-confirm) response. |
+
+  </TabItem>
+  <TabItem value="headers" label="Headers">
+
+```http
+GET /wallet/p2p/query/{transactionId} HTTP/1.1
+Accept: application/json
+X-Api-Key: your_api_key
+X-Api-Secret: your_api_secret
+X-Wallet-Id: your_wallet_id
+```
+
+  </TabItem>
+  <TabItem value="curl" label="cURL">
+
+```bash
+curl -X GET "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/query/d8c8ba37-c434-4f5a-bda6-9129d6294f8b" \
+     -H "Accept: application/json" \
+     -H "X-Api-Key: your_api_key" \
+     -H "X-Api-Secret: your_api_secret" \
+     -H "X-Wallet-Id: your_wallet_id"
+```
+
+  </TabItem>
+</Tabs>
 
 ## Response
 
-The response is a [Transaction Object](./transaction-object) reflecting the current state of the transaction.
+The response is a [Transaction Object](./transaction-object) if the transaction was successfully processed, otherwise it returns an error.
 
 :::note
-Use this endpoint to poll for status updates after confirm. The confirm response may return `status: READY`, but the query will show the updated status once the transaction transitions to `SENT` or a terminal state.
+Use this endpoint to poll for status updates if a confirm call times out or returns a 5XX error.
 :::
 
 <ApiResponseSelector>
 
-```json status="200" title="Transaction — SENT"
+```json status="200" title="Success (Processed)"
 {
   "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b",
   "status": "SENT",
@@ -42,30 +73,19 @@ Use this endpoint to poll for status updates after confirm. The confirm response
 }
 ```
 
-```json status="200" title="Transaction — COMPLETED"
+```json status="404" title="Transaction Not Found"
 {
-  "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b",
-  "status": "COMPLETED",
-  "amount": 150,
-  "fee": 4,
-  "total": 154,
-  "sourceAmount": 8215.53,
-  "payoutAmount": 2851428.57,
-  "payoutCurrency": "IDR",
-  "processRefNo": "47005005788",
-  "externalTransactionId": "47005005788"
+  "status": "error",
+  "code": "WL_TRANSACTION_NOT_FOUND",
+  "message": "Transaction not found or funds returned."
 }
 ```
 
-```json status="200" title="Transaction — CANCELLED"
+```json status="409" title="Transaction In Progress"
 {
-  "transactionId": "e580e868-dbe4-4a9a-bed0-a1c8620053c1",
-  "status": "CANCELLED",
-  "amount": 150,
-  "fee": 4,
-  "total": 154,
-  "sourceAmount": 8215.53,
-  "processRefNo": "47005005700"
+  "status": "error",
+  "code": "WL_TRANSACTION_IN_PROGRESS",
+  "message": "Transaction is currently processing."
 }
 ```
 

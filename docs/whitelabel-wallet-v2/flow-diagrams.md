@@ -49,7 +49,7 @@ sequenceDiagram
     PayPorter-->>Partner: 200 OK {status: READY}
     Partner->>PayPorter: POST /wallet/p2p/card/confirm
     PayPorter-->>Partner: 5XX / Timeout
-    Note over Partner: Retry with identical values<br/>(idempotent by transactionId + tenantReferenceId)
-    Partner->>PayPorter: POST /wallet/p2p/card/confirm (retry)
+    Note over Partner: Query transaction status
+    Partner->>PayPorter: GET /wallet/p2p/query/{transactionId}
     PayPorter-->>Partner: 200 OK
 ```

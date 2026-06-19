@@ -16,27 +16,52 @@ Execute a previously validated card transfer transaction. Funds are debited from
 :::important Failure handling
 **HTTP 4XX errors:** The transaction is rejected and no funds are moved. The wallet balance is unchanged.
 
-**Timeout / 5XX errors:** Retry the same request with **identical values**. Confirm is idempotent by `transactionId` + `tenantReferenceId`. See [Confirm Retry & Fallback Strategy](./confirm-retry-fallback).
+**Timeout / 5XX errors:** Do not retry the confirm request. Instead, immediately query the transaction status using the `transactionId`. See [Confirm Fallback Strategy](./confirm-retry-fallback).
 :::
 
 ## Request
 
 <Tabs>
-  <TabItem value="fields" label="Request Body" default>
+  <TabItem value="fields" label="Request Fields" default>
 
-| Field | Type | Required | Description |
+| Field | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `transactionId` | String | **Yes** | The transaction ID returned from the [validate](./card-validate) response. |
-| `tenantReferenceId` | String | **Yes** | The tenant's reference ID — must match the value from validate. Used as an idempotency key. |
+| `transactionId` | String | Max: 36<br/>Format: UUID | The transaction ID returned from the [validate](./card-validate) response. |
+
+  </TabItem>
+  <TabItem value="headers" label="Headers">
+
+```http
+POST /wallet/p2p/card/confirm HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+X-Api-Key: your_api_key
+X-Api-Secret: your_api_secret
+X-Wallet-Id: your_wallet_id
+```
 
   </TabItem>
   <TabItem value="example" label="Example Request">
 
 ```json
 {
-  "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b",
-  "tenantReferenceId": "test-happy-path-001"
+  "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b"
 }
+```
+
+  </TabItem>
+  <TabItem value="curl" label="cURL">
+
+```bash
+curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/card/confirm" \
+     -H "Content-Type: application/json" \
+     -H "Accept: application/json" \
+     -H "X-Api-Key: your_api_key" \
+     -H "X-Api-Secret: your_api_secret" \
+     -H "X-Wallet-Id: your_wallet_id" \
+     -d '{
+           "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b"
+         }'
 ```
 
   </TabItem>
@@ -44,11 +69,15 @@ Execute a previously validated card transfer transaction. Funds are debited from
 
 ## Response
 
-The response is a [Transaction Object](./transaction-object) with the following confirm-specific behaviour:
+> [!IMPORTANT]
+> A successful Confirm response may still return `status: READY`.
+>
+> This is expected behaviour, as the transition to `SENT` happens asynchronously.
+> Clients should use the Query endpoint to monitor the transaction until it reaches a terminal status.
 
-- **`status`** may still be `READY` immediately after confirm — the transition to `SENT` happens asynchronously. Use the [Query](./card-query) endpoint to poll for the updated status.
+The response is a [Transaction Object](./transaction-object).
+
 - **`processRefNo`** and **`externalTransactionId`** are populated after successful processing.
-- On idempotent retries, the current status is returned (which may be `SENT` or `COMPLETED`).
 
 <Tabs>
   <TabItem value="success" label="Success" default>
@@ -67,8 +96,15 @@ The response is a [Transaction Object](./transaction-object) with the following 
   "currency": "EUR",
   "payoutCurrency": "IDR",
   "processRefNo": "47005005788",
-  "externalTransactionId": "47005005788",
-  "tenantReferenceId": "test-happy-path-001"
+  "externalTransactionId": "47005005788"
+}
+```
+
+```json status="406" title="Already Processed"
+{
+  "status": "error",
+  "code": "WL_P2P_PAYMENT_ALREADY_CREATED",
+  "message": "Payment has already been confirmed."
 }
 ```
 

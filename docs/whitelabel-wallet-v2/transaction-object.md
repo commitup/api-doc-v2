@@ -6,6 +6,89 @@ sidebar_position: 4
 
 The **Transaction Object** is the common response model returned by all P2P card transfer endpoints (validate, confirm, query).
 
+## Amount Model & FX Flow
+
+The system processes amount conversions in four distinct scenarios, depending on whether you provide an exact destination `amount` or a local `sendingAmount`, and whether the `feeIncluded` flag is `true` or `false`.
+
+### 1. Exact Amount (Fee Not Included)
+You want to send exactly 100 USD to the transfer issuer. The fee is charged **on top**.
+
+```text
+Input: amount=100, currency=USD, feeIncluded=false
+Fee: 5 USD
+
+Sender Wallet (TRY)
+   │
+   ├─ debits: TRY equivalent of 100 USD (amount)
+   ├─ debits: TRY equivalent of 5 USD (fee)
+   ▼
+Total Wallet Debit = TRY equivalent of 105 USD
+
+Transfer Issuer
+   │
+   └─ receives exact 100 USD
+```
+
+### 2. Exact Amount (Fee Included)
+You want to spend exactly 100 USD total. The fee is deducted **from** the amount before reaching the issuer.
+
+```text
+Input: amount=100, currency=USD, feeIncluded=true
+Fee: 5 USD
+
+Sender Wallet (TRY)
+   │
+   ├─ debits: TRY equivalent of 100 USD (total)
+   ▼
+Total Wallet Debit = TRY equivalent of 100 USD
+
+Transfer Issuer
+   │
+   └─ receives 95 USD (100 USD - 5 USD fee)
+```
+
+### 3. Sending Amount (Fee Not Included)
+You want to convert exactly 1,000 TRY to the destination currency. The fee is charged **on top**.
+
+```text
+Input: sendingAmount=1000, sendingCurrency=TRY, feeIncluded=false
+Fee: 25 TRY
+
+Sender Wallet (TRY)
+   │
+   ├─ debits: 1000 TRY (sendingAmount)
+   ├─ debits: 25 TRY (fee)
+   ▼
+Total Wallet Debit = 1025 TRY
+
+Transfer Issuer (Destination: EUR)
+   │
+   ├─ FX: 1000 TRY ➔ 40 EUR
+   ▼
+   └─ receives exact 40 EUR
+```
+
+### 4. Sending Amount (Fee Included)
+You want exactly 1,000 TRY debited from your wallet, including all fees.
+
+```text
+Input: sendingAmount=1000, sendingCurrency=TRY, feeIncluded=true
+Fee: 25 TRY
+
+Sender Wallet (TRY)
+   │
+   ├─ debits: 1000 TRY (total sendingAmount)
+   ▼
+Total Wallet Debit = 1000 TRY
+
+Transfer Issuer (Destination: USD)
+   │
+   ├─ Net Principal: 1000 TRY - 25 TRY (fee) = 975 TRY
+   ├─ FX: 975 TRY ➔ 48 USD
+   ▼
+   └─ receives 48 USD
+```
+
 ## Response Fields
 
 | Field | Type | Presence | Description |
@@ -13,18 +96,18 @@ The **Transaction Object** is the common response model returned by all P2P card
 | `transactionId` | String | Always | Unique transaction ID assigned by PayPorter. Used for confirm and query. |
 | `status` | String | Always | Current transaction status. See [Status Values](#status-values) below. |
 | `tenantReferenceId` | String | Always | Tenant's unique reference ID, echoed from the validate request. |
-| `amount` | Number | Always | Sending amount (echoed from input). |
+| `amount` | Decimal(18,2) | Always | Sending amount (echoed from input). |
 | `currency` | String | Always | Sending currency (ISO 4217). |
-| `fee` | Number | Always | Fee charged for this transaction. |
-| `total` | Number | Always | Total debited: `amount + fee`. |
-| `sourceAmount` | Number | Always | TRY equivalent debited from the wallet. |
+| `fee` | Decimal(18,2) | Always | Fee charged for this transaction. |
+| `total` | Decimal(18,2) | Always | Total debited: `amount + fee`. |
+| `sourceAmount` | Decimal(18,2) | Always | TRY equivalent debited from the wallet. |
 | `sourceCurrency` | String | Always | Wallet debit currency. Currently always `TRY`. |
-| `sendingExchangeRate` | Number | When applicable | Exchange rate applied (sending currency → TRY). |
-| `payoutAmount` | Number | After validate | Final payout amount in the destination currency. Determined by the 3rd party. |
+| `sendingExchangeRate` | Decimal | When applicable | Exchange rate applied (sending currency → TRY). |
+| `payoutAmount` | Decimal(18,2) | After validate | Final payout amount in the destination currency. Determined by the 3rd party. |
 | `payoutCurrency` | String | After validate | Payout currency code (ISO 4217). |
 | `processRefNo` | String | After confirm | Internal process reference number. |
 | `externalTransactionId` | String | After confirm | Reference number assigned by the external remittance firm. |
-| `destinationCountry` | String | When applicable | Destination country code. |
+| `destinationCountry` | String | When applicable | Destination country code (ISO 3166-1 alpha-3). |
 | `cardNumber` | String | Always | Destination card number. |
 | `receiver` | Object | Always | Receiver identity and contact info. See [ReceiverInfo](#receiverinfo-object). |
 | `comment` | String | Optional | Free-text comment. |
@@ -66,33 +149,33 @@ The transition from `READY` to `SENT` happens asynchronously after confirm. The 
 
 ## ReceiverInfo Object
 
-| Field | Type | Required | Description |
+| Field | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `firstName` | String | Yes | Receiver's first name. |
-| `lastName` | String | Yes | Receiver's last name. |
-| `receiverType` | String | Yes | `CUSTOMER` or `BUSINESS`. |
-| `nationality` | String | Conditional | ISO 3166-1 alpha-3 nationality code (e.g., `TUR`). |
-| `phoneCountryCode` | String | Conditional | Phone country code (e.g., `TUR`). |
-| `phoneNumber` | String | Conditional | Phone number without country prefix. |
-| `fatherName` | String | No | Father's name. |
-| `birthDate` | String | No | ISO 8601 date (e.g., `1990-01-15`). |
-| `birthPlace` | String | No | Place of birth. |
-| `birthCountry` | String | No | Country of birth (ISO 3166-1 alpha-3). |
-| `identityNo` | String | No | Identity document number. |
-| `identityType` | Enum | No | Identity document type. Valid values: `PASSPORT`, `DRIVING_LICENCE`, `IDENTITY`, `FOREIGN_IDENTITY_CARD`, `NEW_IDENTITY_CARD`, `TEMPORARY_PROTECTION_DOCUMENT`, `TRNC_IDENTITY_CARD`, `BLUE_IDENTITY_CARD`, `SEAMAN_CERTIFICATE`. See [Identity Types](#identity-types). |
-| `identityIssueCountry` | String | No | Identity document issue country. |
-| `identityValidThru` | String | No | Identity document expiry date. |
-| `identityIssueDate` | String | No | Identity document issue date. |
-| `addressCountry` | String | No | Address country code. |
-| `address` | String | No | Street address. |
-| `province` | String | No | Province / state. |
-| `district` | String | No | District. |
-| `zipCode` | String | No | Postal code. |
-| `job` | String | No | Occupation. |
-| `email` | String | No | Email address. |
+| `firstName` | String | Max: 100 | Receiver's first name. |
+| `lastName` | String | Max: 100 | Receiver's last name. |
+| `receiverType` | Enum | `CUSTOMER`, `BUSINESS` | Receiver type. |
+| `nationality` | String | ISO 3166-1 alpha-3 | Nationality code (e.g., `TUR`). |
+| `phoneCountryCode` | String | ISO 3166-1 alpha-3 | Phone country code (e.g., `TUR`). |
+| `phoneNumber` | String | Max: 20 | Phone number without country prefix. |
+| `fatherName` | String | Max: 100 | Father's name. |
+| `birthDate` | String | Format: YYYY-MM-DD | ISO 8601 date (e.g., `1990-01-15`). |
+| `birthPlace` | String | Max: 100 | Place of birth. |
+| `birthCountry` | String | ISO 3166-1 alpha-3 | Country of birth. |
+| `identityNo` | String | Max: 50 | Identity document number. |
+| `identityType` | Enum | - | Identity document type. Valid values: `PASSPORT`, `DRIVING_LICENCE`, `IDENTITY`, `FOREIGN_IDENTITY_CARD`, `NEW_IDENTITY_CARD`, `TEMPORARY_PROTECTION_DOCUMENT`, `TRNC_IDENTITY_CARD`, `BLUE_IDENTITY_CARD`, `SEAMAN_CERTIFICATE`. See [Identity Types](#identity-types). |
+| `identityIssueCountry` | String | ISO 3166-1 alpha-3 | Identity document issue country. |
+| `identityValidThru` | String | Format: YYYY-MM-DD | Identity document expiry date. |
+| `identityIssueDate` | String | Format: YYYY-MM-DD | Identity document issue date. |
+| `addressCountry` | String | ISO 3166-1 alpha-3 | Address country code. |
+| `address` | String | Max: 255 | Street address. |
+| `province` | String | Max: 100 | Province / state. |
+| `district` | String | Max: 100 | District. |
+| `zipCode` | String | Max: 20 | Postal code. |
+| `job` | String | Max: 100 | Occupation. |
+| `email` | String | Max: 100, Format: Email | Email address. |
 
 :::note Dynamic Required Fields
-The required status of `ReceiverInfo` fields is evaluated dynamically based on the destination country, transfer type, and partner routing rules. If a required field is missing, the validate endpoint will return a `406 Not Acceptable` error with the code `WHITELABEL_MANDATORY_FIELD_MISSING`.
+The required status of `ReceiverInfo` fields is evaluated dynamically based on the destination country, transfer type, and partner routing rules. If a required field is missing, the validate endpoint will return a field-specific error (e.g., `WL_P2P_RECEIVER_FIRST_NAME_MISSING`). You can also retrieve the mandatory fields dynamically via the [Mandatory Fields](./mandatory-fields) endpoint.
 :::
 
 ---

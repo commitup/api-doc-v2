@@ -278,7 +278,7 @@ Validate  →  Confirm  →  Query (optional)
 ```
 
 1. **Validate** — Submit transaction details. If accepted, the response contains a `transactionId` with `status: READY`. No funds are moved yet.
-2. **Confirm** — Submit the `transactionId` and `tenantReferenceId` to execute the transaction. Funds are debited from the wallet atomically.
+2. **Confirm** — Submit the `transactionId` to execute the transaction. Funds are debited from the wallet atomically.
 3. **Query** — Retrieve the current state of a transaction by `transactionId`.
 
 :::important
@@ -316,8 +316,7 @@ All errors use the same JSON envelope. The HTTP status code indicates the error 
 
 | HTTP Status | Category | When |
 |-------------|----------|------|
-| `406 Not Acceptable` | Validation | Missing or invalid request fields |
-| `409 Conflict` | Idempotency / Uniqueness | Key mismatch or duplicate reference |
+| `406 Not Acceptable` | Validation / Business Logic | Missing/invalid fields, already processed transactions, or state conflicts |
 | `429 Too Many Requests` | Rate Limit | Rate limiting policy exceeded |
 | `5XX Server Error` | System | Unexpected internal failure |
 

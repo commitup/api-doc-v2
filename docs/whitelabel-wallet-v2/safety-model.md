@@ -18,12 +18,11 @@ P2P card transfers are **wallet-funded**. PayPorter debits the wallet atomically
 flowchart TD
     A["1. POST /wallet/p2p/card/validate"] --> B{"Response?"}
     B -->|"200 OK — READY"| C["Funds NOT yet moved.<br/>transactionId reserved."]
-    B -->|"HTTP 406"| D["Rejected — no funds moved.<br/>Fix request and retry."]
+    B -->|"HTTP 406"| D["Rejected — no funds moved.<br/>Fix request."]
     C --> E["2. POST /wallet/p2p/card/confirm<br/>{transactionId, tenantReferenceId}"]
-    E --> F{"Response?"}
-    F -->|"200 OK"| G["Wallet debited atomically.<br/>Transaction submitted to card network."]
-    F -->|"HTTP 406"| H["Confirm rejected.<br/>Wallet balance unchanged."]
-    F -->|"HTTP 5XX / Timeout"| I["Retry with identical values.<br/>See Confirm Retry & Fallback."]
+    E -->|"HTTP 200 OK"| G["Success — check query for SETTLED state"]
+    E -->|"HTTP 406"| H["Rejected — no funds moved."]
+    E -->|"HTTP 5XX / Timeout"| I["Immediately Query status.<br/>See Confirm Fallback."]
     G --> J["3. GET /wallet/p2p/query/{transactionId}"]
     J --> K{"Status?"}
     K -->|"SENT"| L["In progress — awaiting settlement."]
@@ -40,17 +39,7 @@ flowchart TD
 | **Validate** | No funds moved. The `transactionId` and fees are reserved but the wallet balance is not affected. |
 | **Confirm — 200 OK** | Wallet debited atomically (amount + fee). The `sourceAmount` (TRY) is deducted. |
 | **Confirm — HTTP 4XX** | No funds moved. The wallet balance is unchanged. |
-| **Confirm — HTTP 5XX / Timeout** | Unknown. Retry with identical values — confirm is idempotent by `transactionId` + `tenantReferenceId`. |
-
----
-
-## Validate Expiry
-
-A validated transaction (`status: READY`) has a limited lifetime. If the partner does not confirm within this window, the transaction expires and cannot be confirmed. The partner must re-validate.
-
-:::note
-The exact expiry duration is configured server-side. Partners should confirm promptly after a successful validate.
-:::
+| **Confirm — HTTP 5XX / Timeout** | Unknown. Immediately query the transaction status using the `transactionId`. |
 
 ---
 
@@ -58,17 +47,14 @@ The exact expiry duration is configured server-side. Partners should confirm pro
 
 ### Validate
 
-Each call to validate with a unique `tenantReferenceId` creates a new transaction. Calling validate with a `tenantReferenceId` that was already used returns an error.
+Each call to validate with a unique `tenantReferenceId` creates a new transaction. Calling validate with a `tenantReferenceId` that was already used returns a `WL_P2P_TRANSACTION_ALREADY_EXISTS` error.
 
 ### Confirm
 
-Confirm is **idempotent** by `transactionId` + `tenantReferenceId`:
+Confirm is executed only once for a given `transactionId`.
 
-| Scenario | Behaviour |
-|---|---|
-| First Confirm | Debits wallet, submits transaction, returns current state. |
-| Retry — same `transactionId` + `tenantReferenceId` | Returns current state. No duplicate debit. |
-| Retry — `tenantReferenceId` mismatch | Returns error (409). |
+If a Confirm request is received for a transaction that has already been processed, the API will return the error:
+`WL_P2P_PAYMENT_ALREADY_CREATED`
 
 ### Query
 

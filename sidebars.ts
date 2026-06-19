@@ -266,6 +266,12 @@ const sidebars: SidebarsConfig = {
     'whitelabel-wallet-v2/card-confirm',
     'whitelabel-wallet-v2/confirm-retry-fallback',
     'whitelabel-wallet-v2/card-query',
+    'whitelabel-wallet-v2/mandatory-fields',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'whitelabel-wallet-v2/error-codes',
   ],
 
   whitelabelWalletSidebar: [
