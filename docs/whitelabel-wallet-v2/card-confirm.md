@@ -100,11 +100,13 @@ The response is a [Transaction Object](./transaction-object).
 }
 ```
 
-```json status="406" title="Already Processed"
+```json status="406" title="Idempotency Conflict"
 {
-  "status": "error",
-  "code": "WL_P2P_PAYMENT_ALREADY_CREATED",
-  "message": "Payment has already been confirmed."
+  "restHeader": {
+    "success": false,
+    "code": "WL_P2P_TRANSACTION_ALREADY_EXISTS",
+    "message": "A transaction with this tenantReferenceId already exists."
+  }
 }
 ```
 

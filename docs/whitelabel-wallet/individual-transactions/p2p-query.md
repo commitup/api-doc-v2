@@ -9,7 +9,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Retrieve the current state of a P2P transaction. This endpoint is idempotent and safe to call at any time.
 
-<ApiEndpoint method="GET" url="/wallet/p2p/query/{transactionId}" />
+<ApiEndpoint method="GET" url="/external/whitelabel/wallet/p2p/query/{transactionId}" />
 
 ## Path Parameters
 
@@ -66,6 +66,26 @@ Use this endpoint to poll for status updates after confirm. The confirm response
   "total": 154,
   "sourceAmount": 8215.53,
   "processRefNo": "47005005700"
+}
+```
+
+```json status="406" title="Processing / In Progress"
+{
+  "restHeader": {
+    "success": false,
+    "code": "WL_TRANSACTION_IN_PROGRESS",
+    "message": "The transaction is still being processed. Please query again later."
+  }
+}
+```
+
+```json status="406" title="Not Found / Errored"
+{
+  "restHeader": {
+    "success": false,
+    "code": "WL_TRANSACTION_NOT_FOUND",
+    "message": "The transaction could not be found or has permanently failed."
+  }
 }
 ```
 

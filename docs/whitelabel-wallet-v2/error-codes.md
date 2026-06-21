@@ -45,3 +45,14 @@ If a mandatory field is missing, you will receive a specific error indicating ex
 | :--- | :--- |
 | `WL_P2P_FEE_INCLUDED_ONLY_FOR_SENDING_AMOUNT` | The `feeIncluded` flag was set to `true`, but no `sendingAmount` was provided in the request payload. `feeIncluded` is only valid when supplying a source `sendingAmount`. |
 | `WL_P2P_CARD_NUMBER_EMPTY` | The `cardNumber` field is missing for a transfer route that targets a card account. |
+| `WL_P2P_INVALID_AMOUNT_MODEL` | Exactly one of `amount` or `sendingAmount` must be provided. If both or neither are provided, this error is returned. |
+
+## Transaction & Idempotency Errors
+
+These errors occur during transaction validation, confirmation, or status queries.
+
+| Error Code | Description |
+| :--- | :--- |
+| `WL_P2P_TRANSACTION_ALREADY_EXISTS` | A transaction with the provided `tenantReferenceId` has already been processed. |
+| `WL_TRANSACTION_IN_PROGRESS` | The transaction query cannot be fulfilled because the transaction is still processing. |
+| `WL_TRANSACTION_NOT_FOUND` | The transaction could not be found or has permanently failed in the upstream ledger. |

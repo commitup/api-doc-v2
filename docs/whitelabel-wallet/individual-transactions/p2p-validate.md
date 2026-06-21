@@ -11,7 +11,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Submit a P2P transfer request for validation. If accepted, the response contains a `transactionId` with `status: READY`, along with calculated fees and exchange rates. No funds are moved at this stage.
 
-<ApiEndpoint method="POST" url="/wallet/p2p/{type}/validate" />
+<ApiEndpoint method="POST" url="/external/whitelabel/wallet/p2p/{type}/validate" />
 
 Where `{type}` is one of: `name`, `account`, `card`, `wallet`.
 
@@ -27,10 +27,11 @@ The `tenantReferenceId` must be unique across all transactions. Reusing a previo
 | Field | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
 | `tenantReferenceId` | String | **Yes** | Unique reference ID assigned by the tenant. Used for idempotency. |
-| `amount` | Number | **Conditional** | Sending amount. Mutually exclusive with `sendingAmount`. |
+| `amount` | Number | **Conditional** | Exact payout or fixed foreign exchange amount. **Mutually exclusive** with `sendingAmount`. You must provide exactly one of these. |
 | `currency` | String | **Yes** | Currency of the sending amount (ISO 4217). Example: `EUR`. |
-| `sendingAmount` | Number | **Conditional** | Alternative sending amount. Mutually exclusive with `amount`. |
+| `sendingAmount` | Number | **Conditional** | Exact local currency collection amount. **Mutually exclusive** with `amount`. You must provide exactly one of these. |
 | `sendingCurrency` | String | **Conditional** | Currency for `sendingAmount`. Required when `sendingAmount` is provided. |
+| `feeIncluded` | Boolean | No | Indicates if the fee should be deducted from the `sendingAmount`. Valid only when `sendingAmount` is provided. Default is `false`. |
 | `payoutCurrency` | String | No | Payout currency when different from sending currency. |
 | `destinationCountry` | String | **Yes** | Destination country code (ISO 3166-1). |
 | `externalFirm` | String | TO_NAME | External remittance firm code. |
@@ -48,12 +49,39 @@ The `tenantReferenceId` must be unique across all transactions. Reusing a previo
 | `relationshipWithSender` | Enum | **Yes** | Relationship with receiver. Valid values: `CHILD`, `SPOUSE`, `PARENT`, `FRIEND`, `WORK_FRIEND`, `BROTHER`. |
 
   </TabItem>
-  <TabItem value="example" label="Example Request">
+  <TabItem value="example1" label="Example: amount (FX)">
 
-```json
+```json title="Standard FX Transfer"
 {
   "tenantReferenceId": "test-happy-path-001",
   "amount": 150,
+  "currency": "EUR",
+  "destinationCountry": "IDN",
+  "cardNumber": "5473323225888232",
+  "receiver": {
+    "firstName": "Osman",
+    "lastName": "SAVCI",
+    "nationality": "TUR",
+    "phoneCountryCode": "TUR",
+    "phoneNumber": "5551234567",
+    "receiverType": "CUSTOMER"
+  },
+  "comment": "Money transfer",
+  "purpose": "FAMILY",
+  "sourceOfIncome": "SALARY",
+  "relationshipWithSender": "CHILD"
+}
+```
+
+  </TabItem>
+  <TabItem value="example2" label="Example: sendingAmount (Exact Collection)">
+
+```json title="Exact Collection Transfer"
+{
+  "tenantReferenceId": "test-happy-path-002",
+  "sendingAmount": 8500,
+  "sendingCurrency": "TRY",
+  "feeIncluded": true,
   "currency": "EUR",
   "destinationCountry": "IDN",
   "cardNumber": "5473323225888232",
@@ -108,8 +136,28 @@ The response is a [Transaction Object](./transaction-object) with the following 
 {
   "restHeader": {
     "success": false,
-    "code": "must not be null",
-    "message": "walletP2PRequest destinationCountry must not be null"
+    "code": "WL_P2P_RECEIVER_FIRST_NAME_MISSING",
+    "message": "walletP2PRequest receiver.firstName must not be null"
+  }
+}
+```
+
+```json status="406" title="Invalid Amount Model"
+{
+  "restHeader": {
+    "success": false,
+    "code": "WL_P2P_INVALID_AMOUNT_MODEL",
+    "message": "Only one of 'amount' or 'sendingAmount' must be provided."
+  }
+}
+```
+
+```json status="406" title="Idempotency Conflict"
+{
+  "restHeader": {
+    "success": false,
+    "code": "WL_P2P_TRANSACTION_ALREADY_EXISTS",
+    "message": "A transaction with this tenantReferenceId already exists."
   }
 }
 ```

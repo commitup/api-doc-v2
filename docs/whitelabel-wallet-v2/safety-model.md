@@ -53,8 +53,8 @@ Each call to validate with a unique `tenantReferenceId` creates a new transactio
 
 Confirm is executed only once for a given `transactionId`.
 
-If a Confirm request is received for a transaction that has already been processed, the API will return the error:
-`WL_P2P_PAYMENT_ALREADY_CREATED`
+| Missing Confirm Payload | N/A | Missing elements (like `tenantUserId`) will return a 400 Bad Request if mandatory according to the schema. |
+| Duplicate Tenant Reference | POST | If the provided `tenantReferenceId` is already in use for another payment, the API returns a 409 Conflict (`TENANT_REFERENCE_ID_ALREADY_USED`). |
 
 ### Query
 

@@ -11,14 +11,14 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Execute a previously validated P2P transaction. Funds are debited from the wallet atomically during this step.
 
-<ApiEndpoint method="POST" url="/wallet/p2p/{type}/confirm" />
+<ApiEndpoint method="POST" url="/external/whitelabel/wallet/p2p/{type}/confirm" />
 
 Where `{type}` is one of: `name`, `account`, `card`, `wallet`.
 
 :::important Failure handling
 **HTTP 4XX errors:** The transaction is rejected and no funds are moved. The wallet balance is unchanged.
 
-**Timeout / 5XX errors:** Retry the same request with **identical values**. Confirm is idempotent by `transactionId` + `tenantReferenceId`. See [Confirm Retry & Fallback Strategy](./confirm-retry-fallback).
+**Timeout / 5XX errors:** Retry the same request with **identical values**. Confirm is idempotent by `transactionId`. See [Confirm Retry & Fallback Strategy](./confirm-retry-fallback).
 :::
 
 ## Request
@@ -29,15 +29,13 @@ Where `{type}` is one of: `name`, `account`, `card`, `wallet`.
 | Field | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
 | `transactionId` | String | **Yes** | The transaction ID returned from the [validate](./p2p-validate) response. |
-| `tenantReferenceId` | String | **Yes** | The tenant's reference ID — must match the value from validate. Used as an idempotency key. |
 
   </TabItem>
   <TabItem value="example" label="Example Request">
 
 ```json
 {
-  "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b",
-  "tenantReferenceId": "test-happy-path-001"
+  "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b"
 }
 ```
 
