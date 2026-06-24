@@ -21,13 +21,15 @@ Returns transaction details for a scanned QR code. The `transactionType` field i
 | Field | Type | Required | Length | Description |
 | :--- | :--- | :--- | :--- | :--- |
 | `qrCode` | String | Yes | 500 | The QR code string scanned by the camera. |
+| `tenantUserId` | String | Yes | 50 | The unique identifier of the user in the tenant's system. Used for logging purposes. |
 
   </TabItem>
   <TabItem value="request_example" label="Example Request">
 
 ```json
 {
-  "qrCode": "999998261035605117b00490089854ce1ed71c8898da336966E827"
+  "qrCode": "999998261035605117b00490089854ce1ed71c8898da336966E827",
+  "tenantUserId": "SVC_TC_1_1"
 }
 ```
 
@@ -41,6 +43,7 @@ See [Error Response Format](./intro#error-response-format).
 | HTTP Status | Code                | Description                                             |
 |-------------|---------------------|---------------------------------------------------------|
 | `406` | `QR_CODE_EMPTY`     | The `qrCode` field is missing or blank.                 |
+| `406` | `QR_CODE_TENANT_USER_ID_EMPTY` | The `tenantUserId` field is missing or blank.       |
 | `406` | `QR_CODE_NOT_FOUND` | No transaction found for the given QR code.             |
 | `406` | `QR_CODE_EXPIRED`   | The QR code has expired.                                |
 | `406` | `QR_CODE_USED`      | The QR code has been read by another application, not our API. |
