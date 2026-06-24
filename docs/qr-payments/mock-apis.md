@@ -21,10 +21,6 @@ Generates a BKM-format QR code with configurable transaction type, amount, and e
 
 <ApiEndpoint method="POST" url="/wallet/qrcode/mock/generate-mock-qr-code" />
 
-:::warning Deprecated path
-`GET /wallet/qrcode/generate-mock-qr-code` is deprecated and will be removed before production. Use `POST /wallet/qrcode/mock/generate-mock-qr-code` instead.
-:::
-
 **Request**
 
 <Tabs>
@@ -98,10 +94,6 @@ Sends an authorization request for an `IN_PROGRESS` QR transaction (normal payme
 The request goes through the real prepaid auth service — the final outcome depends on the wallet's available balance.
 
 <ApiEndpoint method="POST" url="/wallet/qrcode/mock/start-mock-authorization" />
-
-:::warning Deprecated path
-`GET /wallet/qrcode/start-mock-authorization` is deprecated and will be removed before production. Use `POST /wallet/qrcode/mock/start-mock-authorization` instead.
-:::
 
 **Request**
 
@@ -295,6 +287,10 @@ Generates a new RSA-2048 keypair for webhook signature verification. The private
 ## Update Webhook URL
 
 Updates the webhook delivery URL for the authenticated wallet. If `webhookUrl` is omitted or empty, resets to mock delivery mode (no real HTTP call is made).
+
+:::important Network Access Setup
+After updating the webhook URL, you must contact PayPorter to set up the necessary network access/firewall configurations to allow webhook delivery to your server.
+:::
 
 <ApiEndpoint method="POST" url="/wallet/qrcode/mock/update-webhook-url" />
 

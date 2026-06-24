@@ -37,10 +37,6 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
   </TabItem>
 </Tabs>
 
-:::warning Deprecated endpoint
-`GET /wallet/qrcode/transactions?transactionId=...&tenantReferenceId=...` is deprecated and will be removed before production. Use `POST /wallet/qrcode/query` instead.
-:::
-
 ## Query Error Codes
 
 See [Error Response Format](./intro#error-response-format).
