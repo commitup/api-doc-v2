@@ -17,7 +17,7 @@ In sandbox, webhooks are automatically delivered as mock if no real webhook is c
 
 ## Generate Mock QR Code
 
-Generates a BKM-format QR code with configurable transaction type, amount, and error behaviour. Use `errorCode` to force a failure at the **Read** stage, or `confirmErrorCode` to force a failure at the **Confirm** stage. Both can be combined to test sequential error handling.
+Generates a BKM-format QR code with configurable transaction type, amount, expiration behavior, merchant info, and error behaviour. Use `errorCode` to force a failure at the **Read** stage, or `confirmErrorCode` to force a failure at the **Confirm** stage. Both can be combined to test sequential error handling.
 
 <ApiEndpoint method="POST" url="/wallet/qrcode/mock/generate-mock-qr-code" />
 
@@ -33,6 +33,10 @@ Generates a BKM-format QR code with configurable transaction type, amount, and e
 | `errorCode` | String | No | 50 | Forces a specific error at **Read** stage. See [Read Error Code Matrix](#read-error-code-matrix). |
 | `confirmErrorCode` | String | No | 50 | Forces a specific error at **Confirm** stage. See [Confirm Error Code Matrix](#confirm-error-code-matrix). |
 | `parentTransactionId` | String | Conditional | 11 | Required for `REFUND`. The original payment's `transactionId`. |
+| `ttlSeconds` | Integer | No | - | Expiration offset in seconds (default is 300 seconds). |
+| `merchantId` | String | No | 10 | Custom merchant ID (Tag 49) to embed in the QR code. If omitted (and not inherited from parent), defaults to a random 10-digit number. |
+| `merchantName` | String | No | 25 | Custom merchant name (Tag 59) to embed in the QR code. If omitted (and not inherited from parent), defaults to `"E-PAYPORTER AS"`. |
+| `mcc` | String | No | 4 | Custom Merchant Category Code (Tag 52) to embed in the QR code. If omitted (and not inherited from parent), defaults to a random MCC (e.g., 1520, 1711, 1731, 1740, 1750). |
 
   </TabItem>
 </Tabs>
