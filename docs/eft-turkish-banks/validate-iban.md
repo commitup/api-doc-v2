@@ -52,7 +52,7 @@ IBAN Validation is a premium feature that checks if a provided IBAN, currency, a
 curl -X POST https://online-mig.payporter.com.tr:8586/online/eft-api/V2/validate-iban \
     -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
     -H "Content-Type: application/json" \
-    -d '{ "iban": "TR123456789012345678901234", "name": "John Doe", "currencyCode": "TRY" }'
+    -d '{ "iban": "TR123456789012345678901234", "name": "Mustafa Dogan", "currencyCode": "TRY" }'
 ```
 
   </TabItem>
