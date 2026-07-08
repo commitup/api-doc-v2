@@ -48,6 +48,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Cache Docusaurus
+        uses: actions/cache@v4
+        with:
+          path: |
+            .docusaurus
+            node_modules/.cache
+          key: ${{ runner.os }}-docusaurus-${{ matrix.tenant }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx', '**/package-lock.json', 'docs/**', 'customers.config.json') }}
+          restore-keys: |
+            ${{ runner.os }}-docusaurus-${{ matrix.tenant }}-
+
       - name: Build ${{ matrix.tenant }}
         run: CUSTOMER_ID=${{ matrix.tenant }} npx docusaurus build --out-dir dist/${{ matrix.tenant }}
 
