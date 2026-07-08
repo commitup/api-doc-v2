@@ -47,6 +47,7 @@ See [Error Response Format](./intro#error-response-format).
 | `406` | `QR_CODE_NOT_FOUND` | No transaction found for the given QR code.             |
 | `406` | `QR_CODE_EXPIRED`   | The QR code has expired.                                |
 | `406` | `QR_CODE_USED`      | The QR code has been read by another application, not our API. |
+| `406` | `QRCODE_PARENT_TRANSACTION_NOT_FOUND` | The parent transaction for the refund/cancel QR code was not found, belongs to a different user, or is not in COMPLETED status. |
 | `406` | `QR_CODE_TRANSACTION_ERROR` | A processing error occurred while reading the QR code.  |
 
 ## Read Response

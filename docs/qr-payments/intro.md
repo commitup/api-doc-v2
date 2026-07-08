@@ -11,6 +11,7 @@ import TabItem from '@theme/TabItem';
 
 | Version | Date       | Changes |
 | :------ | :--------- | :------ |
+| 1.8.2   | 2026-07-08 | Added validation and parent lookup error behaviors to the Read QR API. `QRCODE_PARENT_TRANSACTION_NOT_FOUND`: different user/non-completed parent. |
 | 1.8.1   | 2026-07-03 | Expanded mock sandbox capabilities for QR generation (`POST /wallet/qrcode/mock/generate-mock-qr-code`): added `merchantId`, `merchantName`, and `mcc` parameters to allow customizing merchant details. |
 | 1.8.0   | 2026-06-12 | Added Account Transaction Types: `BANK_ACCOUNT_TOPUP`, `BANK_ACCOUNT_TOPUP_CANCEL`, `COMMISSION_REBATE`, `COMMISSION_REBATE_REVERSAL`. Added QR-to-Account Transaction mapping table, identifier semantics (`walletTransactionId` vs `transactionId`), and commission rebate linking documentation. Added Account Transactions query constraints (permanent retention, 31-day max range, 60 req/min rate limit, immutability rules). Clarified Balance Inquiry semantics (completed transactions only, pending rebates excluded). Added UAT test case TC-UAT-018: QR refund exceeds original payment (FAILED webhook). |
 | 1.7.1   | 2026-06-08 | Added static QR payment verification scenarios (happy path, insufficient balance, and multiple scan transaction IDs) to the UAT Testing Guide. |
