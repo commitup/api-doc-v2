@@ -15,9 +15,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    name: Build Docusaurus
+  setup:
+    name: Setup Matrix
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        run: |
+          JSON=$(jq -c 'keys' customers.config.json)
+          echo "matrix=$JSON" >> $GITHUB_OUTPUT
+
+  build:
+    name: Build (${{ matrix.tenant }})
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tenant: ${{ fromJson(needs.setup.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,31 +42,51 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22 # Lokalindeki sürümle eşitledik
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build All Tenants
-        # Burada "npm run build" yerine senin scriptini çalıştırıyoruz
-        run: node build-all.js 
+      - name: Build ${{ matrix.tenant }}
+        run: CUSTOMER_ID=${{ matrix.tenant }} npx docusaurus build --out-dir dist/${{ matrix.tenant }}
 
-      - name: Upload Build Artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload Tenant Artifact
+        uses: actions/upload-artifact@v4
         with:
-          # ÖNEMLİ: Artik "build" klasörünü değil, 
-          # her şeyin toplandığı "dist" klasörünü yüklüyoruz.
-          path: dist
+          name: tenant-${{ matrix.tenant }}
+          path: dist/
+          retention-days: 1
 
   deploy:
     name: Deploy to GitHub Pages
-    needs: build
+    needs: [setup, build]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Download all tenant artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: tenant-*
+          merge-multiple: true
+
+      - name: Finalize Build (index.html & static assets)
+        run: node finalize-build.js
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
