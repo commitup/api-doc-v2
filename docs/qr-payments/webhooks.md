@@ -47,10 +47,14 @@ Each webhook delivery includes a globally unique event identifier in the `x-even
 To ensure the security and integrity of the webhook, PayPorter signs the request using RSA-SHA256 over the concatenation of the timestamp and the body.
 
 **Signing Algorithm**
-RSA-SHA256 (2048-bit). The signed content is constructed by concatenating the `x-request-timestamp` header value (Unix epoch ms) and the raw request body, separated by a colon:
+RSA-SHA256 (2048-bit). The signed content is constructed by concatenating the `x-request-timestamp` header value (Unix epoch ms) and the **raw HTTP request body** (the complete JSON string as received), separated by a colon:
+
+:::important
+The `body` in the formula below refers to the **entire raw HTTP request body** exactly as received — the full JSON string of the webhook delivery. Do **not** construct or modify the body; use the raw bytes directly from the HTTP request.
+:::
 
 ```
-signedContent = x-request-timestamp + ":" + request-body
+signedContent = x-request-timestamp + ":" + raw-http-request-body
 ```
 
 PayPorter signs this concatenated value with its RSA private key. Partners verify using the RSA public key provided during onboarding.
@@ -62,6 +66,7 @@ The resulting signature is included in the request under the `x-request-signatur
 ```
 timestamp  = headers["x-request-timestamp"]
 signature  = base64_decode(headers["x-request-signature"])
+body       = raw HTTP request body (the full JSON string as received)
 signedContent = timestamp + ":" + body
 isValid    = RSA_SHA256_verify(payporterPublicKey, signedContent, signature)
 ```
@@ -149,3 +154,25 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
 **Expected Partner Response:**
 
 Return any **HTTP 2xx** status code to acknowledge receipt. The response body is ignored.
+
+---
+
+## Webhook Setup
+
+### Signing Key
+
+- **Sandbox**: Use the [Rotate Webhook Signing Key](./mock-apis#rotate-webhook-signing-key) mock endpoint to generate and retrieve your own webhook signing key.
+- **Production**: The webhook signing key is delivered privately alongside your API credentials during onboarding. Contact PayPorter if you need to rotate your production key.
+
+### Webhook URL & Host Whitelisting
+
+PayPorter must whitelist your webhook host in the firewall before webhook deliveries can reach your server. For the initial setup, you have two options:
+
+1. **Provide your webhook URL to PayPorter** — we will configure both the webhook URL and the firewall rule at the same time.
+2. **Set the webhook URL via the API** (sandbox: [Update Webhook URL](./mock-apis#update-webhook-url)) and then contact PayPorter to whitelist your host.
+
+:::tip
+Option 1 is recommended for the fastest setup. Send your webhook endpoint URL to PayPorter during onboarding and we will handle both the webhook configuration and firewall whitelisting in a single step.
+
+After the initial setup, you are free to change your webhook URL at any time via the [Update Webhook URL](./mock-apis#update-webhook-url) endpoint — as long as the new host is already whitelisted in the firewall. If you need to switch to a host that has not been whitelisted, contact PayPorter first to add the new host.
+:::

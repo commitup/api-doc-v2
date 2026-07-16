@@ -9,7 +9,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 # Account Transactions
 
-Returns the transaction history for the authenticated client's settlement wallet for the given date range. Results are sorted by `transactionDate` ascending (oldest first). Optionally filter by a specific `transactionId`.
+Returns the transaction history for the authenticated client's settlement wallet for the given date range. Results are sorted by `sequenceNumber` ascending (oldest first). Each record includes a `sequenceNumber` that guarantees absolute ordering across all transactions. Optionally filter by a specific `transactionId`.
 
 <ApiEndpoint method="GET" url="/wallet/qrcode/account/transactions" />
 
@@ -18,7 +18,7 @@ Returns the transaction history for the authenticated client's settlement wallet
 Account Transactions and [QR Payment transactions](./payment-object) serve different purposes:
 
 - **QR Payment transactions** (`PAYMENT` / `REFUND`) are payment-level records with merchant details, tracked through Read → Confirm → Webhook. Use the [Reconciliation](./reconciliation) or [Query](./query-transaction) endpoints to work with these.
-- **Account Transactions** are **wallet-level ledger entries** — every debit or credit to the settlement wallet appears here, including QR-related movements, top-ups, commissions, and operational entries.
+- **Account Transactions** are **wallet-level entries** — every debit or credit to the settlement wallet appears here, including QR-related movements, top-ups, commissions, and operational entries.
 
 ### How QR Transactions Appear in Account Transactions
 
@@ -26,11 +26,10 @@ Each completed QR transaction produces corresponding account transaction entries
 
 | QR Outcome | Account Transaction(s) |
 |---|---|
-| `PAYMENT` → `COMPLETED` | `CARD_SALE` (debit — funds leave the wallet) + `COMMISSION_REBATE` (credit, after settlement) |
-| `REFUND` → `COMPLETED` | `CARD_REFUND` or `CARD_CANCEL` (credit — funds return to the wallet) + `COMMISSION_REBATE_REVERSAL` (debit, after settlement) |
+| `PAYMENT` → `COMPLETED` | `CARD_SALE` (debit — funds leave the wallet) + commission entry (after settlement) |
+| `REFUND` → `COMPLETED` | `CARD_REFUND` or `CARD_CANCEL` (credit — funds return to the wallet) + commission entry (after settlement) |
 
 - Whether a refund produces `CARD_REFUND` or `CARD_CANCEL` depends on the BKM transaction type (cancellation vs. refund) and the refund source (e.g., late reversals produce `CARD_CANCEL`).
-- Commission rebate entries are not generated immediately — they are produced asynchronously by the card scheme settlement process and may not appear on the same day as the original transaction.
 
 :::note Other transaction types
 This endpoint also returns non-QR wallet movements such as `BANK_ACCOUNT_TOPUP`, `EFT`, `PAYMENT` (IBAN deposit), and operational entries. These are **not** related to QR transactions and appear independently.
@@ -39,16 +38,14 @@ This endpoint also returns non-QR wallet movements such as `BANK_ACCOUNT_TOPUP`,
 ### Identifier Semantics
 
 - **`walletTransactionId`** — Unique identifier for each account transaction record. No two records share the same `walletTransactionId`.
-- **`transactionId`** — Unique **within a given `transactionType`**. Each QR transaction maps to exactly one `CARD_SALE`, `CARD_REFUND`, or `CARD_CANCEL` record by `transactionId`. However, the related `COMMISSION_REBATE` or `COMMISSION_REBATE_REVERSAL` entry **shares the same `transactionId`** as the originating sale/refund — this is how commission rebates are correlated with original transactions.
 
-### Commission Rebate Linking
+### Commission Linking
 
-Commission rebates are generated **one-to-one** with completed QR transactions:
+Commission entries are generated **one-to-one** with completed QR transactions:
 
-- Each completed `CARD_SALE` produces one `COMMISSION_REBATE` entry with the **same `transactionId`**.
-- Each completed `CARD_REFUND` / `CARD_CANCEL` produces one `COMMISSION_REBATE_REVERSAL` entry with the **same `transactionId`**.
-- Rebates are **not** consolidated — there is no daily or merchant-level aggregation.
-- Timing is asynchronous: rebates are produced by the card scheme settlement process and may not appear exactly T+1.
+- Each completed QR transaction (`CARD_SALE`, `CARD_REFUND`, `CARD_CANCEL`) produces one commission entry (`CREDIT_COMMISSION` or `DEBIT_COMMISSION`) with the **same `transactionId`**.
+- Commission entries are **not** consolidated — there is no daily or merchant-level aggregation.
+- Timing is asynchronous: commission entries are produced by the card scheme settlement process and may not appear exactly T+1.
 
 ---
 
@@ -59,7 +56,7 @@ Commission rebates are generated **one-to-one** with completed QR transactions:
 - **Date range granularity**: Datetime-level. The `startDate` and `endDate` parameters accept full ISO 8601 timestamps (e.g., `2025-07-14T10:30:00Z`).
 - **Maximum date range**: `endDate - startDate` must not exceed **31 days** per request.
 - **Rate limit**: See [API Rate Limits](./intro#api-rate-limits).
-- **Immutability**: All card and QR-related transaction types (`CARD_SALE`, `CARD_REFUND`, `CARD_CANCEL`, `CARD_REFUND_CANCEL`, `COMMISSION_REBATE`, `COMMISSION_REBATE_REVERSAL`) are **fully immutable** — once recorded, they will never be modified or deleted. Non-card types (e.g., `BANK_ACCOUNT_TOPUP`) may only be cancelled in exceptional circumstances and never under normal operations.
+- **Immutability**: All card and QR-related transaction types (`CARD_SALE`, `CARD_REFUND`, `CARD_CANCEL`, `CARD_REFUND_CANCEL`, `CREDIT_COMMISSION`, `DEBIT_COMMISSION`) are **fully immutable** — once recorded, they will never be modified or deleted. Non-card types (e.g., `BANK_ACCOUNT_TOPUP`) may only be cancelled in exceptional circumstances and never under normal operations.
 :::
 
 ---
@@ -100,11 +97,12 @@ All fields within the transaction record object are returned as **strings**.
 | Field | Type | Presence | Length | Description |
 | :--- | :--- | :--- | :--- | :--- |
 | `walletTransactionId` | String | Always | 36 | Unique identifier for this account transaction record (UUID v4). |
-| `transactionId` | String | Always | 11 | Transaction identifier (11-digit numeric). Same as `transactionId` in the [Payment Object](./payment-object) for QR-related types. Unique within a `transactionType`; commission rebate entries share the same `transactionId` as their originating transaction. See [Identifier Semantics](#identifier-semantics). |
+| `transactionId` | String | Always | 11 | Transaction identifier (11-digit numeric). Same as `transactionId` in the [Payment Object](./payment-object) for QR-related types. Unique within a `transactionType`; commission entries share the same `transactionId` as their originating transaction. See [Identifier Semantics](#identifier-semantics). |
+| `sequenceNumber` | Long | Always | - | Globally unique, monotonically increasing sequence number. Results are sorted by this field (ascending). Use for gap detection and ordering. |
 | `tenantReferenceId` | String | Conditional | 100 | Partner's unique reference ID. Present for API-initiated transactions where the partner provided a reference. |
 | `tenantUserId` | String | Conditional | 50 | The tenant's user identifier. Present for API-initiated transactions (QR payment). |
 | `transactionType` | String | Always | 30 | Transaction type. See [Account Transaction Types](#account-transaction-types). |
-| `transactionDate` | String | Always | 24 | Transaction timestamp (ISO 8601). |
+| `transactionDate` | String | Always | 24 | Transaction timestamp (ISO 8601). The authoritative record of when the balance change occurred. |
 | `amount` | String | Always | 12 | Transaction amount (pattern `999999999.99`). |
 | `currency` | String | Always | 3 | Currency code (e.g., `TRY`). |
 | `feeAmount` | String | Always | 12 | Fee amount. `"0.00"` if no fee. |
@@ -127,8 +125,8 @@ All fields within the transaction record object are returned as **strings**.
 | `CARD_CANCEL` | `C` | QR payment cancellation or refund (BKM cancel type / late reversal) — funds returned to the wallet. |
 | `CARD_REFUND` | `C` | QR refund completed (BKM refund type) — funds returned to the wallet. |
 | `CARD_REFUND_CANCEL` | `D` | QR refund cancellation — refund reversed, funds debited again. |
-| `COMMISSION_REBATE` | `C` | Commission rebate for a completed sale. Shares the same `transactionId` as the original `CARD_SALE`. Generated asynchronously by settlement. |
-| `COMMISSION_REBATE_REVERSAL` | `D` | Commission rebate reversal for a completed refund. Shares the same `transactionId` as the original `CARD_REFUND` / `CARD_CANCEL`. Generated asynchronously by settlement. |
+| `CREDIT_COMMISSION` | `C` | Commission credited (added) to the wallet. Linked to a completed QR transaction via the same `transactionId`. Generated asynchronously by settlement. |
+| `DEBIT_COMMISSION` | `D` | Commission debited (deducted) from the wallet. Linked to a completed QR transaction via the same `transactionId`. Generated asynchronously by settlement. |
 
 **Wallet-level types** — not related to QR transactions:
 
@@ -153,6 +151,7 @@ All fields within the transaction record object are returned as **strings**.
     {
       "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000001",
       "transactionId": "47002320001",
+      "sequenceNumber": 4812,
       "tenantReferenceId": null,
       "tenantUserId": null,
       "transactionType": "BANK_ACCOUNT_TOPUP",
@@ -172,10 +171,11 @@ All fields within the transaction record object are returned as **strings**.
     {
       "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000002",
       "transactionId": "47002323201",
+      "sequenceNumber": 4815,
       "tenantReferenceId": "08e6e4d3-7031-4f0a-bc90-3235aaa2600c",
       "tenantUserId": "364",
       "transactionType": "CARD_SALE",
-      "transactionDate": "2025-07-14T12:30:00Z",
+      "transactionDate": "2025-07-14T10:30:00Z",
       "amount": "84.00",
       "currency": "TRY",
       "feeAmount": "0.00",
@@ -191,10 +191,11 @@ All fields within the transaction record object are returned as **strings**.
     {
       "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000003",
       "transactionId": "47002323205",
+      "sequenceNumber": 4823,
       "tenantReferenceId": "b3f1a9c7-5e22-4d8a-a016-72f8b1e44d03",
       "tenantUserId": "364",
       "transactionType": "CARD_SALE",
-      "transactionDate": "2025-07-14T14:15:00Z",
+      "transactionDate": "2025-07-14T12:15:00Z",
       "amount": "250.00",
       "currency": "TRY",
       "feeAmount": "0.00",
@@ -209,76 +210,160 @@ All fields within the transaction record object are returned as **strings**.
     },
     {
       "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000004",
-      "transactionId": "47002323302",
-      "tenantReferenceId": null,
+      "transactionId": "47002323210",
+      "sequenceNumber": 4824,
+      "tenantReferenceId": "c4d5e6f7-8901-2345-ab67-890123456789",
       "tenantUserId": "364",
-      "transactionType": "CARD_REFUND",
-      "transactionDate": "2025-07-14T16:45:00Z",
-      "amount": "250.00",
+      "transactionType": "CARD_SALE",
+      "transactionDate": "2025-07-14T14:00:00Z",
+      "amount": "120.50",
       "currency": "TRY",
       "feeAmount": "0.00",
       "feeCurrency": "TRY",
-      "totalAmount": "250.00",
-      "totalBalance": "9916.00",
-      "cashBalance": "9916.00",
-      "debtCredit": "C",
-      "merchantName": "Migros",
+      "totalAmount": "120.50",
+      "totalBalance": "9545.50",
+      "cashBalance": "9545.50",
+      "debtCredit": "D",
+      "merchantName": "Teknosa",
       "cardId": null,
       "reason": null
     },
     {
       "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000005",
+      "transactionId": "47002323302",
+      "sequenceNumber": 4831,
+      "tenantReferenceId": null,
+      "tenantUserId": "364",
+      "transactionType": "CARD_REFUND",
+      "transactionDate": "2025-07-14T16:45:00Z",
+      "amount": "84.00",
+      "currency": "TRY",
+      "feeAmount": "0.00",
+      "feeCurrency": "TRY",
+      "totalAmount": "84.00",
+      "totalBalance": "9629.50",
+      "cashBalance": "9629.50",
+      "debtCredit": "C",
+      "merchantName": "Lezzet Lokantası",
+      "cardId": null,
+      "reason": null
+    },
+    {
+      "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000006",
+      "transactionId": "47002323215",
+      "sequenceNumber": 4839,
+      "tenantReferenceId": "d7e8f901-2345-6789-abcd-ef0123456789",
+      "tenantUserId": "364",
+      "transactionType": "CARD_SALE",
+      "transactionDate": "2025-07-14T17:30:00Z",
+      "amount": "45.00",
+      "currency": "TRY",
+      "feeAmount": "0.00",
+      "feeCurrency": "TRY",
+      "totalAmount": "45.00",
+      "totalBalance": "9584.50",
+      "cashBalance": "9584.50",
+      "debtCredit": "D",
+      "merchantName": "Starbucks",
+      "cardId": null,
+      "reason": null
+    },
+    {
+      "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000007",
       "transactionId": "47002323201",
+      "sequenceNumber": 5102,
       "tenantReferenceId": null,
       "tenantUserId": null,
-      "transactionType": "COMMISSION_REBATE",
+      "transactionType": "CREDIT_COMMISSION",
       "transactionDate": "2025-07-15T08:00:00Z",
       "amount": "1.68",
       "currency": "TRY",
       "feeAmount": "0.00",
       "feeCurrency": "TRY",
       "totalAmount": "1.68",
-      "totalBalance": "9917.68",
-      "cashBalance": "9917.68",
+      "totalBalance": "9586.18",
+      "cashBalance": "9586.18",
       "debtCredit": "C",
       "merchantName": null,
       "cardId": null,
       "reason": null
     },
     {
-      "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000006",
+      "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000008",
       "transactionId": "47002323205",
+      "sequenceNumber": 5103,
       "tenantReferenceId": null,
       "tenantUserId": null,
-      "transactionType": "COMMISSION_REBATE",
+      "transactionType": "CREDIT_COMMISSION",
       "transactionDate": "2025-07-15T08:00:01Z",
       "amount": "5.00",
       "currency": "TRY",
       "feeAmount": "0.00",
       "feeCurrency": "TRY",
       "totalAmount": "5.00",
-      "totalBalance": "9922.68",
-      "cashBalance": "9922.68",
+      "totalBalance": "9591.18",
+      "cashBalance": "9591.18",
       "debtCredit": "C",
       "merchantName": null,
       "cardId": null,
       "reason": null
     },
     {
-      "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000007",
-      "transactionId": "47002323302",
+      "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000009",
+      "transactionId": "47002323210",
+      "sequenceNumber": 5104,
       "tenantReferenceId": null,
       "tenantUserId": null,
-      "transactionType": "COMMISSION_REBATE_REVERSAL",
+      "transactionType": "CREDIT_COMMISSION",
       "transactionDate": "2025-07-15T08:00:02Z",
-      "amount": "5.00",
+      "amount": "2.41",
       "currency": "TRY",
       "feeAmount": "0.00",
       "feeCurrency": "TRY",
-      "totalAmount": "5.00",
-      "totalBalance": "9917.68",
-      "cashBalance": "9917.68",
+      "totalAmount": "2.41",
+      "totalBalance": "9593.59",
+      "cashBalance": "9593.59",
+      "debtCredit": "C",
+      "merchantName": null,
+      "cardId": null,
+      "reason": null
+    },
+    {
+      "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000010",
+      "transactionId": "47002323302",
+      "sequenceNumber": 5107,
+      "tenantReferenceId": null,
+      "tenantUserId": null,
+      "transactionType": "DEBIT_COMMISSION",
+      "transactionDate": "2025-07-15T08:00:03Z",
+      "amount": "1.68",
+      "currency": "TRY",
+      "feeAmount": "0.00",
+      "feeCurrency": "TRY",
+      "totalAmount": "1.68",
+      "totalBalance": "9591.91",
+      "cashBalance": "9591.91",
       "debtCredit": "D",
+      "merchantName": null,
+      "cardId": null,
+      "reason": null
+    },
+    {
+      "walletTransactionId": "a1b2c3d4-e5f6-4a7b-8c9d-000000000011",
+      "transactionId": "47002323215",
+      "sequenceNumber": 5112,
+      "tenantReferenceId": null,
+      "tenantUserId": null,
+      "transactionType": "CREDIT_COMMISSION",
+      "transactionDate": "2025-07-15T08:00:04Z",
+      "amount": "0.90",
+      "currency": "TRY",
+      "feeAmount": "0.00",
+      "feeCurrency": "TRY",
+      "totalAmount": "0.90",
+      "totalBalance": "9592.81",
+      "cashBalance": "9592.81",
+      "debtCredit": "C",
       "merchantName": null,
       "cardId": null,
       "reason": null
@@ -287,7 +372,7 @@ All fields within the transaction record object are returned as **strings**.
   "pagination": {
     "page": 0,
     "pageSize": 100,
-    "totalItems": 7,
+    "totalItems": 11,
     "totalPages": 1,
     "hasNext": false,
     "hasPrevious": false
