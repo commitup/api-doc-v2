@@ -83,18 +83,29 @@ Use a maximum date range of **1 day** per request for optimal performance. For l
       "status": "COMPLETED",
       "settlementAmount": "84.00",
       "settlementCurrency": "TRY",
-      "transactionDate": "2025-07-14T15:53:21Z"
+      "transactionDate": "2025-07-14T10:30:00Z"
     },
     {
-      "transactionId": "47002323501",
-      "tenantReferenceId": "a1b2c3d4-5678-9012-ef34-567890abcdef",
+      "transactionId": "47002323205",
+      "tenantReferenceId": "b3f1a9c7-5e22-4d8a-a016-72f8b1e44d03",
+      "tenantUserId": "364",
+      "transactionType": "PAYMENT",
+      "transactionSource": "MERCHANT_QR_SCAN",
+      "status": "COMPLETED",
+      "settlementAmount": "250.00",
+      "settlementCurrency": "TRY",
+      "transactionDate": "2025-07-14T12:15:00Z"
+    },
+    {
+      "transactionId": "47002323210",
+      "tenantReferenceId": "c4d5e6f7-8901-2345-ab67-890123456789",
       "tenantUserId": "364",
       "transactionType": "PAYMENT",
       "transactionSource": "MERCHANT_QR_SCAN",
       "status": "COMPLETED",
       "settlementAmount": "120.50",
       "settlementCurrency": "TRY",
-      "transactionDate": "2025-07-14T16:15:00Z"
+      "transactionDate": "2025-07-14T14:00:00Z"
     },
     {
       "transactionId": "47002323302",
@@ -106,19 +117,30 @@ Use a maximum date range of **1 day** per request for optimal performance. For l
       "status": "COMPLETED",
       "settlementAmount": "84.00",
       "settlementCurrency": "TRY",
-      "transactionDate": "2025-07-14T16:15:05Z"
+      "transactionDate": "2025-07-14T16:45:00Z"
+    },
+    {
+      "transactionId": "47002323215",
+      "tenantReferenceId": "d7e8f901-2345-6789-abcd-ef0123456789",
+      "tenantUserId": "364",
+      "transactionType": "PAYMENT",
+      "transactionSource": "MERCHANT_QR_SCAN",
+      "status": "COMPLETED",
+      "settlementAmount": "45.00",
+      "settlementCurrency": "TRY",
+      "transactionDate": "2025-07-14T17:30:00Z"
     }
   ],
   "summary": {
-    "totalPaymentCount": 2,
-    "totalPaymentAmount": "204.50",
+    "totalPaymentCount": 4,
+    "totalPaymentAmount": "499.50",
     "totalRefundCount": 1,
     "totalRefundAmount": "84.00"
   },
   "pagination": {
-    "page": 1,
+    "page": 0,
     "pageSize": 100,
-    "totalItems": 3,
+    "totalItems": 5,
     "totalPages": 1,
     "hasNext": false,
     "hasPrevious": false

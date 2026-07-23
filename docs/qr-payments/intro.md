@@ -11,9 +11,10 @@ import TabItem from '@theme/TabItem';
 
 | Version | Date       | Changes |
 | :------ | :--------- | :------ |
+| 1.9.0   | 2026-07-16 | Added `sequenceNumber` field to Account Transactions for absolute ordering. Changed sort order to `sequenceNumber` ascending (oldest first). Renamed commission transactions. Added production URL. Added Firewall & IP Whitelisting section. Clarified `X-Security-Key` 5-minute TTL. Readability and clarification updates. |
 | 1.8.2   | 2026-07-08 | Added validation and parent lookup error behaviors to the Read QR API. `QRCODE_PARENT_TRANSACTION_NOT_FOUND`: different user/non-completed parent. |
 | 1.8.1   | 2026-07-03 | Expanded mock sandbox capabilities for QR generation (`POST /wallet/qrcode/mock/generate-mock-qr-code`): added `merchantId`, `merchantName`, and `mcc` parameters to allow customizing merchant details. |
-| 1.8.0   | 2026-06-12 | Added Account Transaction Types: `BANK_ACCOUNT_TOPUP`, `BANK_ACCOUNT_TOPUP_CANCEL`, `COMMISSION_REBATE`, `COMMISSION_REBATE_REVERSAL`. Added QR-to-Account Transaction mapping table, identifier semantics (`walletTransactionId` vs `transactionId`), and commission rebate linking documentation. Added Account Transactions query constraints (permanent retention, 31-day max range, 60 req/min rate limit, immutability rules). Clarified Balance Inquiry semantics (completed transactions only, pending rebates excluded). Added UAT test case TC-UAT-018: QR refund exceeds original payment (FAILED webhook). |
+| 1.8.0   | 2026-06-12 | Added Account Transaction Types: `BANK_ACCOUNT_TOPUP`, `BANK_ACCOUNT_TOPUP_CANCEL`, `CREDIT_COMMISSION`, `DEBIT_COMMISSION`. Added QR-to-Account Transaction mapping table, identifier semantics (`walletTransactionId` vs `transactionId`), and commission linking documentation. Added Account Transactions query constraints (permanent retention, 31-day max range, 60 req/min rate limit, immutability rules). Clarified Balance Inquiry semantics (completed transactions only, pending commissions excluded). Added UAT test case TC-UAT-018: QR refund exceeds original payment (FAILED webhook). |
 | 1.7.1   | 2026-06-08 | Added static QR payment verification scenarios (happy path, insufficient balance, and multiple scan transaction IDs) to the UAT Testing Guide. |
 | 1.7.0   | 2026-06-03 | Added UAT Testing Guide with step-by-step test flows and acceptance checklist. Expanded mock authorization capabilities for refund scenarios: `LATE_REVERSAL` and `USER_NOT_PRESENT_REFUND`. |
 | 1.6.0   | 2026-05-17 | Added `POST /wallet/qrcode/query` endpoint (replaces deprecated `GET /wallet/qrcode/transactions`). Added mock sandbox endpoints: Rotate Webhook Signing Key (`POST /mock/rotate-webhook-key`) and Update Webhook URL (`POST /mock/update-webhook-url`). Migrated mock endpoints to `/mock/` path prefix — old paths are deprecated and will be removed before production. Changed mock `webhook-event-log` and `retry-webhook` to `POST`; `webhook-event-log` now returns an array. Added inline authentication code examples (Java, Go, PHP). |
@@ -30,17 +31,22 @@ import TabItem from '@theme/TabItem';
 
 ---
 
-## Base URL
+## Environments & Base URLs
 
-All API endpoints use the following base URL:
+| Environment | Base URL | Purpose |
+|---|---|---|
+| **Sandbox** | `https://whitelabelwallet-mig.payporter.com.tr:8590` | Integration testing and development |
+| **Production** | `https://whitelabelwallet.payporter.com.tr:8590` | Live operations |
 
-```
-https://whitelabelwallet-mig.payporter.com.tr:8590
-```
-
-All endpoint paths in this document are relative to this base URL. For example, `POST /wallet/qrcode/payment/read` resolves to `https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/qrcode/payment/read`.
+All endpoint paths in this document are relative to the base URL. For example, `POST /wallet/qrcode/payment/read` resolves to `https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/qrcode/payment/read` in sandbox.
 
 All requests and responses use `Content-Type: application/json` unless noted otherwise.
+
+:::warning Firewall & IP Whitelisting
+**Both sandbox and production** require IP whitelisting before access. Each environment is whitelisted independently — having access to sandbox does not grant access to production.
+
+Contact PayPorter with your server's public IP addresses to request firewall access for each environment. Requests from non-whitelisted IPs will be silently dropped at the network level.
+:::
 
 ---
 
@@ -58,7 +64,7 @@ Include these headers in every request:
 | `X-Api-Key` | String | Yes | 36 | Provided API key. | `a208c005-17a2-441a-b3e9-58b6e0d6c082` |
 | `X-Api-Secret` | String | Yes | 36 | Provided API secret. | `3208c005-17a6-441a-b3e9-58b6e0d6c082` |
 | `X-Wallet-Id` | String | Yes | 50 | Target wallet identifier. | `1234567890` |
-| `X-Security-Key` | String | Yes | - | Encrypted secure data token. | Base64 string |
+| `X-Security-Key` | String | Yes | - | Encrypted secure data token. Valid for **5 minutes** from the embedded timestamp. | Base64 string |
 
 ### Authentication Errors
 
@@ -70,11 +76,11 @@ Include these headers in every request:
 ### X-Security-Key Header Generation
 
 You need to have a `walletId` and its corresponding RSA public key stored from the onboarding step to generate the `X-Security-Key` header for authenticated requests.
-The `X-Security-Key` header contains encrypted wallet authentication data.
+The `X-Security-Key` header contains encrypted wallet authentication data. **The generated key is valid for 5 minutes** from the `timestamp` value — requests with an older timestamp will be rejected with `403 Forbidden`.
 
 #### 1. Data Structure
 
-Create a JSON payload with the following fields:
+Create a JSON object with the following two fields. This is **not** a request body — it is only used to construct the `X-Security-Key` header value:
 
 | Field | Type | Required | Length | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -283,6 +289,19 @@ function encryptSecureDataJson(
 
   </TabItem>
 </Tabs>
+
+---
+
+## QR Code Formats
+
+This API accepts QR codes in the standard BKM (Bankalararası Kart Merkezi) format:
+
+| Format | BKM Standard | Description |
+|--------|-------------|-------------|
+| Long QR | BKM UKF (Uzun Karekod Formatı) | Full EMVCo-compatible QR string containing all transaction metadata. |
+| Short QR | BKM KKF (Kısa Karekod Formatı) | Compact QR string that resolves to full transaction data via BKM infrastructure. |
+
+Both formats are accepted by the [Read QR Info](./read-qr) endpoint. The `qrCode` field in the Read request should contain the raw string content from the scanned QR code, regardless of format.
 
 ---
 
