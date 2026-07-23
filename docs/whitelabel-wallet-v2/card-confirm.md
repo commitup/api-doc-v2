@@ -27,6 +27,7 @@ Execute a previously validated card transfer transaction. Funds are debited from
 | Field | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
 | `transactionId` | String | Max: 36<br/>Format: UUID | The transaction ID returned from the [validate](./card-validate) response. |
+| `tenantReferenceId` | String | Max: 50<br/>Alphanumeric | Unique reference ID assigned by the tenant. |
 
   </TabItem>
   <TabItem value="headers" label="Headers">
@@ -45,7 +46,8 @@ X-Wallet-Id: your_wallet_id
 
 ```json
 {
-  "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b"
+  "tenantReferenceId": "UNIQUE-REF-2026-2307-2",
+  "transactionId": "628d9726-4d6b-4822-b62b-146c8bfd25c9"
 }
 ```
 
@@ -60,7 +62,8 @@ curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/card
      -H "X-Api-Secret: your_api_secret" \
      -H "X-Wallet-Id: your_wallet_id" \
      -d '{
-           "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b"
+           "tenantReferenceId": "UNIQUE-REF-2026-2307-2",
+           "transactionId": "628d9726-4d6b-4822-b62b-146c8bfd25c9"
          }'
 ```
 
@@ -85,18 +88,45 @@ The response is a [Transaction Object](./transaction-object).
 
 ```json status="200" title="Confirm — Processing"
 {
-  "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b",
+  "transactionId": "628d9726-4d6b-4822-b62b-146c8bfd25c9",
   "status": "READY",
-  "amount": 150.00,
-  "fee": 4.00,
-  "total": 154.00,
-  "sourceAmount": 8215.53,
+  "processRefNo": "47014458428",
+  "externalTransactionId": "47014458428",
+  "tenantReferenceId": "UNIQUE-REF-2026-2307-2",
+  "amount": "21.20",
+  "currency": "USD",
+  "fee": "4.00",
+  "total": "1004.00",
+  "feeCurrency": "TRY",
+  "sourceAmount": "1004.00",
   "sourceCurrency": "TRY",
-  "payoutAmount": 2851428.57,
-  "currency": "EUR",
-  "payoutCurrency": "IDR",
-  "processRefNo": "47005005788",
-  "externalTransactionId": "47005005788"
+  "payoutAmount": "11406.33",
+  "payoutCurrency": "KZT",
+  "payoutExchangeRate": "538.0343953851959",
+  "receiver": {
+    "firstName": "Osman",
+    "lastName": "SAVCI",
+    "fatherName": "Ahmet",
+    "receiverType": null,
+    "birthDate": "1990-01-15",
+    "birthPlace": "Istanbul",
+    "nationality": "TR",
+    "birthCountry": "TR",
+    "identityNo": "12345678901",
+    "identityType": "PASSPORT",
+    "identityIssueCountry": "TR",
+    "identityValidThru": "2030-12-31",
+    "identityIssueDate": "2020-01-01",
+    "addressCountry": "TR",
+    "address": "Ataturk Cad. No:10",
+    "province": "Istanbul",
+    "district": "Kadikoy",
+    "zipCode": "34000",
+    "job": null,
+    "email": "osman@example.com",
+    "phoneCountryCode": "TR",
+    "phoneNumber": "905551234567"
+  }
 }
 ```
 

@@ -91,29 +91,31 @@ Transfer Issuer (Destination: USD)
 
 ## Response Fields
 
-| Field | Type | Presence | Description |
-| :--- | :--- | :--- | :--- |
-| `transactionId` | String | Always | Unique transaction ID assigned by PayPorter. Used for confirm and query. |
-| `status` | String | Always | Current transaction status. See [Status Values](#status-values) below. |
-| `tenantReferenceId` | String | Always | Tenant's unique reference ID, echoed from the validate request. |
-| `amount` | Decimal(18,2) | Always | Sending amount (echoed from input). |
-| `currency` | String | Always | Sending currency (ISO 4217). |
-| `fee` | Decimal(18,2) | Always | Fee charged for this transaction. |
-| `total` | Decimal(18,2) | Always | Total debited: `amount + fee`. |
-| `sourceAmount` | Decimal(18,2) | Always | TRY equivalent debited from the wallet. |
-| `sourceCurrency` | String | Always | Wallet debit currency. Currently always `TRY`. |
-| `sendingExchangeRate` | Decimal | When applicable | Exchange rate applied (sending currency → TRY). |
-| `payoutAmount` | Decimal(18,2) | After validate | Final payout amount in the destination currency. Determined by the 3rd party. |
-| `payoutCurrency` | String | After validate | Payout currency code (ISO 4217). |
-| `processRefNo` | String | After confirm | Internal process reference number. |
-| `externalTransactionId` | String | After confirm | Reference number assigned by the external remittance firm. |
-| `destinationCountry` | String | When applicable | Destination country code (ISO 3166-1 alpha-3). |
-| `cardNumber` | String | Always | Destination card number. |
-| `receiver` | Object | Always | Receiver identity and contact info. See [ReceiverInfo](#receiverinfo-object). |
-| `comment` | String | Optional | Free-text comment. |
-| `purpose` | Enum | When provided | Transfer purpose. Valid values: `SAVING_INVESTMENT`, `DEPT_LOAN`, `SALE_BUY`, `COMMERCE_PAYMENTS`, `RENTALS`, `OTHER`, `FAMILY`, `EDUCATION`. |
-| `sourceOfIncome` | Enum | When provided | Source of income. Valid values: `SALARY`, `BUSINESS_INCOME`, `SAVINGS`, `GIFT`, `BANK_LOAN`, `OTHER`, `SALE_OF_PROPERTY`. |
-| `relationshipWithSender` | Enum | When provided | Relationship with receiver. Valid values: `CHILD`, `SPOUSE`, `PARENT`, `FRIEND`, `WORK_FRIEND`, `BROTHER`. |
+| Field                   | Type          | Presence        | Description                                                                   |
+|:------------------------|:--------------|:----------------|:------------------------------------------------------------------------------|
+| `transactionId`         | String        | Always          | Unique transaction ID assigned by PayPorter. Used for confirm and query.      |
+| `status`                | String        | Always          | Current transaction status. See [Status Values](#status-values) below.        |
+| `tenantReferenceId`     | String        | Always          | Tenant's unique reference ID, echoed from the validate request.               |
+| `amount`                | String        | Always          | Sending amount (echoed from input).                                           |
+| `currency`              | String        | Always          | Sending currency (ISO 4217).                                                  |
+| `fee`                   | String        | Always          | Fee charged for this transaction.                                             |
+| `feeCurrency`           | String        | Always          | Currency of the fee (e.g. `TRY`).                                             |
+| `total`                 | String        | Always          | Total debited: `amount + fee`.                                                |
+| `sourceAmount`          | String        | Always          | TRY equivalent debited from the wallet.                                       |
+| `sourceCurrency`        | String        | Always          | Wallet debit currency. Currently always `TRY`.                                |
+| `sendingExchangeRate`   | String        | When applicable | Exchange rate applied (sending currency → TRY).                               |
+| `payoutAmount`          | String        | After validate  | Final payout amount in the destination currency. Determined by the 3rd party. |
+| `payoutCurrency`        | String        | After validate  | Payout currency code (ISO 4217).                                              |
+| `payoutExchangeRate`    | String        | When applicable | Exchange rate applied for payout currency conversion.                         |
+| `processRefNo`          | String        | After confirm   | Internal process reference number.                                            |
+| `externalTransactionId` | String        | After confirm   | Reference number assigned by the external remittance firm.                    |
+| `destinationCountry`    | String        | When applicable | Destination country code (ISO 3166-1 alpha-3).                                |
+| `cardNumber`            | String        | Always          | Destination card number.                                                      |
+| `receiver`              | Object        | Always          | Receiver identity and contact info. See [ReceiverInfo](#receiverinfo-object). |
+| `comment`               | String        | Optional        | Free-text comment.                                                            |
+| `purpose`               | Enum          | When provided   | Transfer purpose. Valid values: `SAVING_INVESTMENT`, `DEPT_LOAN`, `SALE_BUY`, `COMMERCE_PAYMENTS`, `RENTALS`, `OTHER`, `FAMILY`, `EDUCATION`. |
+| `sourceOfIncome`        | Enum          | When provided   | Source of income. Valid values: `SALARY`, `BUSINESS_INCOME`, `SAVINGS`, `GIFT`, `BANK_LOAN`, `OTHER`, `SALE_OF_PROPERTY`. |
+| `relationshipWithSender`| Enum          | When provided   | Relationship with receiver. Valid values: `CHILD`, `SPOUSE`, `PARENT`, `FRIEND`, `WORK_FRIEND`, `BROTHER`. |
 
 ---
 
@@ -149,30 +151,34 @@ The transition from `READY` to `SENT` happens asynchronously after confirm. The 
 
 ## ReceiverInfo Object
 
-| Field | Type | Constraints | Description |
-| :--- | :--- | :--- | :--- |
-| `firstName` | String | Max: 100 | Receiver's first name. |
-| `lastName` | String | Max: 100 | Receiver's last name. |
-| `receiverType` | Enum | `CUSTOMER`, `BUSINESS` | Receiver type. |
-| `nationality` | String | ISO 3166-1 alpha-3 | Nationality code (e.g., `TUR`). |
-| `phoneCountryCode` | String | ISO 3166-1 alpha-3 | Phone country code (e.g., `TUR`). |
-| `phoneNumber` | String | Max: 20 | Phone number without country prefix. |
-| `fatherName` | String | Max: 100 | Father's name. |
-| `birthDate` | String | Format: YYYY-MM-DD | ISO 8601 date (e.g., `1990-01-15`). |
-| `birthPlace` | String | Max: 100 | Place of birth. |
-| `birthCountry` | String | ISO 3166-1 alpha-3 | Country of birth. |
-| `identityNo` | String | Max: 50 | Identity document number. |
-| `identityType` | Enum | - | Identity document type. Valid values: `PASSPORT`, `DRIVING_LICENCE`, `IDENTITY`, `FOREIGN_IDENTITY_CARD`, `NEW_IDENTITY_CARD`, `TEMPORARY_PROTECTION_DOCUMENT`, `TRNC_IDENTITY_CARD`, `BLUE_IDENTITY_CARD`, `SEAMAN_CERTIFICATE`. See [Identity Types](#identity-types). |
-| `identityIssueCountry` | String | ISO 3166-1 alpha-3 | Identity document issue country. |
-| `identityValidThru` | String | Format: YYYY-MM-DD | Identity document expiry date. |
-| `identityIssueDate` | String | Format: YYYY-MM-DD | Identity document issue date. |
-| `addressCountry` | String | ISO 3166-1 alpha-3 | Address country code. |
-| `address` | String | Max: 255 | Street address. |
-| `province` | String | Max: 100 | Province / state. |
-| `district` | String | Max: 100 | District. |
-| `zipCode` | String | Max: 20 | Postal code. |
-| `job` | String | Max: 100 | Occupation. |
-| `email` | String | Max: 100, Format: Email | Email address. |
+:::note Allowed Characters
+Text fields in `ReceiverInfo` (such as `firstName`, `lastName`, `fatherName`, `address`, `province`, `district`) must contain only Latin characters, numbers, and common punctuation.
+:::
+
+| Field                  | Type   | Constraints             | Description                          |
+|:-----------------------|:-------|:------------------------|:-------------------------------------|
+| `firstName`            | String | Max: 50                 | Receiver's first name.               |
+| `lastName`             | String | Max: 50                 | Receiver's last name.                |
+| `receiverType`         | Enum   | `CUSTOMER`, `BUSINESS`  | Receiver type.                       |
+| `nationality`          | String | ISO 3166-1 alpha-3      | Nationality code (e.g., `TUR`).      |
+| `phoneCountryCode`     | String | ISO 3166-1 alpha-3      | Phone country code (e.g., `TUR`).    |
+| `phoneNumber`          | String | Max: 20                 | Phone number without country prefix. |
+| `fatherName`           | String | Max: 50                 | Father's name.                       |
+| `birthDate`            | String | Format: YYYY-MM-DD      | ISO 8601 date (e.g., `1990-01-15`).  |
+| `birthPlace`           | String | Max: 100                | Place of birth.                      |
+| `birthCountry`         | String | ISO 3166-1 alpha-3      | Country of birth.                    |
+| `identityNo`           | String | Max: 25                 | Identity document number.            |
+| `identityIssueCountry` | String | ISO 3166-1 alpha-3      | Identity document issue country.     |
+| `identityValidThru`    | String | Format: YYYY-MM-DD      | Identity document expiry date.       |
+| `identityIssueDate`    | String | Format: YYYY-MM-DD      | Identity document issue date.        |
+| `addressCountry`       | String | ISO 3166-1 alpha-3      | Address country code.                |
+| `address`              | String | Max: 250                | Street address.                      |
+| `province`             | String | Max: 50                 | Province / state.                    |
+| `district`             | String | Max: 50                 | District.                            |
+| `zipCode`              | String | Max: 20                 | Postal code.                         |
+| `job`                  | String | Max: 100                | Occupation.                          |
+| `email`                | String | Max: 100, Format: Email | Email address.                       |
+| `identityType`         | Enum   | -                       | Identity document type. Valid values: `PASSPORT`, `DRIVING_LICENCE`, `IDENTITY`, `FOREIGN_IDENTITY_CARD`, `NEW_IDENTITY_CARD`, `TEMPORARY_PROTECTION_DOCUMENT`, `TRNC_IDENTITY_CARD`, `BLUE_IDENTITY_CARD`, `SEAMAN_CERTIFICATE`. See [Identity Types](#identity-types). |
 
 :::note Dynamic Required Fields
 The required status of `ReceiverInfo` fields is evaluated dynamically based on the destination country, transfer type, and partner routing rules. If a required field is missing, the validate endpoint will return a field-specific error (e.g., `WL_P2P_RECEIVER_FIRST_NAME_MISSING`). You can also retrieve the mandatory fields dynamically via the [Mandatory Fields](./mandatory-fields) endpoint.

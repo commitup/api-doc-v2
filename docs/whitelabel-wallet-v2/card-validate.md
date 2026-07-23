@@ -22,22 +22,22 @@ The `tenantReferenceId` must be unique across all transactions. Reusing a previo
 <Tabs>
   <TabItem value="fields" label="Request Fields" default>
 
-| Field | Type | Constraints | Description |
-| :--- | :--- | :--- | :--- |
-| `tenantReferenceId` | String | Max: 100<br/>Alphanumeric | Unique reference ID assigned by the tenant. Used for idempotency. |
-| `amount` | Decimal | 18,2 | Sending amount. Mutually exclusive with `sendingAmount`. |
-| `currency` | String | ISO 4217 | Currency of the sending amount. Example: `EUR`. |
-| `sendingAmount` | Decimal | 18,2 | Alternative sending amount. Mutually exclusive with `amount`. |
-| `sendingCurrency` | String | ISO 4217 | Currency for `sendingAmount`. Required when `sendingAmount` is provided. |
-| `payoutCurrency` | String | ISO 4217 | Payout currency when different from sending currency. |
-| `destinationCountry` | String | ISO 3166-1 alpha-3 | Destination country code. Example: `IDN`. |
-| `cardNumber` | String | Max: 19 | Destination card number. |
-| `receiver` | Object | - | Receiver information. See [ReceiverInfo](./transaction-object#receiverinfo-object). |
-| `comment` | String | Max: 255 | Free-text comment. |
-| `purpose` | Enum | - | Transfer purpose. Valid values: `SAVING_INVESTMENT`, `DEPT_LOAN`, `SALE_BUY`, `COMMERCE_PAYMENTS`, `RENTALS`, `OTHER`, `FAMILY`, `EDUCATION`. |
-| `sourceOfIncome` | Enum | - | Source of income. Valid values: `SALARY`, `BUSINESS_INCOME`, `SAVINGS`, `GIFT`, `BANK_LOAN`, `OTHER`, `SALE_OF_PROPERTY`. |
-| `relationshipWithSender` | Enum | - | Relationship with receiver. Valid values: `CHILD`, `SPOUSE`, `PARENT`, `FRIEND`, `WORK_FRIEND`, `BROTHER`. |
-| `feeIncluded` | Boolean | `true` or `false` | Indicates if fee is included in `sendingAmount`. Only valid when `sendingAmount` is provided. |
+| Field                    | Type    | Constraints               | Description                                                                                                                                   |
+|:-------------------------|:--------|:--------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
+| `tenantReferenceId`      | String  | Max: 50 <br/>Alphanumeric | Unique reference ID assigned by the tenant. Used for idempotency.                                                                             |
+| `amount`                 | String  |                      | Sending amount. Mutually exclusive with `sendingAmount`.                                                                                      |
+| `currency`               | String  | ISO 4217                  | Currency of the sending amount. Example: `EUR`.                                                                                               |
+| `sendingAmount`          | String  | 18,2                      | Alternative sending amount. Mutually exclusive with `amount`.                                                                                 |
+| `sendingCurrency`        | String  | ISO 4217                  | Currency for `sendingAmount`. Required when `sendingAmount` is provided.                                                                      |
+| `payoutCurrency`         | String  | ISO 4217                  | Payout currency when different from sending currency.                                                                                         |
+| `destinationCountry`     | String  | ISO 3166-1 alpha-3        | Destination country code. Example: `IDN`.                                                                                                     |
+| `cardNumber`             | String  | Max: 19                   | Destination card number.                                                                                                                      |
+| `receiver`               | Object  | -                         | Receiver information. See [ReceiverInfo](./transaction-object#receiverinfo-object).                                                           |
+| `comment`                | String  | Max: 255                  | Free-text comment.                                                                                                                            |
+| `purpose`                | Enum    | -                         | Transfer purpose. Valid values: `SAVING_INVESTMENT`, `DEPT_LOAN`, `SALE_BUY`, `COMMERCE_PAYMENTS`, `RENTALS`, `OTHER`, `FAMILY`, `EDUCATION`. |
+| `sourceOfIncome`         | Enum    | -                         | Source of income. Valid values: `SALARY`, `BUSINESS_INCOME`, `SAVINGS`, `GIFT`, `BANK_LOAN`, `OTHER`, `SALE_OF_PROPERTY`.                     |
+| `relationshipWithSender` | Enum    | -                         | Relationship with receiver. Valid values: `CHILD`, `SPOUSE`, `PARENT`, `FRIEND`, `WORK_FRIEND`, `BROTHER`.                                    |
+| `feeIncluded`            | Boolean | `true` or `false`         | Indicates if fee is included in `sendingAmount`. Only valid when `sendingAmount` is provided.                                                 |
 
 > **Amount Model Validation:** Exactly one amount model must be provided: either (`amount` + `currency`) OR (`sendingAmount` + `sendingCurrency`). Providing both or neither will result in a `WL_P2P_INVALID_AMOUNT_MODEL` error.
 
@@ -58,37 +58,36 @@ X-Wallet-Id: your_wallet_id
 
 ```json
 {
-  "tenantReferenceId": "test-happy-path-001",
-  "amount": 150.00,
-  "currency": "EUR",
-  "payoutCurrency": "IDR",
-  "destinationCountry": "IDN",
-  "cardNumber": "5473323225888232",
+  "tenantReferenceId": "UNIQUE-REF-2026-2307-2",
+  "sendingAmount": 1000,
+  "sendingCurrency": "TRY",
+  "destinationCountry": "KAZ",
+  "cardNumber": "5409603664869507",
   "receiver": {
     "firstName": "Osman",
     "lastName": "SAVCI",
+    "fatherName": "Ahmet",
     "receiverType": "CUSTOMER",
-    "nationality": "TUR",
-    "phoneCountryCode": "TUR",
-    "phoneNumber": "5551234567",
-    "fatherName": "Mehmet",
     "birthDate": "1990-01-15",
     "birthPlace": "Istanbul",
+    "nationality": "TUR",
     "birthCountry": "TUR",
     "identityNo": "12345678901",
-    "identityType": "IDENTITY",
+    "identityType": "PASSPORT",
     "identityIssueCountry": "TUR",
-    "identityValidThru": "2030-01-01",
+    "identityValidThru": "2030-12-31",
     "identityIssueDate": "2020-01-01",
     "addressCountry": "TUR",
-    "address": "Ataturk Caddesi No: 1",
+    "address": "Ataturk Cad. No:10",
     "province": "Istanbul",
     "district": "Kadikoy",
     "zipCode": "34000",
-    "job": "Software Engineer",
-    "email": "osman.savci@example.com"
+    "job": null,
+    "email": "osman@example.com",
+    "phoneCountryCode": "TUR",
+    "phoneNumber": "5551234567"
   },
-  "comment": "Money transfer for family support",
+  "comment": "Test",
   "purpose": "FAMILY",
   "sourceOfIncome": "SALARY",
   "relationshipWithSender": "CHILD"
@@ -170,18 +169,50 @@ The response is a [Transaction Object](./transaction-object) with the following 
 
 ```json status="200" title="Validate — READY"
 {
-  "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b",
+  "transactionId": "628d9726-4d6b-4822-b62b-146c8bfd25c9",
   "status": "READY",
-  "amount": 150.00,
-  "fee": 4.00,
-  "total": 154.00,
-  "sourceAmount": 8215.53,
+  "tenantReferenceId": "UNIQUE-REF-2026-2307-2",
+  "amount": "21.20",
+  "currency": "USD",
+  "fee": "4.00",
+  "total": "1004.00",
+  "feeCurrency": "TRY",
+  "sourceAmount": "1004.00",
   "sourceCurrency": "TRY",
-  "sendingExchangeRate": 1.0000,
-  "payoutAmount": 2851428.57,
-  "currency": "EUR",
-  "payoutCurrency": "IDR",
-  "tenantReferenceId": "test-happy-path-001"
+  "sendingExchangeRate": "47.1698",
+  "payoutAmount": "11406.33",
+  "payoutCurrency": "KZT",
+  "payoutExchangeRate": "538.0343953851959",
+  "destinationCountry": "KAZ",
+  "cardNumber": "5409603664869507",
+  "receiver": {
+    "firstName": "Osman",
+    "lastName": "SAVCI",
+    "fatherName": "Ahmet",
+    "receiverType": "CUSTOMER",
+    "birthDate": "1990-01-15",
+    "birthPlace": "Istanbul",
+    "nationality": "TUR",
+    "birthCountry": "TUR",
+    "identityNo": "12345678901",
+    "identityType": "PASSPORT",
+    "identityIssueCountry": "TUR",
+    "identityValidThru": "2030-12-31",
+    "identityIssueDate": "2020-01-01",
+    "addressCountry": "TUR",
+    "address": "Ataturk Cad. No:10",
+    "province": "Istanbul",
+    "district": "Kadikoy",
+    "zipCode": "34000",
+    "job": null,
+    "email": "osman@example.com",
+    "phoneCountryCode": "TUR",
+    "phoneNumber": "5551234567"
+  },
+  "comment": "Test",
+  "purpose": "FAMILY",
+  "sourceOfIncome": "SALARY",
+  "relationshipWithSender": "CHILD"
 }
 ```
 
