@@ -65,6 +65,7 @@ export const codes = [
   { code: "EFT_SENDER_FULL_NAME_MUST_HAVE_VALUE", description: "Name Missing", action: "Sender name and surname cannot be empty." },
   { code: "EFT_SENDER_IDENTY_NO_MUST_HAVE_VALUE", description: "ID Missing", action: "Sender identity number cannot be empty." },
   { code: "EFT_SENDER_PHONE_NO_MUST_HAVE_VALUE", description: "Phone Missing", action: "Sender phone number cannot be empty." },
+  { code: "EFT_FROM_COUNTRY_CANNOT_BE_TUR", description: "Invalid Sender Country", action: "Sender country cannot be Turkey for EFT transactions." },
 ];
 
 export const labels = {
