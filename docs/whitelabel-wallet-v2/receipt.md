@@ -8,7 +8,7 @@ import ApiEndpoint from '@site/src/components/ApiEndpoint';
 
 # Transaction Receipt
 
-Retrieve the official transaction receipt in PDF format for a completed P2P transfer operation.
+Retrieve the official transaction receipt in PDF format for a completed P2P transfer operation. 
 
 <ApiEndpoint method="GET" url="/wallet/p2p/receipt/{transactionId}" />
 
@@ -22,7 +22,7 @@ Retrieve the official transaction receipt in PDF format for a completed P2P tran
 | `transactionId` | String | **Yes** | The transaction ID of the P2P transfer. Example: `407a7a58-66f5-4871-9514-fbfbc09f47fb`. |
 
   </TabItem>
-  <TabItem value="headers" label="Headers">
+  <TabItem value="headers" label="Headers"> 
 
 ```http
 GET /wallet/p2p/receipt/{transactionId} HTTP/1.1
