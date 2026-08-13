@@ -19,4 +19,4 @@ import Tabs from '@theme/Tabs';
 
 ## Получить детали по ссылке агента
 
-<ApiEndpoint method="GET" url="/mt-api/V2/moneytransfercommon/get-transfer-details-by-api-agent-txn-no/{apiAgentTxnRefNo}" />
+<ApiEndpoint method="GET" url="/mt-api/V2/moneysend/detail-by-api-txn" />

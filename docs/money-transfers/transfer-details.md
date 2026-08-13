@@ -25,13 +25,13 @@ Query the status and full details of a money transfer transaction.
 
 ## Get Details by Agent Reference
 
-<ApiEndpoint method="GET" url="/mt-api/V2/moneytransfercommon/get-transfer-details-by-api-agent-txn-no/{apiAgentTxnRefNo}" />
+<ApiEndpoint method="GET" url="/mt-api/V2/moneysend/detail-by-api-txn" />
 
-### Path Parameters
+### Query Parameters
 
 | Parameter | Required | Type | Description |
 | :--- | :--- | :--- | :--- |
-| apiAgentTxnRefNo | Yes | string | Your unique reference number provided during the validation step. |
+| txnId | Yes | string | Your unique reference number provided during the validation step. |
 
 ---
 
