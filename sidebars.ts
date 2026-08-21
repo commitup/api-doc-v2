@@ -258,6 +258,7 @@ const sidebars: SidebarsConfig = {
     'whitelabel-wallet-v2/flow-diagrams',
     'whitelabel-wallet-v2/safety-model',
     'whitelabel-wallet-v2/transaction-object',
+    'whitelabel-wallet-v2/general-parameters',
     {
       type: 'html',
       value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
@@ -266,6 +267,19 @@ const sidebars: SidebarsConfig = {
     'whitelabel-wallet-v2/card-confirm',
     'whitelabel-wallet-v2/confirm-retry-fallback',
     'whitelabel-wallet-v2/card-query',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
+    'whitelabel-wallet-v2/name-intro',
+    'whitelabel-wallet-v2/name-parameters',
+    'whitelabel-wallet-v2/name-validate',
+    'whitelabel-wallet-v2/name-confirm',
+    'whitelabel-wallet-v2/name-query',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
     'whitelabel-wallet-v2/mandatory-fields',
     'whitelabel-wallet-v2/receipt',
     {
