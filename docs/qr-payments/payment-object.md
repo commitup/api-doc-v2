@@ -29,6 +29,7 @@ The Payment Object is the common response model returned by Read, Confirm, Query
 | `acquirerId` | String | Always | 20 | Acquirer identifier (BKM acquirer ID). |
 | `terminalType` | String | Always | 30 | Terminal type. See [Terminal Types](#terminal-types). |
 | `terminalId` | String | Always | 50 | Terminal identifier. |
+| `failureReason` | String | Conditional | 30 | Present only when `status` is `FAILED`. Indicates the reason for failure. See [Failure Reasons](#failure-reasons). |
 
 ---
 
@@ -48,7 +49,7 @@ The Payment Object is the common response model returned by Read, Confirm, Query
 | `READ_QR`     | Intermediate | QR code has been read; transaction is awaiting Confirm. |
 | `IN_PROGRESS` | Intermediate | Confirm accepted; awaiting asynchronous authorization result. |
 | `COMPLETED`   | **Final** | Transaction completed successfully. |
-| `FAILED`      | **Final** | Transaction failed (authorization declined or reversal received). |
+| `FAILED`      | **Final** | Transaction failed (authorization declined, reversal received, or authorization timeout). |
 
 :::note Finality guarantee
 `COMPLETED` and `FAILED` are **irreversible terminal states**. Once a transaction reaches either status, it will never change. Refunds or reversals of a completed payment are represented as separate `REFUND` transactions linked via `parentTransactionId`.
@@ -61,7 +62,7 @@ stateDiagram-v2
     [*] --> READ_QR : QR scanned (Read)
     READ_QR --> IN_PROGRESS : Confirm accepted
     IN_PROGRESS --> COMPLETED : Authorization approved
-    IN_PROGRESS --> FAILED : Authorization declined / Reversal received
+    IN_PROGRESS --> FAILED : Authorization declined / Reversal / Auth timeout (60s)
 
     COMPLETED --> [*]
     FAILED --> [*]
@@ -80,6 +81,36 @@ stateDiagram-v2
 | `DISPUTE`                | User's complaint succeeded                           |
 | `LATE_REVERSAL`          | Technical reversal                                   |
 | `USER_NOT_PRESENT_REFUND`| Merchant reversed while customer is not present      |
+
+---
+
+## Failure Reasons
+
+When a transaction reaches `FAILED` status, the `failureReason` field indicates why. This field is present in Query responses, Webhook deliveries, and (on idempotent retries) Confirm responses.
+
+### Confirm-time failures (pre-authorization)
+
+These occur synchronously when the Confirm call is processed, before any card authorization is attempted.
+
+| Code | Description |
+|------|-------------|
+| `QR_CODE_EXPIRED` | The QR code's TTL elapsed before or during the Confirm call. |
+| `QR_CODE_USED` | The QR code was already consumed by a previous successful transaction. |
+| `QR_CODE_TRANSACTION_ERROR` | An internal processing error occurred during Confirm (BKM Switch side). |
+
+### Post-authorization failures (async)
+
+These occur after Confirm returns `IN_PROGRESS` and are delivered via webhook.
+
+| Code | Description |
+|------|-------------|
+| `AUTH_TIMEOUT` | No card authorization was received within 60 seconds after Confirm. |
+| `INSUFFICIENT_BALANCE` | Card authorization was declined due to insufficient funds. |
+| `PAYMENT_FAILED` | Generic payment failure — the decline reason is not otherwise classified. |
+
+:::note Auth timeout vs. refund delay
+The 60-second authorization timeout and the 180-second refund delay (POS cancel window) are independent mechanisms. Auth timeout applies to **both** payment and refund transactions — if no card authorization arrives within 60 seconds after Confirm, the transaction is failed. The 180-second refund delay is a separate hold applied *after* a successful refund authorization, during which a POS technical cancel can still reverse the refund.
+:::
 
 ---
 

@@ -13,6 +13,12 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 - For refunds, the partner must **not** credit the customer before Confirm. Credit the customer **only after** receiving a `COMPLETED` webhook. If the webhook delivers `FAILED`, do **not** credit. See [Partner Fund Safety Model](./safety-model).
 - When the returned status is `IN_PROGRESS`, the final result will be delivered asynchronously via the [Webhook](./webhooks).
 
+:::warning Authorization timeout (60 seconds)
+After Confirm returns `IN_PROGRESS`, if no card authorization is received within **60 seconds**, the transaction is automatically failed with `failureReason: AUTH_TIMEOUT` and a `qr_payment.failed` webhook is sent. The partner must reverse the customer debit (for payments) or take no action (for refunds, since no credit was issued yet).
+
+This timeout is independent of the 180-second refund delay (POS cancel window), which applies *after* a successful refund authorization.
+:::
+
 <ApiEndpoint method="POST" url="/wallet/qrcode/payment/confirm" />
 
 :::important Failure handling

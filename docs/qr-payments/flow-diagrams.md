@@ -31,11 +31,17 @@ sequenceDiagram
     BKM_Switch-->>PayPorter: Accepted
     PayPorter-->>Partner: 200 OK<br/>{status: IN_PROGRESS}
 
-    Note over Partner, BKM_Switch: Asynchronous – Authorization & Webhook
-    BKM_Switch->>PayPorter: Authorization request
-    PayPorter-->>BKM_Switch: Approved
-    PayPorter-->>Partner: Webhook POST<br/>{status: COMPLETED}
-    Partner-->>PayPorter: 200 OK
+    Note over Partner, BKM_Switch: Asynchronous — Authorization & Webhook
+    alt Authorization received within 60s
+        BKM_Switch->>PayPorter: Authorization request
+        PayPorter-->>BKM_Switch: Approved
+        PayPorter-->>Partner: Webhook POST<br/>{status: COMPLETED}
+        Partner-->>PayPorter: 200 OK
+    else No authorization within 60s
+        PayPorter->>PayPorter: Auth timeout — fail transaction
+        PayPorter-->>Partner: Webhook POST<br/>{status: FAILED, failureReason: AUTH_TIMEOUT}
+        Partner->>Partner: Reverse customer debit
+    end
 ```
 
 ---
