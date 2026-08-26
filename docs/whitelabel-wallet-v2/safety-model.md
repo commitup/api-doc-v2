@@ -4,11 +4,11 @@ sidebar_position: 3
 
 # Partner Fund Safety Model
 
-This section describes the fund safety guarantees for P2P card transfer transactions. **Understanding this model is critical to avoid fund risk.**
+This section describes the fund safety guarantees for P2P money transfer transactions. **Understanding this model is critical to avoid fund risk.**
 
 ## Key Principle
 
-P2P card transfers are **wallet-funded**. PayPorter debits the wallet atomically during the Confirm step. The partner does not need to manage separate fund reservations.
+P2P money transfers are **wallet-funded**. PayPorter debits the wallet atomically during the Confirm step. The partner does not need to manage separate fund reservations.
 
 ---
 
@@ -16,10 +16,10 @@ P2P card transfers are **wallet-funded**. PayPorter debits the wallet atomically
 
 ```mermaid
 flowchart TD
-    A["1. POST /wallet/p2p/card/validate"] --> B{"Response?"}
+    A["1. POST /wallet/p2p/{type}/validate"] --> B{"Response?"}
     B -->|"200 OK — READY"| C["Funds NOT yet moved.<br/>transactionId reserved."]
     B -->|"HTTP 406"| D["Rejected — no funds moved.<br/>Fix request."]
-    C --> E["2. POST /wallet/p2p/card/confirm<br/>{transactionId, tenantReferenceId}"]
+    C --> E["2. POST /wallet/p2p/{type}/confirm<br/>{transactionId, tenantReferenceId}"]
     E -->|"HTTP 200 OK"| G["Success — check query for SETTLED state"]
     E -->|"HTTP 406"| H["Rejected — no funds moved."]
     E -->|"HTTP 5XX / Timeout"| I["Immediately Query status.<br/>See Confirm Fallback."]

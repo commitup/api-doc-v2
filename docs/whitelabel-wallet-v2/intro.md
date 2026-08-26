@@ -5,13 +5,14 @@ sidebar_position: 1
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# P2P Card Transfer API
+# P2P Money Transfer API
 
 ## Version History
 
 | Version | Date       | Changes |
 | :------ | :--------- | :------ |
-| 1.0.0   | 2026-06-11 | Initial version. P2P card transfer endpoints (validate, confirm, query). Partner fund safety model. Confirm retry & fallback strategy. |
+| 1.1.0   | 2026-08-26 | Added Name and Account transfer flows. Centralized reference data into Parameter Collection endpoints. |
+| 1.0.0   | 2026-06-11 | Initial version. P2P money transfer endpoints (validate, confirm, query). Partner fund safety model. Confirm retry & fallback strategy. |
 
 ---
 
@@ -23,7 +24,7 @@ All API endpoints use the following base URL:
 https://whitelabelwallet-mig.payporter.com.tr:8590
 ```
 
-All endpoint paths in this document are relative to this base URL. For example, `POST /wallet/p2p/card/validate` resolves to `https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/card/validate`.
+All endpoint paths in this document are relative to this base URL. For example, `POST /wallet/p2p/{type}/validate` resolves to `https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/{type}/validate`.
 
 All requests and responses use `Content-Type: application/json`.
 
@@ -271,7 +272,7 @@ function encryptSecureDataJson(
 
 ## Transaction Flow
 
-All P2P card transfer transactions follow a three-step flow:
+All P2P money transfer transactions follow a three-step flow:
 
 ```
 Validate  →  Confirm  →  Query (optional)
@@ -282,14 +283,14 @@ Validate  →  Confirm  →  Query (optional)
 3. **Query** — Retrieve the current state of a transaction by `transactionId`.
 
 :::important
-There are **no webhooks** for P2P card transfer transactions. All status transitions can be observed via the Query endpoint.
+There are **no webhooks** for P2P money transfer transactions. All status transitions can be observed via the Query endpoint.
 :::
 
 ---
 
 ## Amount Model
 
-P2P card transfers support multi-currency transfers. The request accepts **one of two mutually exclusive** amount inputs:
+P2P money transfers support multi-currency transfers. The request accepts **one of two mutually exclusive** amount inputs:
 
 | Input Option | Fields | Description |
 |---|---|---|
