@@ -289,6 +289,14 @@ const sidebars: SidebarsConfig = {
       type: 'html',
       value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
     },
+    'whitelabel-wallet-v2/wallet-intro',
+    'whitelabel-wallet-v2/wallet-validate',
+    'whitelabel-wallet-v2/wallet-confirm',
+    'whitelabel-wallet-v2/wallet-query',
+    {
+      type: 'html',
+      value: '<hr style="border-top: 1px solid var(--ifm-toc-border-color); margin: 15px 0; opacity: 0.5;" />',
+    },
     'whitelabel-wallet-v2/mandatory-fields',
     'whitelabel-wallet-v2/receipt',
     {

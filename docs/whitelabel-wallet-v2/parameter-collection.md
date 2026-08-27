@@ -19,7 +19,7 @@ To ensure optimal performance and avoid rate-limiting, **all parameter data (cou
 
 ## 1. Get Available Countries
 
-Retrieve a list of all available destination countries for P2P transfers. This is required for **all** transfer types (Name, Account, and Card).
+Retrieve a list of all available destination countries for P2P transfers. This is required for **all** transfer types (Name, Account, Card, and Wallet).
 
 <ApiEndpoint method="GET" url="/wallet/p2p/available-countries" />
 
@@ -45,6 +45,7 @@ Retrieve a list of available transfer providers for a specific country and trans
 > **Important Usage Note:** 
 > - **Account Transfers:** The provider represents a **Bank**. You will use the returned provider ID as the `bankId` field.
 > - **Name Transfers:** The provider represents an **External Firm** (cash pickup location). You will use the returned provider ID as the `externalFirm` field.
+> - **Wallet Transfers:** The provider represents a **Digital Wallet**. You will use the returned provider ID as the `walletType` field.
 > - **Card Transfers:** Providers are **not** used. Card transfers only require the country and the card number.
 
 <ApiEndpoint method="GET" url="/wallet/p2p/{type}/countries/{countryCode}/providers" />
@@ -53,7 +54,7 @@ Retrieve a list of available transfer providers for a specific country and trans
 
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
-| `type` | String | The transfer type: `name`, or `account`. |
+| `type` | String | The transfer type: `name`, `account`, or `wallet`. |
 | `countryCode` | String | ISO 3166-1 alpha-3 country code. |
 
 ### Query Parameters

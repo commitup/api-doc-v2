@@ -11,7 +11,7 @@ import TabItem from '@theme/TabItem';
 
 | Version | Date       | Changes |
 | :------ | :--------- | :------ |
-| 1.1.0   | 2026-08-26 | Added Name and Account transfer flows. Centralized reference data into Parameter Collection endpoints. |
+| 1.1.0   | 2026-08-26 | Added Name, Account, and Wallet transfer flows. Centralized reference data into Parameter Collection endpoints. |
 | 1.0.0   | 2026-06-11 | Initial version. P2P money transfer endpoints (validate, confirm, query). Partner fund safety model. Confirm retry & fallback strategy. |
 
 ---
