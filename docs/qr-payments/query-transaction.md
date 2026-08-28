@@ -53,6 +53,7 @@ The response body is a [Payment Object](./payment-object) with the following end
 - **`tenantReferenceId`**: Optional for refund transactions (may be `null`).
 - **`tenantUserId`**: Always present (for transactions that have been confirmed).
 - **`parentTransactionId`**: Present only for `REFUND` transactions.
+- **`failureReason`**: Present only when `status` is `FAILED`. See [Failure Reasons](./payment-object#failure-reasons).
 
 <Tabs>
   <TabItem value="payment" label="Payment" default>

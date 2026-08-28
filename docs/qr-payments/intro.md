@@ -11,6 +11,7 @@ import TabItem from '@theme/TabItem';
 
 | Version | Date       | Changes |
 | :------ | :--------- | :------ |
+| 1.10.0  | 2026-08-26 | Added `failureReason` field to Payment Object (`AUTH_TIMEOUT`, `INSUFFICIENT_BALANCE`, `PAYMENT_FAILED`, `QR_CODE_EXPIRED`, `QR_CODE_USED`, `QR_CODE_TRANSACTION_ERROR`). Added 60-second authorization timeout: transactions in `IN_PROGRESS` are automatically failed if no card authorization arrives within 60 seconds. Added `authTimeout` parameter to mock QR code generation (opt-in in sandbox, always active in production). Added auth timeout test case TC-UAT-019. Updated flow diagrams, webhook examples, and safety model to reflect auth timeout and failure reasons. |
 | 1.9.0   | 2026-07-16 | Added `sequenceNumber` field to Account Transactions for absolute ordering. Changed sort order to `sequenceNumber` ascending (oldest first). Renamed commission transactions. Added production URL. Added Firewall & IP Whitelisting section. Clarified `X-Security-Key` 5-minute TTL. Readability and clarification updates. |
 | 1.8.2   | 2026-07-08 | Added validation and parent lookup error behaviors to the Read QR API. `QRCODE_PARENT_TRANSACTION_NOT_FOUND`: different user/non-completed parent. |
 | 1.8.1   | 2026-07-03 | Expanded mock sandbox capabilities for QR generation (`POST /wallet/qrcode/mock/generate-mock-qr-code`): added `merchantId`, `merchantName`, and `mcc` parameters to allow customizing merchant details. |

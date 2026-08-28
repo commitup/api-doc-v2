@@ -36,6 +36,7 @@ Run cases one by one. For cases that produce a transaction, record the `transact
 | TC-UAT-016 | Static QR failed payment — insufficient balance | Payment amount > wallet balance | Read → `READ_QR` (amount is null); Confirm with exceeding amount → `IN_PROGRESS`; webhook `qr_payment.failed` delivered; Query → `FAILED` | ⬜ | | |
 | TC-UAT-017 | Static QR — multiple scan transaction IDs | Static QR code generated | Scan QR code twice; each scan/read returns status `READ_QR` with a different `transactionId` | ⬜ | txA ID + txB ID | |
 | TC-UAT-018 | QR refund exceeds original payment — FAILED | Completed payment (30.00) exists | Refund QR with amount 31.00; Read → `REFUND`; Confirm → `IN_PROGRESS`; webhook `qr_payment.failed` delivered after 30 s; Query → `FAILED` | ⬜ | payment_id + refund_tx_id | |
+| TC-UAT-019 | Auth timeout — no authorization within 60s | Wallet balance ≥ 30.00 | Generate with `authTimeout=true`; Read → `READ_QR`; Confirm → `IN_PROGRESS`; do NOT call start-mock-authorization; after 65 s Query → `FAILED` with `failureReason: AUTH_TIMEOUT`; webhook `qr_payment.failed` delivered | ⬜ | | |
 
 > **Result values:** ✅ Pass · ❌ Fail · 🔶 Blocked · ⬜ Not Run  
 > **Transaction ID(s):** Pre-filled labels are placeholders — replace with actual IDs. TC-004 through TC-007 produce no transaction (read rejected before any record is created), hence —.
@@ -408,11 +409,51 @@ Generates a refund QR with an amount **greater than** the original payment. The 
 
 ---
 
+### 13 — Auth Timeout (TC-UAT-019)
+
+Tests the 60-second authorization timeout. After Confirm returns `IN_PROGRESS`, the partner intentionally does **not** call `start-mock-authorization`. After 60 seconds, the system automatically fails the transaction.
+
+:::important authTimeout parameter required in sandbox
+In sandbox, the 60-second auth timeout is **opt-in** — you must pass `authTimeout=true` when generating the mock QR code. In production, auth timeout is always active for payment transactions.
+:::
+
+```
+1. POST /wallet/qrcode/mock/generate-mock-qr-code
+   qrCodeTransactionType=PAYMENT  amount=30  authTimeout=true
+   → returns qrCode string
+
+2. POST /wallet/qrcode/payment/read
+   body: { qrCode }
+   → status: READ_QR, transactionId: <id>
+
+3. POST /wallet/qrcode/payment/confirm
+   body: { transactionId, tenantReferenceId, amount: "30.00", tenantUserId }
+   → status: IN_PROGRESS
+
+# Do NOT call start-mock-authorization — wait for timeout
+# Wait at least 65 seconds
+
+4. POST /wallet/qrcode/query
+   transactionId=<id>
+   → status: FAILED, failureReason: AUTH_TIMEOUT
+
+5. POST /wallet/qrcode/mock/webhook-event-log
+   transactionId=<id>
+   → eventType: qr_payment.failed, status: DELIVERED
+```
+
+:::note Auth timeout vs. refund delay
+The 60-second auth timeout applies to **both** payment and refund transactions. It is independent of the 180-second refund delay (POS cancel window), which is a separate hold applied after a successful refund authorization.
+:::
+
+---
+
 ## Timing Reference
 
 | Flow | Test Cases | Wait before querying |
 |---|---|---|
 | Payment authorization (normal & static) | TC-UAT-001, TC-UAT-002, TC-UAT-015, TC-UAT-016 | ~5 s for webhook to appear |
+| Auth timeout (no authorization) | TC-UAT-019 | **65 s** (60 s timeout + margin) |
 | QR Scan Refund (after mock auth) | TC-UAT-003, TC-UAT-018 | **30 s** (UAT) · 3 min (prod) |
 | LATE_REVERSAL | TC-UAT-012 | ~10 s |
 | USER_NOT_PRESENT_REFUND | TC-UAT-013, TC-UAT-014 | **30 s** (UAT) · 3 min (prod) |

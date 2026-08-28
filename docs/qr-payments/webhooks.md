@@ -78,6 +78,7 @@ The webhook body is a [Payment Object](./payment-object). Event metadata (`x-eve
 Endpoint-specific behaviour:
 
 - **`status`**: Always `COMPLETED` or `FAILED` (webhooks are only sent for terminal states).
+- **`failureReason`**: Present only when `status` is `FAILED`. See [Failure Reasons](./payment-object#failure-reasons).
 - **`tenantReferenceId`**: Optional for refund transactions (may be `null`).
 - **`tenantUserId`**: Always present after Confirm.
 - **`parentTransactionId`**: Present only for `REFUND` transactions.
@@ -101,6 +102,41 @@ x-request-signature: Base64-encoded-RSA-SHA256-signature
   "transactionType": "PAYMENT",
   "transactionSource": "MERCHANT_QR_SCAN",
   "status": "COMPLETED",
+  "amount": "84.00",
+  "qrGenerationDate": "2025-07-14T15:53:21Z",
+  "qrExpireDate": "2026-07-14T15:53:21Z",
+  "currency": "TRY",
+  "merchantId": "98765433210",
+  "acquirerId": "0010",
+  "mcc": "5411",
+  "merchantName": "Lezzet Lokantası",
+  "countryCode": "TR",
+  "merchantCity": "ANTALYA",
+  "terminalType": "STATIC_QRCODE",
+  "terminalId": "12345678901234567890ABC"
+}
+```
+
+### Example — Payment Webhook (Failed — Auth Timeout)
+
+**Headers:**
+```
+x-event-id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+x-event-type: qr_payment.failed
+x-request-timestamp: 1715270460000
+x-request-signature: Base64-encoded-RSA-SHA256-signature
+```
+
+**Body:**
+```json
+{
+  "transactionId": "47002323201",
+  "tenantReferenceId": "08e6e4d3-7031-4f0a-bc90-3235aaa2600c",
+  "tenantUserId": "364",
+  "transactionType": "PAYMENT",
+  "transactionSource": "MERCHANT_QR_SCAN",
+  "status": "FAILED",
+  "failureReason": "AUTH_TIMEOUT",
   "amount": "84.00",
   "qrGenerationDate": "2025-07-14T15:53:21Z",
   "qrExpireDate": "2026-07-14T15:53:21Z",

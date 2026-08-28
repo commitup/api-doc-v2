@@ -37,6 +37,7 @@ Generates a BKM-format QR code with configurable transaction type, amount, expir
 | `merchantId` | String | No | 10 | Custom merchant ID (Tag 49) to embed in the QR code. If omitted (and not inherited from parent), defaults to a random 10-digit number. |
 | `merchantName` | String | No | 25 | Custom merchant name (Tag 59) to embed in the QR code. If omitted (and not inherited from parent), defaults to `"E-PAYPORTER AS"`. |
 | `mcc` | String | No | 4 | Custom Merchant Category Code (Tag 52) to embed in the QR code. If omitted (and not inherited from parent), defaults to a random MCC (e.g., 1520, 1711, 1731, 1740, 1750). |
+| `authTimeout` | Boolean | No | - | If `true`, enables the 60-second authorization timeout for this transaction. When the partner confirms the QR and no card authorization arrives within 60 seconds, the transaction is automatically failed with `failureReason: AUTH_TIMEOUT`. Defaults to `false` in sandbox. **In production, auth timeout is always active regardless of this parameter.** |
 
   </TabItem>
 </Tabs>
