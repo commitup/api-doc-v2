@@ -134,6 +134,17 @@ Commonly used payment reasons (required for regulatory compliance).
 | `INDIVIDUAL_PAYMENTS` | Individual Payments |
 | `INVESTMENT` | Investment |
 | `FINANCIAL` | Financial |
+| `REAL_ESTATE` | Real Estate Purchase |
+| `MOTOR_VEHICLE_PURCHASE` | Motor Vehicle Purchase |
+| `LOAN_OR_DEBT_PAYMENT` | Loan / Debt Payment |
+| `GIFT_DONATION_AID` | Gift / Donation / Aid |
+| `TAX_DUTY_FEE` | Tax / Duty / Fee Payment |
+| `INSURANCE_COMPENSATION` | Compensation / Insurance Payment |
+| `CONSULTANCY_LEGAL_SERVICES` | Legal / Consulting / Advisory Services |
+| `HEALTH_PAYMENTS` | Healthcare Payments |
+| `CRYPTO_DIGITAL_ASSETS` | Crypto / Digital Assets |
+| `CHANCE_GAMES_BETTING` | Games of Chance / Betting |
+| `ENTERTAINMENT_SOCIAL_MEDIA` | Entertainment / Social Media |
 
 
 **Response**

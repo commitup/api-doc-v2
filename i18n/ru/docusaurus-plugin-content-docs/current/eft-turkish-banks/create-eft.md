@@ -125,6 +125,17 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 | `INDIVIDUAL_PAYMENTS` | Индивидуальные платежи |
 | `INVESTMENT` | Инвестиции |
 | `FINANCIAL` | Финансовые операции |
+| `REAL_ESTATE` | Покупка недвижимости |
+| `MOTOR_VEHICLE_PURCHASE` | Покупка автотранспорта |
+| `LOAN_OR_DEBT_PAYMENT` | Предоставление / Погашение долга |
+| `GIFT_DONATION_AID` | Подарок / Пожертвование / Помощь |
+| `TAX_DUTY_FEE` | Уплата налогов / сборов / пошлин |
+| `INSURANCE_COMPENSATION` | Страховая выплата / Компенсация |
+| `CONSULTANCY_LEGAL_SERVICES` | Юридические / Консультационные услуги |
+| `HEALTH_PAYMENTS` | Медицинские услуги / Оплата лечения |
+| `CRYPTO_DIGITAL_ASSETS` | Криптовалюта / Цифровые активы |
+| `CHANCE_GAMES_BETTING` | Азартные игры / Ставки |
+| `ENTERTAINMENT_SOCIAL_MEDIA` | Развлечения / Социальные сети |
 
 
 **Ответ (Response)**

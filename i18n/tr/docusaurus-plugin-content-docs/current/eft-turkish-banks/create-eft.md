@@ -125,6 +125,17 @@ Yaygın olarak kullanılan ödeme nedenleri (yasal uyum için gereklidir).
 | `INDIVIDUAL_PAYMENTS` | Bireysel Ödemeler |
 | `INVESTMENT` | Yatırım |
 | `FINANCIAL` | Finansal |
+| `REAL_ESTATE` | Gayrimenkul Alım Ödemesi |
+| `MOTOR_VEHICLE_PURCHASE` | Motorlu Taşıt Alım Ödemesi |
+| `LOAN_OR_DEBT_PAYMENT` | Borç Verme / Borç Ödeme |
+| `GIFT_DONATION_AID` | Hediye / Bağış / Yardım |
+| `TAX_DUTY_FEE` | Vergi / Resim / Harç Ödemesi |
+| `INSURANCE_COMPENSATION` | Tazminat / Sigorta Ödemesi |
+| `CONSULTANCY_LEGAL_SERVICES` | Avukatlık / Danışmanlık / Müşavirlik Ödemesi |
+| `HEALTH_PAYMENTS` | Sağlık Ödemesi |
+| `CRYPTO_DIGITAL_ASSETS` | Kripto / Dijital Varlık |
+| `CHANCE_GAMES_BETTING` | Şans Oyunları / Bahis Ödemesi |
+| `ENTERTAINMENT_SOCIAL_MEDIA` | Eğlence / Sosyal Medya Ödemesi |
 
 
 **Yanıt (Response)**
