@@ -11,7 +11,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Validate a money transfer to a digital wallet. This endpoint checks if the transaction is possible, validates the receiver's details, calculates exchange rates and fees, and prepares the transaction for confirmation. No funds are moved at this stage.
 
-<ApiEndpoint method="POST" url="/wallet/p2p/wallet/validate" />
+<ApiEndpoint method="POST" url="/wallet/p2p/to-wallet/validate" />
 
 ## Request
 
@@ -27,7 +27,8 @@ Validate a money transfer to a digital wallet. This endpoint checks if the trans
 | `sendingCurrency`        | String  | ISO 4217                  | Currency for `sendingAmount`. Required when `sendingAmount` is provided.                                                                      |
 | `payoutCurrency`         | String  | ISO 4217                  | Payout currency when different from sending currency.                                                                                         |
 | `destinationCountry`     | String  | ISO 3166-1 alpha-3        | Destination country code.                                                                                                                     |
-| `walletType`             | String  | -                         | The target wallet identifier or brand (e.g., `KUIKPARA`). Required for wallet transfers.                                                      |
+| `provider`               | String  | -                         | Provider ID from the [providers endpoint](./parameter-collection#2-get-providers). Applies to all transfer types and takes precedence over the legacy type-specific field. |
+| `walletType`             | String  | -                         | **Legacy.** Target wallet identifier or brand (e.g., `KUIKPARA`). Use `provider` instead; ignored when `provider` is sent.                     |
 | `receiver`               | Object  | -                         | Receiver information. See [ReceiverInfo](./transaction-object#receiverinfo-object). Mobile number is critical for identifying the wallet.     |
 | `comment`                | String  | Max: 255                  | Free-text comment.                                                                                                                            |
 | `purpose`                | Enum    | -                         | Transfer purpose. Valid values: `SAVING_INVESTMENT`, `DEPT_LOAN`, `SALE_BUY`, `COMMERCE_PAYMENTS`, `RENTALS`, `OTHER`, `FAMILY`, `EDUCATION`. |
@@ -41,7 +42,7 @@ Validate a money transfer to a digital wallet. This endpoint checks if the trans
   <TabItem value="headers" label="Headers">
 
 ```http
-POST /wallet/p2p/wallet/validate HTTP/1.1
+POST /wallet/p2p/to-wallet/validate HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 X-Api-Key: your_api_key

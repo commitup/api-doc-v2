@@ -4,7 +4,7 @@ sidebar_position: 10
 
 # Account Transfer — Overview
 
-This section explains the end-to-end flow for completing an **Account Transfer** (sending money directly to a bank account). Unlike name transfers, sending money to an account requires selecting a specific bank (provider) and providing the `accountNumber` along with the `bankId`.
+This section explains the end-to-end flow for completing an **Account Transfer** (sending money directly to a bank account). Unlike name transfers, sending money to an account requires selecting a specific bank (`provider`) and providing the `accountNumber` along with it.
 
 ## General Flow
 
@@ -21,15 +21,15 @@ sequenceDiagram
     Partner-->>PayPorter: Fetch Countries and Banks (See Parameter Collection)
 
     Note over Partner, PayPorter: Validation & Confirmation
-    Partner->>PayPorter: POST /wallet/p2p/account/validate
+    Partner->>PayPorter: POST /wallet/p2p/to-account/validate
     PayPorter-->>Partner: 200 OK (READY, with exchange rates & transactionId)
     
-    Partner->>PayPorter: POST /wallet/p2p/account/confirm
+    Partner->>PayPorter: POST /wallet/p2p/to-account/confirm
     PayPorter-->>Partner: 200 OK (Transaction initiated)
 ```
 
-1. **Parameter Collection:** Obtain the necessary `bankId` and destination country code dynamically.
-2. **Validate:** Use the collected `bankId` and the recipient's `accountNumber` along with their details to call `/wallet/p2p/account/validate`.
+1. **Parameter Collection:** Obtain the necessary bank `provider` ID and destination country code dynamically.
+2. **Validate:** Use the collected `provider` and the recipient's `accountNumber` along with their details to call `/wallet/p2p/to-account/validate`.
 3. **Confirm:** Finally, confirm the transaction using the `transactionId` provided in the validate step.
 
 ## Example Validate Request
@@ -42,7 +42,7 @@ Here is a complete example of a validate request payload for an Account Transfer
     "amount": 100.0,
     "currency": "EUR",
     "destinationCountry": "FRA",
-    "bankId" : "1",
+    "provider": "1",
     "accountNumber": "FR7612345678901234567890123",
     "receiver": {
         "firstName": "Elena",

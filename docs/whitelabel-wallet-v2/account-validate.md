@@ -11,7 +11,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Validate a money transfer to a bank account. This endpoint checks if the transaction is possible, validates the bank ID and account number, calculates exchange rates and fees, and prepares the transaction for confirmation. No funds are moved at this stage.
 
-<ApiEndpoint method="POST" url="/wallet/p2p/account/validate" />
+<ApiEndpoint method="POST" url="/wallet/p2p/to-account/validate" />
 
 ## Request
 
@@ -27,7 +27,8 @@ Validate a money transfer to a bank account. This endpoint checks if the transac
 | `sendingCurrency`        | String  | ISO 4217                  | Currency for `sendingAmount`. Required when `sendingAmount` is provided.                                                                      |
 | `payoutCurrency`         | String  | ISO 4217                  | Payout currency when different from sending currency.                                                                                         |
 | `destinationCountry`     | String  | ISO 3166-1 alpha-3        | Destination country code.                                                                                                                     |
-| `bankId`                 | String  | -                         | The bank ID retrieved from the providers list for the destination country. Required for account transfers.                                    |
+| `provider`               | String  | -                         | Provider ID from the [providers endpoint](./parameter-collection#2-get-providers). Applies to all transfer types and takes precedence over the legacy type-specific field. |
+| `bankId`                 | String  | -                         | **Legacy.** Bank ID from the providers list. Use `provider` instead; ignored when `provider` is sent.                                          |
 | `accountNumber`          | String  | -                         | The recipient's bank account number or IBAN. Required for account transfers.                                                                  |
 | `receiver`               | Object  | -                         | Receiver information. See [ReceiverInfo](./transaction-object#receiverinfo-object).                                                           |
 | `comment`                | String  | Max: 255                  | Free-text comment.                                                                                                                            |
@@ -42,7 +43,7 @@ Validate a money transfer to a bank account. This endpoint checks if the transac
   <TabItem value="headers" label="Headers">
 
 ```http
-POST /wallet/p2p/account/validate HTTP/1.1
+POST /wallet/p2p/to-account/validate HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 X-Api-Key: your_api_key

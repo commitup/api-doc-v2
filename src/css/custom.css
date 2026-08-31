@@ -33,3 +33,17 @@
 .menu__list .menu__list .menu__link {
   font-size: 0.85rem;
 }
+
+/* Changelog: neutral collapsible instead of the default blue info alert */
+details.changelog-details {
+  --ifm-alert-background-color: transparent;
+  --ifm-alert-background-color-highlight: transparent;
+  --ifm-alert-foreground-color: var(--ifm-font-color-base);
+  --ifm-alert-border-color: var(--ifm-toc-border-color);
+  --ifm-alert-border-left-width: var(--ifm-alert-border-width);
+  box-shadow: none;
+}
+
+details.changelog-details > summary::before {
+  border-left-color: var(--ifm-font-color-secondary);
+}

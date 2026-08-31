@@ -11,7 +11,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Confirm and execute a previously validated wallet transfer transaction.
 
-<ApiEndpoint method="POST" url="/wallet/p2p/wallet/confirm" />
+<ApiEndpoint method="POST" url="/wallet/p2p/to-wallet/confirm" />
 
 ## Request
 
@@ -26,7 +26,7 @@ Confirm and execute a previously validated wallet transfer transaction.
   <TabItem value="headers" label="Headers">
 
 ```http
-POST /wallet/p2p/wallet/confirm HTTP/1.1
+POST /wallet/p2p/to-wallet/confirm HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 X-Api-Key: your_api_key

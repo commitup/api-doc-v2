@@ -6,6 +6,22 @@ sidebar_position: 1
 
 The Money Transfer service allows you to send funds to individuals worldwide through various payout methods, including cash pick-up (to name), bank accounts, electronic wallets, and cards.
 
+## Changelog
+
+<details className="changelog-details">
+<summary>Show all entries</summary>
+
+| Date | Changes |
+| :--- | :--- |
+| 2026-08-13 | **Breaking:** transfer details by agent reference is now `GET /mt-api/V2/moneysend/detail-by-api-txn?txnId=`. See [Transfer Details](./transfer-details). |
+| 2026-08-12 | Validate input constraints and [error codes](./transfer-errors) expanded. |
+| 2026-05-07 | [Settlement](./settlement) added. |
+| 2026-04-22 | [Webhooks](./webhooks) added. |
+| 2026-03-29 | Added to-name cancel/update, to-account find-bank, to-wallet list and get-holder. Overview pages and flow diagrams. |
+| 2026-03-27 | Initial Money Transfer V2 documentation. |
+
+</details>
+
 ## Transfer Process
 
 All money transfers follow a mandatory **Two-Step Verification** process to ensure accuracy and compliance.

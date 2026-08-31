@@ -11,7 +11,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Validate a money transfer to a person (cash pickup / name transfer). This endpoint checks if the transaction is possible, calculates exchange rates and fees, and prepares the transaction for confirmation. No funds are moved at this stage.
 
-<ApiEndpoint method="POST" url="/wallet/p2p/name/validate" />
+<ApiEndpoint method="POST" url="/wallet/p2p/to-name/validate" />
 
 ## Request
 
@@ -27,8 +27,9 @@ Validate a money transfer to a person (cash pickup / name transfer). This endpoi
 | `sendingCurrency`        | String  | ISO 4217                  | Currency for `sendingAmount`. Required when `sendingAmount` is provided.                                                                      |
 | `payoutCurrency`         | String  | ISO 4217                  | Payout currency when different from sending currency.                                                                                         |
 | `destinationCountry`     | String  | ISO 3166-1 alpha-3        | Destination country code.                                                                                                                     |
+| `provider`               | String  | -                         | Provider ID from the [providers endpoint](./parameter-collection#2-get-providers). Applies to all transfer types and takes precedence over the legacy type-specific field. |
 | `receiver`               | Object  | -                         | Receiver information. See [ReceiverInfo](./transaction-object#receiverinfo-object).                                                           |
-| `externalFirm`             | String  | -                         | External firm (provider) ID for the transfer. Required for name transfers.                                                                                    |
+| `externalFirm`             | String  | -                         | **Legacy.** External firm (provider) ID. Use `provider` instead; ignored when `provider` is sent.                                              |
 | `city`               | String  | -                         | Destination city code. Required for name transfers.                                                                                           |
 | `office`             | String  | -                         | Destination office code. Optional, depending on provider requirements.                                                                        |
 | `comment`                | String  | Max: 255                  | Free-text comment.                                                                                                                            |
@@ -43,7 +44,7 @@ Validate a money transfer to a person (cash pickup / name transfer). This endpoi
   <TabItem value="headers" label="Headers">
 
 ```http
-POST /wallet/p2p/name/validate HTTP/1.1
+POST /wallet/p2p/to-name/validate HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 X-Api-Key: your_api_key

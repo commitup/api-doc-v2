@@ -30,7 +30,7 @@ When you call the Query endpoint, it will check the internal transaction state a
 
 ```mermaid
 flowchart TD
-    A["POST /wallet/p2p/card/confirm"] --> B{"Response?"}
+    A["POST /wallet/p2p/to-card/confirm"] --> B{"Response?"}
     B -->|"200 OK"| C["Success — done"]
     B -->|"HTTP 406"| D["Rejected — no funds moved"]
     B -->|"HTTP 5XX / Timeout"| G["GET /wallet/p2p/query/{transactionId}"]

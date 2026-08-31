@@ -20,14 +20,20 @@ Name transfers require specific destination parameters such as City and Office. 
 
 Retrieve a list of available destination cities for a specific country and provider.
 
-<ApiEndpoint method="GET" url="/wallet/p2p/name/countries/{countryCode}/providers/{providerId}/cities" />
+<ApiEndpoint method="GET" url="/wallet/p2p/to-name/cities" />
 
-### Path Parameters
+### Query Parameters
 
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `countryCode` | String | ISO 3166-1 alpha-3 country code. |
-| `providerId` | String | The ID of the provider. |
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `countryCode` | String | Yes | ISO 3166-1 alpha-3 country code. |
+| `providerId` | String | Yes | The ID of the provider (the `code` returned by the providers endpoint). |
+
+**Example:**
+
+```
+GET /wallet/p2p/to-name/cities?countryCode=IDN&providerId=100
+```
 
 ### Response
 
@@ -46,15 +52,26 @@ Retrieve a list of available destination cities for a specific country and provi
 
 Retrieve a list of available destination offices for a specific city.
 
-<ApiEndpoint method="GET" url="/wallet/p2p/name/countries/{countryCode}/providers/{providerId}/cities/{cityCode}/offices" />
+<ApiEndpoint method="GET" url="/wallet/p2p/to-name/cities/{cityCode}/offices" />
 
 ### Path Parameters
 
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
-| `countryCode` | String | ISO 3166-1 alpha-3 country code. |
-| `providerId` | String | The ID of the provider. |
-| `cityCode` | String | The city code retrieved from the cities endpoint. |
+| `cityCode` | String | The city `id` retrieved from the cities endpoint. |
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `countryCode` | String | Yes | ISO 3166-1 alpha-3 country code. |
+| `providerId` | String | Yes | The ID of the provider (the `code` returned by the providers endpoint). |
+
+**Example:**
+
+```
+GET /wallet/p2p/to-name/cities/34/offices?countryCode=IDN&providerId=100
+```
 
 ### Response
 

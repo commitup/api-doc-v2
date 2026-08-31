@@ -9,10 +9,16 @@ import TabItem from '@theme/TabItem';
 
 ## Version History
 
-| Version | Date       | Changes |
-| :------ | :--------- | :------ |
-| 1.1.0   | 2026-08-26 | Added Name, Account, and Wallet transfer flows. Centralized reference data into Parameter Collection endpoints. |
-| 1.0.0   | 2026-06-11 | Initial version. P2P money transfer endpoints (validate, confirm, query). Partner fund safety model. Confirm retry & fallback strategy. |
+<details className="changelog-details">
+<summary>Show all entries</summary>
+
+| Version | Date | Changes |
+| :--- | :--- | :--- |
+| 1.2.0 | 2026-08-31 | **Breaking:** type segments renamed to `to-name`, `to-account`, `to-card`, `to-wallet`. Reference data endpoints restructured. New unified `provider` field. |
+| 1.1.0 | 2026-08-26 | Name, Account, and Wallet transfer flows. Parameter Collection endpoints. |
+| 1.0.0 | 2026-06-11 | Initial version. Validate, confirm, query. Fund safety model, confirm retry and fallback. |
+
+</details>
 
 ---
 
@@ -27,6 +33,25 @@ https://whitelabelwallet-mig.payporter.com.tr:8590
 All endpoint paths in this document are relative to this base URL. For example, `POST /wallet/p2p/{type}/validate` resolves to `https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/{type}/validate`.
 
 All requests and responses use `Content-Type: application/json`.
+
+---
+
+## Transfer Types
+
+The `{type}` path segment selects the transfer type. It is used by the calculate, validate, and confirm endpoints, and by the providers endpoint.
+
+| Segment | Transfer Type | Description |
+| :--- | :--- | :--- |
+| `to-name` | Name Transfer | Cash pickup at a provider office. |
+| `to-account` | Account Transfer | Payout to a bank account or IBAN. |
+| `to-card` | Card Transfer | Payout to a debit or credit card. |
+| `to-wallet` | Wallet Transfer | Payout to a partner digital wallet. |
+
+:::caution Breaking change in 1.2.0
+The previous segments `name`, `account`, and `wallet` are **no longer accepted** and return `404`. Use the `to-` prefixed segments.
+
+`card` is still accepted as a legacy alias for `to-card` on calculate, validate, and confirm — but **not** on the providers endpoint. Migrate to `to-card`.
+:::
 
 ---
 

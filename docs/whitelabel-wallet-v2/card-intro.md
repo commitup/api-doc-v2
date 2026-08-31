@@ -6,6 +6,10 @@ sidebar_position: 5.5
 
 This section explains the end-to-end flow for completing a **Card Transfer** (sending money directly to a debit or credit card). Card transfers require capturing the recipient's card details instead of bank account numbers or pickup locations.
 
+:::note Path segment
+The canonical path segment is `to-card`. The older `card` segment is still accepted on calculate, validate, and confirm for backwards compatibility, but new integrations should use `to-card`.
+:::
+
 ## General Flow
 
 > **Prerequisite:** Before validating a card transfer, you must fetch the available destination countries. See the [Parameter Collection](./parameter-collection) guide for details. Providers are **not** used for Card transfers.
@@ -21,15 +25,15 @@ sequenceDiagram
     Partner-->>PayPorter: Fetch Countries (See Parameter Collection)
 
     Note over Partner, PayPorter: Validation & Confirmation
-    Partner->>PayPorter: POST /wallet/p2p/card/validate
+    Partner->>PayPorter: POST /wallet/p2p/to-card/validate
     PayPorter-->>Partner: 200 OK (READY, with exchange rates & transactionId)
     
-    Partner->>PayPorter: POST /wallet/p2p/card/confirm
+    Partner->>PayPorter: POST /wallet/p2p/to-card/confirm
     PayPorter-->>Partner: 200 OK (Transaction initiated)
 ```
 
 1. **Parameter Collection:** Obtain the necessary destination country code dynamically.
-2. **Validate:** Use the recipient's card details (`cardNumber`, etc.) along with their information to call `/wallet/p2p/card/validate`.
+2. **Validate:** Use the recipient's card details (`cardNumber`, etc.) along with their information to call `/wallet/p2p/to-card/validate`.
 3. **Confirm:** Finally, confirm the transaction using the `transactionId` provided in the validate step.
 
 ## Example Validate Request

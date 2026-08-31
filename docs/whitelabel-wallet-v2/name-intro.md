@@ -21,20 +21,20 @@ sequenceDiagram
     Partner-->>PayPorter: Fetch Countries, Providers, Cities, Offices (See Parameter Collection)
 
     Note over Partner, PayPorter: Validation & Confirmation
-    Partner->>PayPorter: POST /wallet/p2p/name/validate
+    Partner->>PayPorter: POST /wallet/p2p/to-name/validate
     PayPorter-->>Partner: 200 OK (READY, with exchange rates & transactionId)
     
-    Partner->>PayPorter: POST /wallet/p2p/name/confirm
+    Partner->>PayPorter: POST /wallet/p2p/to-name/confirm
     PayPorter-->>Partner: 200 OK (Transaction initiated)
 ```
 
-1. **Parameter Collection:** Obtain the necessary `externalFirm`, and if required by the provider, `city` and `office` codes.
-2. **Validate:** Use the collected parameters (`externalFirm`, `city`, `office`) along with the receiver's details to call `/wallet/p2p/name/validate`.
+1. **Parameter Collection:** Obtain the necessary `provider` ID, and if required by the provider, `city` and `office` codes.
+2. **Validate:** Use the collected parameters (`provider`, `city`, `office`) along with the receiver's details to call `/wallet/p2p/to-name/validate`.
 3. **Confirm:** Finally, confirm the transaction using the `transactionId` provided in the validate step.
 
 ## Example Validate Request
 
-Here is a complete example of a validate request payload for a Name Transfer, containing the required destination parameters (`externalFirm` and `city`):
+Here is a complete example of a validate request payload for a Name Transfer, containing the required destination parameters (`provider` and `city`):
 
 ```json
 {
@@ -42,7 +42,7 @@ Here is a complete example of a validate request payload for a Name Transfer, co
   "amount": 100.0,
   "currency": "USD",
   "destinationCountry": "GBR",
-  "externalFirm": "2",
+  "provider": "2",
   "city": "53514",
   "receiver": {
     "firstName": "Oliver",

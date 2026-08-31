@@ -11,7 +11,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Execute a previously validated card transfer transaction. Funds are debited from the wallet atomically during this step.
 
-<ApiEndpoint method="POST" url="/wallet/p2p/card/confirm" />
+<ApiEndpoint method="POST" url="/wallet/p2p/to-card/confirm" />
 
 :::important Failure handling
 **HTTP 4XX errors:** The transaction is rejected and no funds are moved. The wallet balance is unchanged.
@@ -33,7 +33,7 @@ Execute a previously validated card transfer transaction. Funds are debited from
   <TabItem value="headers" label="Headers">
 
 ```http
-POST /wallet/p2p/card/confirm HTTP/1.1
+POST /wallet/p2p/to-card/confirm HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 X-Api-Key: your_api_key
@@ -55,7 +55,7 @@ X-Wallet-Id: your_wallet_id
   <TabItem value="curl" label="cURL">
 
 ```bash
-curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/card/confirm" \
+curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/to-card/confirm" \
      -H "Content-Type: application/json" \
      -H "Accept: application/json" \
      -H "X-Api-Key: your_api_key" \

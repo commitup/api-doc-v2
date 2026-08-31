@@ -11,7 +11,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Submit a P2P card transfer request for validation. If accepted, the response contains a `transactionId` with `status: READY`, along with calculated fees and exchange rates. No funds are moved at this stage.
 
-<ApiEndpoint method="POST" url="/wallet/p2p/card/validate" />
+<ApiEndpoint method="POST" url="/wallet/p2p/to-card/validate" />
 
 :::important Idempotency
 The `tenantReferenceId` must be unique across all transactions. Reusing a previously consumed `tenantReferenceId` returns a `WL_P2P_TRANSACTION_ALREADY_EXISTS` error.
@@ -45,7 +45,7 @@ The `tenantReferenceId` must be unique across all transactions. Reusing a previo
   <TabItem value="headers" label="Headers">
 
 ```http
-POST /wallet/p2p/card/validate HTTP/1.1
+POST /wallet/p2p/to-card/validate HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 X-Api-Key: your_api_key
@@ -125,7 +125,7 @@ X-Wallet-Id: your_wallet_id
   <TabItem value="curl" label="cURL">
 
 ```bash
-curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/card/validate" \
+curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/to-card/validate" \
      -H "Content-Type: application/json" \
      -H "Accept: application/json" \
      -H "X-Api-Key: your_api_key" \

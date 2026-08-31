@@ -11,7 +11,7 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 Execute a previously validated account transfer transaction. Funds are debited from the wallet atomically during this step.
 
-<ApiEndpoint method="POST" url="/wallet/p2p/account/confirm" />
+<ApiEndpoint method="POST" url="/wallet/p2p/to-account/confirm" />
 
 :::important Failure handling
 **HTTP 4XX errors:** The transaction is rejected and no funds are moved. The wallet balance is unchanged.
@@ -33,7 +33,7 @@ Execute a previously validated account transfer transaction. Funds are debited f
   <TabItem value="headers" label="Headers">
 
 ```http
-POST /wallet/p2p/account/confirm HTTP/1.1
+POST /wallet/p2p/to-account/confirm HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 X-Api-Key: your_api_key
