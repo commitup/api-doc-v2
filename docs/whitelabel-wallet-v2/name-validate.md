@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 11
 ---
 
 import Tabs from '@theme/Tabs';
@@ -27,9 +27,8 @@ Validate a money transfer to a person (cash pickup / name transfer). This endpoi
 | `sendingCurrency`        | String  | ISO 4217                  | Currency for `sendingAmount`. Required when `sendingAmount` is provided.                                                                      |
 | `payoutCurrency`         | String  | ISO 4217                  | Payout currency when different from sending currency.                                                                                         |
 | `destinationCountry`     | String  | ISO 3166-1 alpha-3        | Destination country code.                                                                                                                     |
-| `provider`               | String  | -                         | Provider ID from the [providers endpoint](./parameter-collection#2-get-providers). Applies to all transfer types and takes precedence over the legacy type-specific field. |
+| `provider`               | String  | -                         | The external firm (cash pickup provider) code from the [providers endpoint](./parameter-collection#2-get-providers). Required for name transfers. |
 | `receiver`               | Object  | -                         | Receiver information. See [ReceiverInfo](./transaction-object#receiverinfo-object).                                                           |
-| `externalFirm`             | String  | -                         | **Legacy.** External firm (provider) ID. Use `provider` instead; ignored when `provider` is sent.                                              |
 | `city`               | String  | -                         | Destination city code. Required for name transfers.                                                                                           |
 | `office`             | String  | -                         | Destination office code. Optional, depending on provider requirements.                                                                        |
 | `comment`                | String  | Max: 255                  | Free-text comment.                                                                                                                            |
@@ -57,4 +56,6 @@ X-Wallet-Id: your_wallet_id
 
 ## Response
 
-The response is a [Transaction Object](./transaction-object) with the status `READY`.
+The response is a [Transaction Object](./transaction-object) with the status `READY`. No funds have moved yet.
+
+**Next step:** [Confirm the transfer](./confirm) with the returned `transactionId`.

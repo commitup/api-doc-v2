@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 13
 ---
 
 import Tabs from '@theme/Tabs';
@@ -27,8 +27,7 @@ Validate a money transfer to a bank account. This endpoint checks if the transac
 | `sendingCurrency`        | String  | ISO 4217                  | Currency for `sendingAmount`. Required when `sendingAmount` is provided.                                                                      |
 | `payoutCurrency`         | String  | ISO 4217                  | Payout currency when different from sending currency.                                                                                         |
 | `destinationCountry`     | String  | ISO 3166-1 alpha-3        | Destination country code.                                                                                                                     |
-| `provider`               | String  | -                         | Provider ID from the [providers endpoint](./parameter-collection#2-get-providers). Applies to all transfer types and takes precedence over the legacy type-specific field. |
-| `bankId`                 | String  | -                         | **Legacy.** Bank ID from the providers list. Use `provider` instead; ignored when `provider` is sent.                                          |
+| `provider`               | String  | -                         | The destination bank code from the [providers endpoint](./parameter-collection#2-get-providers). Required for account transfers. |
 | `accountNumber`          | String  | -                         | The recipient's bank account number or IBAN. Required for account transfers.                                                                  |
 | `receiver`               | Object  | -                         | Receiver information. See [ReceiverInfo](./transaction-object#receiverinfo-object).                                                           |
 | `comment`                | String  | Max: 255                  | Free-text comment.                                                                                                                            |
@@ -56,4 +55,6 @@ X-Wallet-Id: your_wallet_id
 
 ## Response
 
-The response is a [Transaction Object](./transaction-object) with the status `READY`.
+The response is a [Transaction Object](./transaction-object) with the status `READY`. No funds have moved yet.
+
+**Next step:** [Confirm the transfer](./confirm) with the returned `transactionId`.

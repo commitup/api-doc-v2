@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 16
 ---
 
 import Tabs from '@theme/Tabs';
@@ -7,11 +7,20 @@ import TabItem from '@theme/TabItem';
 import ApiEndpoint from '@site/src/components/ApiEndpoint';
 import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
-# Card Transfer — Confirm
+# Confirm a Transfer
 
-Execute a previously validated card transfer transaction. Funds are debited from the wallet atomically during this step.
+Execute a previously validated transfer. **Funds are debited from the wallet atomically during this step.**
 
-<ApiEndpoint method="POST" url="/wallet/p2p/to-card/confirm" />
+<ApiEndpoint method="POST" url="/wallet/p2p/{type}/confirm" />
+
+Confirm is identical for all four transfer types — same request body, same response. Only the `{type}` path segment differs, and it must match the type used on validate.
+
+| Transfer type | Endpoint |
+| :--- | :--- |
+| Name | `POST /wallet/p2p/to-name/confirm` |
+| Account | `POST /wallet/p2p/to-account/confirm` |
+| Card | `POST /wallet/p2p/to-card/confirm` |
+| Wallet | `POST /wallet/p2p/to-wallet/confirm` |
 
 :::important Failure handling
 **HTTP 4XX errors:** The transaction is rejected and no funds are moved. The wallet balance is unchanged.
@@ -26,7 +35,7 @@ Execute a previously validated card transfer transaction. Funds are debited from
 
 | Field | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `transactionId` | String | Max: 36<br/>Format: UUID | The transaction ID returned from the [validate](./card-validate) response. |
+| `transactionId` | String | Max: 36<br/>Format: UUID | The transaction ID returned from the validate response. |
 | `tenantReferenceId` | String | Max: 50<br/>Alphanumeric | Unique reference ID assigned by the tenant. |
 
   </TabItem>
@@ -39,6 +48,7 @@ Accept: application/json
 X-Api-Key: your_api_key
 X-Api-Secret: your_api_secret
 X-Wallet-Id: your_wallet_id
+X-Secure-Data: your_secure_data
 ```
 
   </TabItem>
@@ -61,6 +71,7 @@ curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/to-c
      -H "X-Api-Key: your_api_key" \
      -H "X-Api-Secret: your_api_secret" \
      -H "X-Wallet-Id: your_wallet_id" \
+     -H "X-Secure-Data: your_secure_data" \
      -d '{
            "tenantReferenceId": "UNIQUE-REF-2026-2307-2",
            "transactionId": "628d9726-4d6b-4822-b62b-146c8bfd25c9"
@@ -76,11 +87,12 @@ curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/to-c
 > A successful Confirm response may still return `status: READY`.
 >
 > This is expected behaviour, as the transition to `SENT` happens asynchronously.
-> Clients should use the Query endpoint to monitor the transaction until it reaches a terminal status.
+> Clients should use the [Query](./query) endpoint to monitor the transaction until it reaches a terminal status.
 
 The response is a [Transaction Object](./transaction-object).
 
 - **`processRefNo`** and **`externalTransactionId`** are populated after successful processing.
+- **`provider`** echoes the provider used, for `to-name`, `to-account`, and `to-wallet`.
 
 <Tabs>
   <TabItem value="success" label="Success" default>
@@ -107,36 +119,33 @@ The response is a [Transaction Object](./transaction-object).
     "firstName": "Osman",
     "lastName": "SAVCI",
     "fatherName": "Ahmet",
-    "receiverType": null,
+    "receiverType": "CUSTOMER",
     "birthDate": "1990-01-15",
     "birthPlace": "Istanbul",
-    "nationality": "TR",
-    "birthCountry": "TR",
+    "nationality": "TUR",
+    "birthCountry": "TUR",
     "identityNo": "12345678901",
     "identityType": "PASSPORT",
-    "identityIssueCountry": "TR",
+    "identityIssueCountry": "TUR",
     "identityValidThru": "2030-12-31",
     "identityIssueDate": "2020-01-01",
-    "addressCountry": "TR",
+    "addressCountry": "TUR",
     "address": "Ataturk Cad. No:10",
     "province": "Istanbul",
     "district": "Kadikoy",
     "zipCode": "34000",
-    "job": null,
     "email": "osman@example.com",
-    "phoneCountryCode": "TR",
-    "phoneNumber": "905551234567"
+    "phoneCountryCode": "TUR",
+    "phoneNumber": "5551234567"
   }
 }
 ```
 
 ```json status="406" title="Idempotency Conflict"
 {
-  "restHeader": {
-    "success": false,
-    "code": "WL_P2P_TRANSACTION_ALREADY_EXISTS",
-    "message": "A transaction with this tenantReferenceId already exists."
-  }
+  "status": "error",
+  "code": "WL_P2P_TRANSACTION_ALREADY_EXISTS",
+  "message": "A transaction with this tenantReferenceId already exists."
 }
 ```
 

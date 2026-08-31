@@ -1,93 +1,44 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Transaction Object
 
-The **Transaction Object** is the common response model returned by all P2P card transfer endpoints (validate, confirm, query).
+The **Transaction Object** is the common response model returned by the validate, confirm, and query endpoints of **all four transfer types** (`to-name`, `to-account`, `to-card`, `to-wallet`).
+
+:::note Null fields are omitted
+Fields with no value are left out of the JSON entirely rather than serialised as `null`. Do not rely on a key being present — a missing key and a null value mean the same thing.
+:::
 
 ## Amount Model & FX Flow
 
-The system processes amount conversions in four distinct scenarios, depending on whether you provide an exact destination `amount` or a local `sendingAmount`, and whether the `feeIncluded` flag is `true` or `false`.
+The wallet is always debited in **TRY**. What varies is which side of the transfer you pin down, and whether the fee comes out of that amount or is added on top.
 
-### 1. Exact Amount (Fee Not Included)
-You want to send exactly 100 USD to the transfer issuer. The fee is charged **on top**.
+```mermaid
+flowchart TD
+    A(["Which amount model?"]) --> B["<b>amount</b> + currency<br/>pin the amount the receiver gets"]
+    A --> C["<b>sendingAmount</b> + sendingCurrency<br/>pin the amount you spend"]
 
-```text
-Input: amount=100, currency=USD, feeIncluded=false
-Fee: 5 USD
+    B --> D["Wallet debit = amount + fee<br/>Receiver gets the full amount"]
 
-Sender Wallet (TRY)
-   │
-   ├─ debits: TRY equivalent of 100 USD (amount)
-   ├─ debits: TRY equivalent of 5 USD (fee)
-   ▼
-Total Wallet Debit = TRY equivalent of 105 USD
-
-Transfer Issuer
-   │
-   └─ receives exact 100 USD
+    C --> E{"feeIncluded"}
+    E -->|"false or omitted"| F["Wallet debit = sendingAmount + fee<br/>The whole sendingAmount is converted"]
+    E -->|"true"| G["Wallet debit = sendingAmount<br/>Fee is taken out first, the rest is converted"]
 ```
 
-### 2. Exact Amount (Fee Included)
-You want to spend exactly 100 USD total. The fee is deducted **from** the amount before reaching the issuer.
+:::important `feeIncluded` requires `sendingAmount`
+Sending `feeIncluded: true` together with `amount` is rejected with `WL_P2P_FEE_INCLUDED_ONLY_FOR_SENDING_AMOUNT`. With the `amount` model the fee is always charged on top — that is what pinning the receiver's amount means.
+:::
 
-```text
-Input: amount=100, currency=USD, feeIncluded=true
-Fee: 5 USD
+### Worked examples
 
-Sender Wallet (TRY)
-   │
-   ├─ debits: TRY equivalent of 100 USD (total)
-   ▼
-Total Wallet Debit = TRY equivalent of 100 USD
+| Input | Fee | Wallet debit (TRY equivalent) | Receiver gets |
+| :--- | :--- | :--- | :--- |
+| `amount: 100 USD` | 5 USD | 105 USD | **100 USD** — exactly what you asked for |
+| `sendingAmount: 1000 TRY`<br/>`feeIncluded: false` | 25 TRY | 1025 TRY | **40 EUR** — all 1000 TRY converted |
+| `sendingAmount: 1000 TRY`<br/>`feeIncluded: true` | 25 TRY | 1000 TRY | **48 USD** — 975 TRY converted after the fee |
 
-Transfer Issuer
-   │
-   └─ receives 95 USD (100 USD - 5 USD fee)
-```
-
-### 3. Sending Amount (Fee Not Included)
-You want to convert exactly 1,000 TRY to the destination currency. The fee is charged **on top**.
-
-```text
-Input: sendingAmount=1000, sendingCurrency=TRY, feeIncluded=false
-Fee: 25 TRY
-
-Sender Wallet (TRY)
-   │
-   ├─ debits: 1000 TRY (sendingAmount)
-   ├─ debits: 25 TRY (fee)
-   ▼
-Total Wallet Debit = 1025 TRY
-
-Transfer Issuer (Destination: EUR)
-   │
-   ├─ FX: 1000 TRY ➔ 40 EUR
-   ▼
-   └─ receives exact 40 EUR
-```
-
-### 4. Sending Amount (Fee Included)
-You want exactly 1,000 TRY debited from your wallet, including all fees.
-
-```text
-Input: sendingAmount=1000, sendingCurrency=TRY, feeIncluded=true
-Fee: 25 TRY
-
-Sender Wallet (TRY)
-   │
-   ├─ debits: 1000 TRY (total sendingAmount)
-   ▼
-Total Wallet Debit = 1000 TRY
-
-Transfer Issuer (Destination: USD)
-   │
-   ├─ Net Principal: 1000 TRY - 25 TRY (fee) = 975 TRY
-   ├─ FX: 975 TRY ➔ 48 USD
-   ▼
-   └─ receives 48 USD
-```
+Read the exact figures for your transaction off the validate response: `sourceAmount` is what leaves the wallet, `payoutAmount` is what arrives.
 
 ## Response Fields
 
@@ -109,13 +60,36 @@ Transfer Issuer (Destination: USD)
 | `payoutExchangeRate`    | String        | When applicable | Exchange rate applied for payout currency conversion.                         |
 | `processRefNo`          | String        | After confirm   | Internal process reference number.                                            |
 | `externalTransactionId` | String        | After confirm   | Reference number assigned by the external remittance firm.                    |
-| `destinationCountry`    | String        | When applicable | Destination country code (ISO 3166-1 alpha-3).                                |
-| `cardNumber`            | String        | Always          | Destination card number.                                                      |
+| `destinationCountry`    | String        | Always          | Destination country code (ISO 3166-1 alpha-3).                                |
+| `sendingAmount`         | String        | When applicable | Echoed when the `sendingAmount` model was used on validate.                    |
+| `sendingCurrency`       | String        | When applicable | Currency of `sendingAmount`.                                                  |
 | `receiver`              | Object        | Always          | Receiver identity and contact info. See [ReceiverInfo](#receiverinfo-object). |
 | `comment`               | String        | Optional        | Free-text comment.                                                            |
 | `purpose`               | Enum          | When provided   | Transfer purpose. Valid values: `SAVING_INVESTMENT`, `DEPT_LOAN`, `SALE_BUY`, `COMMERCE_PAYMENTS`, `RENTALS`, `OTHER`, `FAMILY`, `EDUCATION`. |
 | `sourceOfIncome`        | Enum          | When provided   | Source of income. Valid values: `SALARY`, `BUSINESS_INCOME`, `SAVINGS`, `GIFT`, `BANK_LOAN`, `OTHER`, `SALE_OF_PROPERTY`. |
 | `relationshipWithSender`| Enum          | When provided   | Relationship with receiver. Valid values: `CHILD`, `SPOUSE`, `PARENT`, `FRIEND`, `WORK_FRIEND`, `BROTHER`. |
+
+---
+
+## Destination Fields by Transfer Type
+
+Which destination fields appear depends on the transfer type. Only the fields for the type used are returned.
+
+| Transfer type | Fields returned |
+| :--- | :--- |
+| `to-name` | `provider`, `city`, `office` |
+| `to-account` | `provider`, `accountNumber`, `accountIndicator` |
+| `to-card` | `cardNumber` |
+| `to-wallet` | `provider` |
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `provider` | String | The provider code used for the transfer, echoed back from the request. The external firm for `to-name`, the bank for `to-account`, the digital wallet for `to-wallet`. Not returned for `to-card`, which has no provider. |
+| `city` | String | Destination city code. |
+| `office` | String | Destination office code. |
+| `accountNumber` | String | Destination account number or IBAN. |
+| `accountIndicator` | String | Account type indicator, when the destination bank requires one. |
+| `cardNumber` | String | Destination card number. |
 
 ---
 

@@ -1,10 +1,30 @@
 ---
-sidebar_position: 10
+sidebar_position: 21
 ---
 
 # Error Codes
 
-This page outlines the specific error codes that you may encounter when using the Whitelabel Wallet v2 APIs. 
+This page outlines the specific error codes that you may encounter when using the Whitelabel Wallet v2 APIs.
+
+## HTTP Status Mapping
+
+Every error uses the same envelope — `{ "status": "error", "code": ..., "message": ... }`. The HTTP status tells you the category, the `code` tells you what to fix.
+
+| HTTP Status | Applies to |
+| :--- | :--- |
+| `406 Not Acceptable` | All validation, business logic, and transaction-state errors. This is the status for nearly every code on this page. |
+| `500 Internal Server Error` | Unexpected internal failure (`WL_UNKNOWN_ERROR`). |
+
+---
+
+## Request Format Errors
+
+| Error Code | Field | Description |
+| :--- | :--- | :--- |
+| `WL_P2P_TENANT_REF_ID_EMPTY` | `tenantReferenceId` | The tenant reference ID is missing or blank. |
+| `WL_P2P_DESTINATION_COUNTRY_EMPTY` | `destinationCountry` | The destination country is missing or blank. |
+| `WALLET_TRANSFER_AMOUNT_SCALE_ERROR` | `amount` / `sendingAmount` | The amount has more than two decimal places. |
+| `WL_INVALID_ENUM_VALUE` | any enum field | An enum field carries a value outside its allowed set. The message names the rejected value. |
 
 ## Validation Errors
 
@@ -56,3 +76,9 @@ These errors occur during transaction validation, confirmation, or status querie
 | `WL_P2P_TRANSACTION_ALREADY_EXISTS` | A transaction with the provided `tenantReferenceId` has already been processed. |
 | `WL_TRANSACTION_IN_PROGRESS` | The transaction query cannot be fulfilled because the transaction is still processing. |
 | `WL_TRANSACTION_NOT_FOUND` | The transaction could not be found or has permanently failed in the upstream ledger. |
+
+## System Errors
+
+| Error Code | Description |
+| :--- | :--- |
+| `WL_UNKNOWN_ERROR` | Unexpected internal failure. Returned with HTTP `500`. Do not retry a confirm on this response — query the transaction instead. |

@@ -14,6 +14,7 @@ import TabItem from '@theme/TabItem';
 
 | Version | Date | Changes |
 | :--- | :--- | :--- |
+| 1.3.0 | 2026-08-31 | `provider` is now the only provider field, on requests and responses alike. `externalFirm`, `bankId`, and `walletType` were removed from both. `provider` is echoed back on validate, confirm, and query. |
 | 1.2.0 | 2026-08-31 | **Breaking:** type segments renamed to `to-name`, `to-account`, `to-card`, `to-wallet`. Reference data endpoints restructured. New unified `provider` field. |
 | 1.1.0 | 2026-08-26 | Name, Account, and Wallet transfer flows. Parameter Collection endpoints. |
 | 1.0.0 | 2026-06-11 | Initial version. Validate, confirm, query. Fund safety model, confirm retry and fallback. |
@@ -38,7 +39,7 @@ All requests and responses use `Content-Type: application/json`.
 
 ## Transfer Types
 
-The `{type}` path segment selects the transfer type. It is used by the calculate, validate, and confirm endpoints, and by the providers endpoint.
+The `{type}` path segment selects the transfer type. It is used by the validate and confirm endpoints, and by the providers endpoint.
 
 | Segment | Transfer Type | Description |
 | :--- | :--- | :--- |
@@ -46,12 +47,6 @@ The `{type}` path segment selects the transfer type. It is used by the calculate
 | `to-account` | Account Transfer | Payout to a bank account or IBAN. |
 | `to-card` | Card Transfer | Payout to a debit or credit card. |
 | `to-wallet` | Wallet Transfer | Payout to a partner digital wallet. |
-
-:::caution Breaking change in 1.2.0
-The previous segments `name`, `account`, and `wallet` are **no longer accepted** and return `404`. Use the `to-` prefixed segments.
-
-`card` is still accepted as a legacy alias for `to-card` on calculate, validate, and confirm — but **not** on the providers endpoint. Migrate to `to-card`.
-:::
 
 ---
 

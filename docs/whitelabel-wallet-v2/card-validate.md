@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 8
 ---
 
 import Tabs from '@theme/Tabs';
@@ -82,7 +82,6 @@ X-Wallet-Id: your_wallet_id
     "province": "Istanbul",
     "district": "Kadikoy",
     "zipCode": "34000",
-    "job": null,
     "email": "osman@example.com",
     "phoneCountryCode": "TUR",
     "phoneNumber": "5551234567"
@@ -204,7 +203,6 @@ The response is a [Transaction Object](./transaction-object) with the following 
     "province": "Istanbul",
     "district": "Kadikoy",
     "zipCode": "34000",
-    "job": null,
     "email": "osman@example.com",
     "phoneCountryCode": "TUR",
     "phoneNumber": "5551234567"
@@ -243,3 +241,5 @@ The response is a [Transaction Object](./transaction-object) with the following 
 </ApiResponseSelector>
   </TabItem>
 </Tabs>
+
+**Next step:** [Confirm the transfer](./confirm) with the returned `transactionId`.

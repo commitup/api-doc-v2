@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7.5
+sidebar_position: 9
 ---
 
 # Name Transfer — Overview
@@ -30,7 +30,7 @@ sequenceDiagram
 
 1. **Parameter Collection:** Obtain the necessary `provider` ID, and if required by the provider, `city` and `office` codes.
 2. **Validate:** Use the collected parameters (`provider`, `city`, `office`) along with the receiver's details to call `/wallet/p2p/to-name/validate`.
-3. **Confirm:** Finally, confirm the transaction using the `transactionId` provided in the validate step.
+3. **[Confirm](./confirm):** Finally, confirm the transaction using the `transactionId` provided in the validate step, then track it with [Query](./query).
 
 ## Example Validate Request
 

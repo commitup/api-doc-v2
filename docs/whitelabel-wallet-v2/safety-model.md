@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # Partner Fund Safety Model
@@ -51,10 +51,12 @@ Each call to validate with a unique `tenantReferenceId` creates a new transactio
 
 ### Confirm
 
-Confirm is executed only once for a given `transactionId`.
+Confirm is executed only once for a given `transactionId`. A second confirm for the same `transactionId` does not debit the wallet again.
 
-| Missing Confirm Payload | N/A | Missing elements (like `tenantUserId`) will return a 400 Bad Request if mandatory according to the schema. |
-| Duplicate Tenant Reference | POST | If the provided `tenantReferenceId` is already in use for another payment, the API returns a 409 Conflict (`TENANT_REFERENCE_ID_ALREADY_USED`). |
+| Situation | HTTP | Behaviour |
+|---|---|---|
+| Missing or malformed confirm payload | `406` | Returns the field-specific error code, e.g. `WL_P2P_TENANT_REF_ID_EMPTY`. No funds moved. |
+| `transactionId` already confirmed | `406` | Returns an error rather than reprocessing. Use Query to read the current state. |
 
 ### Query
 

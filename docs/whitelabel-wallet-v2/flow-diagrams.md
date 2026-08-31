@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # Flow Diagrams
@@ -42,7 +42,7 @@ sequenceDiagram
     participant PayPorter
 
     Partner->>PayPorter: POST /wallet/p2p/{type}/validate
-    PayPorter-->>Partner: 406 — Validation error<br/>{restHeader: {code, message}}
+    PayPorter-->>Partner: 406 — Validation error<br/>{status: error, code, message}
     Note over Partner: Fix the request and retry
 
     Partner->>PayPorter: POST /wallet/p2p/{type}/validate

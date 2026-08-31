@@ -27,8 +27,7 @@ Validate a money transfer to a digital wallet. This endpoint checks if the trans
 | `sendingCurrency`        | String  | ISO 4217                  | Currency for `sendingAmount`. Required when `sendingAmount` is provided.                                                                      |
 | `payoutCurrency`         | String  | ISO 4217                  | Payout currency when different from sending currency.                                                                                         |
 | `destinationCountry`     | String  | ISO 3166-1 alpha-3        | Destination country code.                                                                                                                     |
-| `provider`               | String  | -                         | Provider ID from the [providers endpoint](./parameter-collection#2-get-providers). Applies to all transfer types and takes precedence over the legacy type-specific field. |
-| `walletType`             | String  | -                         | **Legacy.** Target wallet identifier or brand (e.g., `KUIKPARA`). Use `provider` instead; ignored when `provider` is sent.                     |
+| `provider`               | String  | -                         | The destination digital wallet code from the [providers endpoint](./parameter-collection#2-get-providers). Required for wallet transfers. |
 | `receiver`               | Object  | -                         | Receiver information. See [ReceiverInfo](./transaction-object#receiverinfo-object). Mobile number is critical for identifying the wallet.     |
 | `comment`                | String  | Max: 255                  | Free-text comment.                                                                                                                            |
 | `purpose`                | Enum    | -                         | Transfer purpose. Valid values: `SAVING_INVESTMENT`, `DEPT_LOAN`, `SALE_BUY`, `COMMERCE_PAYMENTS`, `RENTALS`, `OTHER`, `FAMILY`, `EDUCATION`. |
@@ -55,4 +54,6 @@ X-Wallet-Id: your_wallet_id
 
 ## Response
 
-The response is a [Transaction Object](./transaction-object) with the status `READY`.
+The response is a [Transaction Object](./transaction-object) with the status `READY`. No funds have moved yet.
+
+**Next step:** [Confirm the transfer](./confirm) with the returned `transactionId`.

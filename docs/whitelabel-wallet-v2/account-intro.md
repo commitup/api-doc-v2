@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 12
 ---
 
 # Account Transfer — Overview
@@ -30,7 +30,7 @@ sequenceDiagram
 
 1. **Parameter Collection:** Obtain the necessary bank `provider` ID and destination country code dynamically.
 2. **Validate:** Use the collected `provider` and the recipient's `accountNumber` along with their details to call `/wallet/p2p/to-account/validate`.
-3. **Confirm:** Finally, confirm the transaction using the `transactionId` provided in the validate step.
+3. **[Confirm](./confirm):** Finally, confirm the transaction using the `transactionId` provided in the validate step, then track it with [Query](./query).
 
 ## Example Validate Request
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 6
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,7 +9,26 @@ import ApiResponseSelector from '@site/src/components/ApiResponseSelector';
 
 # Parameter Collection
 
-Before validating and initiating a transfer, you must collect the necessary parameters dynamically. 
+Before validating and initiating a transfer, you must collect the necessary parameters dynamically. How many of these calls you need depends on the transfer type, and — for name transfers — on what the chosen provider requires.
+
+```mermaid
+flowchart TD
+    A["GET /wallet/p2p/countries"] --> B{"Transfer type?"}
+
+    B -->|"to-card"| C["Done — card transfers<br/>need only the country"]
+
+    B -->|"to-account<br/>to-wallet"| D["GET /wallet/p2p/{type}/providers<br/>?countryCode="]
+    D --> E["Send the chosen code<br/>as <b>provider</b>"]
+
+    B -->|"to-name"| F["GET /wallet/p2p/to-name/providers<br/>?countryCode="]
+    F --> G{"cityMandatory?"}
+    G -->|"false"| E
+    G -->|"true"| H["GET /wallet/p2p/to-name/cities<br/>?countryCode=&providerId="]
+    H --> I{"officeMandatory?"}
+    I -->|"false"| E
+    I -->|"true"| J["GET /wallet/p2p/to-name/cities/{cityCode}/offices<br/>?countryCode=&providerId="]
+    J --> E
+```
 
 :::warning Caching Required
 To ensure optimal performance and avoid rate-limiting, **all parameter data (countries, providers, cities, offices) must be cached** on your side. Do not call these endpoints repeatedly for every transaction. We recommend refreshing this cache periodically (e.g., once a day or every few hours).
@@ -53,15 +72,11 @@ Each country lists the transfer types and receiver types it supports. Use `trans
 
 Retrieve a list of available transfer providers for a specific country and transfer type. 
 
-> **Important Usage Note:** Send the returned provider `code` back in the unified **`provider`** field of the calculate and validate requests. `provider` applies to every transfer type, so you no longer need to pick a type-specific field.
-> - **Account Transfers:** The provider represents a **Bank**. (Legacy field: `bankId`.)
-> - **Name Transfers:** The provider represents an **External Firm** (cash pickup location). (Legacy field: `externalFirm`.)
-> - **Wallet Transfers:** The provider represents a **Digital Wallet**. (Legacy field: `walletType`.)
-> - **Card Transfers:** Providers are **not** used. Card transfers only require the country and the card number.
-
-:::info `provider` supersedes the type-specific fields
-The legacy fields `bankId`, `externalFirm`, and `walletType` are still accepted for backwards compatibility. When `provider` is present it **takes precedence** and overwrites the legacy value for that transfer type. Send one or the other, not both.
-:::
+> **Important Usage Note:** Send the returned provider `code` back in the **`provider`** field of the validate request. One field covers every transfer type — what it identifies depends on the type:
+> - **Account Transfers:** the destination **Bank**.
+> - **Name Transfers:** the **External Firm** (cash pickup location).
+> - **Wallet Transfers:** the **Digital Wallet**.
+> - **Card Transfers:** providers are **not** used. Card transfers only require the country and the card number.
 
 <ApiEndpoint method="GET" url="/wallet/p2p/{type}/providers" />
 
@@ -114,7 +129,7 @@ For `to-name`, the boolean flags dictate whether you need to fetch further param
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `code` | String | Provider ID. Pass it back as `provider` in calculate / validate. |
+| `code` | String | Provider ID. Pass it back as `provider` in the validate request. |
 | `name` | String | Provider display name. |
 | `cityMandatory` | Boolean | `to-name` only. `true` if a `city` code must be supplied for this provider. |
 | `officeMandatory` | Boolean | `to-name` only. `true` if an `office` code must be supplied for this provider. |
