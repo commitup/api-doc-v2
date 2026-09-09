@@ -173,14 +173,15 @@ The webhook payload is sent as a `POST` request.
 <Tabs>
   <TabItem value="table" label="Request Parameters" default>
 
-| Parameter | Type | Description | Example |
-| :--- | :--- | :--- | :--- |
-| apiAgentTxnRefNo | string | Integration transaction reference number | `TXN-987654321` |
-| senderExtFirmRefId | string | Sender external firm reference id | `P2P_1212121` |
-| transferOrderRefId | number | Money transfer order reference id | `47000000000` |
-| status | number | Status of the money transfer (Only `2`: PAID and `4`: REFUNDED will be notified) | `2` |
-| messageCode | string | Reject/refund reason code | `MT_REFUNDED` |
-| messageDescription | string | Extra description if it exists | `Refund applied successfully` |
+| Parameter | Type | Max Length | Description | Example |
+| :--- | :--- | ---: | :--- | :--- |
+| apiAgentTxnRefNo | string | 50 | The unique transaction reference ID originally provided by your system during the transfer creation request. Used to match webhook notifications with corresponding transactions. | `TXN-987654321` |
+| senderExtFirmRefId | string | 50 | Same as `apiAgentTxnRefNo` in your system, used for your internal routing and management of the transfer. | `TXN-987654321` |
+| externalReference | string | 50 | The reference number assigned by the third-party partner to whom the transaction was forwarded. | `AXT-3818249128` |
+| transferOrderRefId | number | - | Money transfer order reference id | `47000000000` |
+| status | number | - | Status of the money transfer (Only `2`: PAID and `4`: REFUNDED will be notified) | `2` |
+| messageCode | string | 50 | Reject/refund reason code | `MT_REFUNDED` |
+| messageDescription | string | 250 | Extra description if it exists | `Refund applied successfully` |
 
   </TabItem>
   <TabItem value="payload" label="Example Payload">
