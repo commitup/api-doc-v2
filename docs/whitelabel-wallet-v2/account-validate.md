@@ -29,6 +29,7 @@ Validate a money transfer to a bank account. This endpoint checks if the transac
 | `destinationCountry`     | String  | ISO 3166-1 alpha-3        | Destination country code.                                                                                                                     |
 | `provider`               | String  | -                         | The destination bank code from the [providers endpoint](./parameter-collection#2-get-providers). Required for account transfers. |
 | `accountNumber`          | String  | -                         | The recipient's bank account number or IBAN. Required for account transfers.                                                                  |
+| `accountIndicator`       | String  | -                         | Account type indicator, when required by the destination bank.                                                                                |
 | `receiver`               | Object  | -                         | Receiver information. See [ReceiverInfo](./transaction-object#receiverinfo-object).                                                           |
 | `comment`                | String  | Max: 255                  | Free-text comment.                                                                                                                            |
 | `purpose`                | Enum    | -                         | Transfer purpose. Valid values: `SAVING_INVESTMENT`, `DEPT_LOAN`, `SALE_BUY`, `COMMERCE_PAYMENTS`, `RENTALS`, `OTHER`, `FAMILY`, `EDUCATION`. |

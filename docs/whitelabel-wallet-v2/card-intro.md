@@ -53,7 +53,7 @@ Here is a typical payload structure for a Card Transfer:
     "receiverType": "CUSTOMER"
   },
   "comment": "Birthday gift.",
-  "purpose": "GIFT",
+  "purpose": "FAMILY",
   "sourceOfIncome": "SAVINGS"
 }
 ```

@@ -105,12 +105,14 @@ curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/to-c
 {
   "transactionId": "628d9726-4d6b-4822-b62b-146c8bfd25c9",
   "status": "READY",
+  "transactionType": "TO_CARD",
   "tenantReferenceId": "QUICKSTART-0001",
   "amount": "21.20",
   "currency": "USD",
   "fee": "4.00",
   "feeCurrency": "TRY",
   "total": "1004.00",
+  "totalCurrency": "TRY",
   "sourceAmount": "1004.00",
   "sourceCurrency": "TRY",
   "sendingExchangeRate": "47.1698",
@@ -147,7 +149,6 @@ curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/to-c
      -H "X-Wallet-Id: your_wallet_id" \
      -H "X-Secure-Data: your_secure_data" \
      -d '{
-           "tenantReferenceId": "QUICKSTART-0001",
            "transactionId": "628d9726-4d6b-4822-b62b-146c8bfd25c9"
          }'
 ```
@@ -156,9 +157,12 @@ curl -X POST "https://whitelabelwallet-mig.payporter.com.tr:8590/wallet/p2p/to-c
 {
   "transactionId": "628d9726-4d6b-4822-b62b-146c8bfd25c9",
   "status": "READY",
+  "transactionType": "TO_CARD",
   "processRefNo": "47014458428",
   "externalTransactionId": "47014458428",
   "tenantReferenceId": "QUICKSTART-0001",
+  "total": "1004.00",
+  "totalCurrency": "TRY",
   "sourceAmount": "1004.00",
   "sourceCurrency": "TRY",
   "payoutAmount": "11406.33",

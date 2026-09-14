@@ -14,6 +14,7 @@ import TabItem from '@theme/TabItem';
 
 | Version | Date | Changes |
 | :--- | :--- | :--- |
+| 1.3.1 | 2026-09-14 | Added `totalCurrency` and `transactionType` to response models. Added `accountIndicator` to account transfer validation. Updated confirm request payload to require only `transactionId`. |
 | 1.3.0 | 2026-08-31 | `provider` is now the only provider field, on requests and responses alike. `externalFirm`, `bankId`, and `walletType` were removed from both. `provider` is echoed back on validate, confirm, and query. |
 | 1.2.0 | 2026-08-31 | **Breaking:** type segments renamed to `to-name`, `to-account`, `to-card`, `to-wallet`. Reference data endpoints restructured. New unified `provider` field. |
 | 1.1.0 | 2026-08-26 | Name, Account, and Wallet transfer flows. Parameter Collection endpoints. |

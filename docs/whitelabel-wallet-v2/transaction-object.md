@@ -6,8 +6,8 @@ sidebar_position: 5
 
 The **Transaction Object** is the common response model returned by the validate, confirm, and query endpoints of **all four transfer types** (`to-name`, `to-account`, `to-card`, `to-wallet`).
 
-:::note Null fields are omitted
-Fields with no value are left out of the JSON entirely rather than serialised as `null`. Do not rely on a key being present — a missing key and a null value mean the same thing.
+:::note Null fields
+Top-level fields with no value are omitted rather than serialised as `null`. Note that in nested objects such as `receiver`, fields with null values may be explicitly present as `null`. Do not rely on a key being present — a missing key and a null value mean the same thing.
 :::
 
 ## Amount Model & FX Flow
@@ -46,12 +46,14 @@ Read the exact figures for your transaction off the validate response: `sourceAm
 |:------------------------|:--------------|:----------------|:------------------------------------------------------------------------------|
 | `transactionId`         | String        | Always          | Unique transaction ID assigned by PayPorter. Used for confirm and query.      |
 | `status`                | String        | Always          | Current transaction status. See [Status Values](#status-values) below.        |
+| `transactionType`       | String        | When applicable | Transfer type: `TO_NAME`, `TO_ACCOUNT`, `TO_CARD`, or `TO_WALLET`.           |
 | `tenantReferenceId`     | String        | Always          | Tenant's unique reference ID, echoed from the validate request.               |
 | `amount`                | String        | Always          | Sending amount (echoed from input).                                           |
 | `currency`              | String        | Always          | Sending currency (ISO 4217).                                                  |
 | `fee`                   | String        | Always          | Fee charged for this transaction.                                             |
-| `feeCurrency`           | String        | Always          | Currency of the fee (e.g. `TRY`).                                             |
-| `total`                 | String        | Always          | Total debited: `amount + fee`.                                                |
+| `feeCurrency`           | String        | Always          | Currency of the fee (e.g. `USD`, `TRY`).                                      |
+| `total`                 | String        | Always          | Total collection amount debited from the wallet (`amount + fee` in wallet currency). |
+| `totalCurrency`         | String        | Always          | Currency of the total debited amount (e.g. `TRY`).                            |
 | `sourceAmount`          | String        | Always          | TRY equivalent debited from the wallet.                                       |
 | `sourceCurrency`        | String        | Always          | Wallet debit currency. Currently always `TRY`.                                |
 | `sendingExchangeRate`   | String        | When applicable | Exchange rate applied (sending currency → TRY).                               |
@@ -180,19 +182,32 @@ The required status of `ReceiverInfo` fields is evaluated dynamically based on t
 
 ```json
 {
-  "transactionId": "d8c8ba37-c434-4f5a-bda6-9129d6294f8b",
+  "transactionId": "48972265-9396-4efc-a40a-bc697f69b0b4",
   "status": "SENT",
-  "tenantReferenceId": "test-happy-path-001",
-  "amount": 150.00,
-  "fee": 4.00,
-  "total": 154.00,
-  "sourceAmount": 8215.53,
+  "transactionType": "TO_CARD",
+  "processRefNo": "47014456074",
+  "externalTransactionId": "187659276",
+  "tenantReferenceId": "TFZ-DEV-93111",
+  "amount": "452",
+  "currency": "USD",
+  "fee": "8",
+  "total": "22367.18",
+  "totalCurrency": "TRY",
+  "feeCurrency": "USD",
+  "sourceAmount": "22367.18",
   "sourceCurrency": "TRY",
-  "sendingExchangeRate": 1.0000,
-  "payoutAmount": 2851428.57,
-  "currency": "EUR",
-  "payoutCurrency": "IDR",
-  "processRefNo": "47005005788",
-  "externalTransactionId": "47005005788"
+  "payoutAmount": "452",
+  "payoutCurrency": "USD",
+  "destinationCountry": "USA",
+  "receiver": {
+    "firstName": "ILYA",
+    "lastName": "BAZHKO",
+    "identityNo": "AB4094780",
+    "identityType": "PASSPORT",
+    "phoneNumber": "905551234567"
+  },
+  "comment": "Tax free iadesi commenti",
+  "purpose": "OTHER",
+  "sourceOfIncome": "OTHER"
 }
 ```

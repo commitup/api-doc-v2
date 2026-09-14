@@ -170,11 +170,13 @@ The response is a [Transaction Object](./transaction-object) with the following 
 {
   "transactionId": "628d9726-4d6b-4822-b62b-146c8bfd25c9",
   "status": "READY",
+  "transactionType": "TO_CARD",
   "tenantReferenceId": "UNIQUE-REF-2026-2307-2",
   "amount": "21.20",
   "currency": "USD",
   "fee": "4.00",
   "total": "1004.00",
+  "totalCurrency": "TRY",
   "feeCurrency": "TRY",
   "sourceAmount": "1004.00",
   "sourceCurrency": "TRY",
