@@ -14,7 +14,7 @@ This service is optimized for high-volume transactions and provides real-time st
 
 | Date | Changes |
 | :--- | :--- |
-| 2026-09-10 | **IBAN Validation Error Codes Updated**:<br/>• Added `KKB_IBAN_NOT_VALID` for static IBAN format/checksum validation errors.<br/>• Added `KKB_IBAN_INFO_NOT_FOUND` when account info is not found on KKB (E613).<br/>• System/provider errors mapped to `EFT_IBAN_CHECK_SYSTEM_ERROR`. |
+| 2026-09-10 | **IBAN Validation Error Codes Updated**:<br/>• Added `KKB_IBAN_NOT_VALID` for static IBAN format/checksum validation errors.<br/>• Added `KKB_IBAN_INFO_NOT_FOUND` when account info is not found on Credit Bureau.<br/>• System/provider errors mapped to `EFT_IBAN_CHECK_SYSTEM_ERROR`. |
 | 2026-08-28 | Additional `paymentPurpose` codes. |
 | 2026-08-03 | New error code `EFT_FROM_COUNTRY_CANNOT_BE_TUR`. |
 | 2026-07-31 | Max lengths documented. `receiverAccount` 26, `receiverCardNumber` 16. |

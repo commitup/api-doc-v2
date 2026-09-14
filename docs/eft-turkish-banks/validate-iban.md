@@ -76,7 +76,7 @@ If IBAN is valid and matches with given name and currency, it returns masked nam
 | Error Code | Description |
 | :--- | :--- |
 | `KKB_IBAN_NOT_VALID` | Provided IBAN format or checksum is invalid. |
-| `KKB_IBAN_INFO_NOT_FOUND` | Account details could not be found for the given IBAN. |
+| `KKB_IBAN_INFO_NOT_FOUND` | Account details could not be retrieved from the Credit Bureau for the given IBAN. This does not indicate an issue with the IBAN itself; it only indicates that person/holder information is not provided by the credit bureau. In this case, whether to proceed with the transaction is at the partner's own discretion. |
 | `EFT_IBAN_CHECK_CURRENCY_NOT_MATCH` | The IBAN account currency does not match the requested currency. |
 | `EFT_IBAN_CHECK_NAME_NOT_MATCH` | The account holder name does not match the provided receiver name. |
 | `EFT_IBAN_CHECK_SYSTEM_ERROR` | System or verification service is temporarily unavailable. |
