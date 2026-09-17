@@ -11,7 +11,7 @@ import TabItem from '@theme/TabItem';
 
 This endpoint is used to get EFT transfers between two dates. It is used for the settlement of the EFT transfers.
 
-<ApiEndpoint method="POST" url="/api/v2/reconciliation/eft" />
+<ApiEndpoint method="POST" url="/eft-api/V2/transfer/get-transfer-list" />
 
 ## Request
 
