@@ -37,6 +37,8 @@ Validate a money transfer to a digital wallet. This endpoint checks if the trans
 
 > **Amount Model Validation:** Exactly one amount model must be provided: either (`amount` + `currency`) OR (`sendingAmount` + `sendingCurrency`).
 
+> **Receiver Wallet Matching:** The destination wallet is looked up at the selected `provider` by `receiver.phoneCountryCode` + `receiver.phoneNumber`, and the receiver's `firstName` / `lastName` must match the wallet holder. If no wallet is found the request fails with `WALLET_USER_INFO_NOT_FOUND_BY_PHONE`; if the name does not match it fails with `MONEY_SEND_RECEIVER_NAME_VALIDATION`.
+
   </TabItem>
   <TabItem value="headers" label="Headers">
 

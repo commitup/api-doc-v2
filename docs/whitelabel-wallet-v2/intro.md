@@ -14,6 +14,11 @@ import TabItem from '@theme/TabItem';
 
 | Version | Date | Changes |
 | :--- | :--- | :--- |
+| 1.3.6 | 2026-09-28 | Parameter collection endpoints return HTTP 406 instead of 500 for a missing `countryCode` (`WL_P2P_DESTINATION_COUNTRY_EMPTY`), a missing `providerId` (`WL_P2P_PROVIDER_EMPTY`) and an invalid `receiverType` (`WL_INVALID_ENUM_VALUE`); errors never carry a `null` code. Query now returns `accountNumber` for account transfers. Documented `INVALID_COUNTRY_CODE`. |
+| 1.3.5 | 2026-09-28 | Confirm now rejects a missing or blank `transactionId` with `WL_P2P_TRANSACTION_ID_EMPTY` (HTTP 406); previously the error code was the generic text `must not be null`. |
+| 1.3.4 | 2026-09-28 | Docs only: validate idempotency clarified (only a confirmed transaction's `tenantReferenceId` is rejected); confirm payload in the safety model now shows `transactionId` only; added routing/pricing and wallet-matching error codes; clarified that `city` / `office` depend on the provider flags; documented receiver wallet matching for wallet transfers. |
+| 1.3.3 | 2026-09-28 | Validate now rejects a missing `receiver.receiverType` (or missing `receiver`) with `WL_P2P_RECEIVER_TYPE_MISSING` (HTTP 406) instead of an internal error. |
+| 1.3.2 | 2026-09-25 | Validate now rejects a missing `provider` for `to-name`, `to-account`, and `to-wallet` (`WL_P2P_PROVIDER_EMPTY`) and a missing `accountNumber` for `to-account` (`WL_P2P_ACCOUNT_NUMBER_EMPTY`). |
 | 1.3.1 | 2026-09-14 | Added `totalCurrency` and `transactionType` to response models. Added `accountIndicator` to account transfer validation. Updated confirm request payload to require only `transactionId`. |
 | 1.3.0 | 2026-08-31 | `provider` is now the only provider field, on requests and responses alike. `externalFirm`, `bankId`, and `walletType` were removed from both. `provider` is echoed back on validate, confirm, and query. |
 | 1.2.0 | 2026-08-31 | **Breaking:** type segments renamed to `to-name`, `to-account`, `to-card`, `to-wallet`. Reference data endpoints restructured. New unified `provider` field. |

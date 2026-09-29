@@ -19,7 +19,7 @@ flowchart TD
     A["1. POST /wallet/p2p/{type}/validate"] --> B{"Response?"}
     B -->|"200 OK — READY"| C["Funds NOT yet moved.<br/>transactionId reserved."]
     B -->|"HTTP 406"| D["Rejected — no funds moved.<br/>Fix request."]
-    C --> E["2. POST /wallet/p2p/{type}/confirm<br/>{transactionId, tenantReferenceId}"]
+    C --> E["2. POST /wallet/p2p/{type}/confirm<br/>{transactionId}"]
     E -->|"HTTP 200 OK"| G["Success — check query for SETTLED state"]
     E -->|"HTTP 406"| H["Rejected — no funds moved."]
     E -->|"HTTP 5XX / Timeout"| I["Immediately Query status.<br/>See Confirm Fallback."]
@@ -47,7 +47,7 @@ flowchart TD
 
 ### Validate
 
-Each call to validate with a unique `tenantReferenceId` creates a new transaction. Calling validate with a `tenantReferenceId` that was already used returns a `WL_P2P_TRANSACTION_ALREADY_EXISTS` error.
+Each call to validate with a unique `tenantReferenceId` creates a new transaction. Once a transaction has been **confirmed**, calling validate again with its `tenantReferenceId` returns a `WL_P2P_TRANSACTION_ALREADY_EXISTS` error. While a transaction is still `READY` (validated but not confirmed), its `tenantReferenceId` can be reused: validate returns a new `READY` transaction with a new `transactionId`.
 
 ### Confirm
 
@@ -55,7 +55,7 @@ Confirm is executed only once for a given `transactionId`. A second confirm for 
 
 | Situation | HTTP | Behaviour |
 |---|---|---|
-| Missing or malformed confirm payload | `406` | Returns the field-specific error code, e.g. `WL_P2P_TENANT_REF_ID_EMPTY`. No funds moved. |
+| Missing or malformed confirm payload | `406` | Returns the field-specific error code, e.g. `WL_P2P_TRANSACTION_ID_EMPTY`. No funds moved. |
 | `transactionId` already confirmed | `406` | Returns an error rather than reprocessing. Use Query to read the current state. |
 
 ### Query
