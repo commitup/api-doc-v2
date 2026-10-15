@@ -117,7 +117,7 @@ If IBAN is valid and matches with given name and currency, it returns masked nam
   "header": {
     "success": false,
     "code": "xxx",
-    "message": "Alıcı IBAN a ait hesap döviz cinsi uyuşmamaktadır.",
+    "message": "The currency of the receivers IBAN account does not match.",
     "messageCode": "EFT_IBAN_CHECK_CURRENCY_NOT_MATCH"
   },
   "responseObject": null
