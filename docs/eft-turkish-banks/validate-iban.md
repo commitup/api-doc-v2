@@ -100,15 +100,27 @@ If IBAN is valid and matches with given name and currency, it returns masked nam
 }
 ```
 
-```json status="406" title="Name Mismatch"
+```json status="406" title="Iban info not foun"
 {
-    "header": {
-        "success": false,
-        "code": "577",
-        "message": "The receivers name does not match the IBAN",
-        "messageCode": "EFT_IBAN_CHECK_NAME_NOT_MATCH"
-    },
-    "responseObject": null
+  "header": {
+    "success": false,
+    "code": "xxx",
+    "message": "KKB_IBAN_INFO_NOT_FOUND",
+    "messageCode": "KKB_IBAN_INFO_NOT_FOUND"
+  },
+  "responseObject": null
+}
+```
+
+```json status="406" title="Currency Mismatch"
+{
+  "header": {
+    "success": false,
+    "code": "xxx",
+    "message": "Alıcı IBAN a ait hesap döviz cinsi uyuşmamaktadır.",
+    "messageCode": "EFT_IBAN_CHECK_CURRENCY_NOT_MATCH"
+  },
+  "responseObject": null
 }
 ```
 
