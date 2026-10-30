@@ -232,6 +232,7 @@ const sidebars: SidebarsConfig = {
   ],
   posApiSidebar: [
     'pos-api/intro',
+    'pos-api/onboarding',
     'pos-api/authentication',
     'pos-api/payment',
     'pos-api/pre-auth',
