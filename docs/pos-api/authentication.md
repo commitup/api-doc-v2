@@ -15,7 +15,7 @@ All API requests must be authenticated using API Key and API Secret headers.
 
 | Header Name | Description |
 | :--- | :--- |
-| X-API-KEY | Your unique API Key provided during onboarding. |
+| X-API-KEY | Your unique API Key. |
 | X-API-SECRET | Your unique API Secret. Keep this secure. |
 
 These credentials are unique to each merchant and must be included in every API request. Requests without valid credentials will receive a `401 Unauthorized` response. You can get credentials from the **Settings** page in our dashboard.
